@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework import serializers
 
@@ -9,6 +10,8 @@ from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
 
+from users.models import User
+from users.utils import UsersSearchUserType
 from users.serializers import UsersV1SearchParamsSerializer
 from users.serializers import UserV1SearchResponseSerializer
 from users.serializers import UsersV1FriendsInviteParamsSerializer
@@ -62,13 +65,34 @@ class UsersV1Search(APIView):
             status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
         },
     )
-    def get(self, request):
-        # TODO
-        serializer = UserV1SearchResponseSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return utils.get_serializer_errors_response(serializer)
+    def get(self, request: Request):
+        params = utils.deserialize_or_400(
+            UsersV1SearchParamsSerializer,
+            request.query_params,
+            detail="Request params deserialization failed",
+        )
+        # current_user_id
+        # users_type
+        if params['users_type'] == UsersSearchUserType.FRIENDS:
+            # TODO: get info about current user with jwt ???
+            utils.true_or_400(
+                'current_user_id' in params,
+                code='no_current_user_id',
+                detail='current_user_id was not provided, but is required because of other filters'
+            )
+            # TODO: check users in filter
+            # TODO: order_by users by name
+            response_users = User.objects.filter()
+            # TODO: return response
+
+        # # params['users_type'] == UsersSearchUserType.ALL
+        # User.objects.get()
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(status=status.HTTP_204_NO_CONTENT)
+        # return utils.get_serializer_errors_response(serializer)
+    
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserV1FriendsInviteApiView(APIView):

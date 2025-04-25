@@ -19,10 +19,26 @@ from drf_spectacular.utils import OpenApiExample
 from drf_spectacular.utils import OpenApiResponse
 
 import Backend.utils as utils
+from Backend.exceptions import BadRequest400
 from Backend.exceptions import NotFound404
 
+################################################################################
+
+### Date
 
 DEFAULT_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%:z"
+
+
+def parse_datetime(datetime_str):
+    return dt.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+
+def parse_date(date_str):
+    return dt.datetime.strptime(date_str, "%Y-%m-%d")
+
+
+def parse_default_datetime(datetime_str):
+    return dt.datetime.strptime(datetime_str, DEFAULT_DATETIME_FORMAT)
 
 # from datetime import datetime
 # d = "2015-04-30T23:59:59+00:00"
@@ -30,6 +46,9 @@ DEFAULT_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%:z"
 #     d = d[:-3]+d[-2:]
 # print(datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z"))
 
+################################################################################
+
+### Enum utils
 
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):
@@ -58,21 +77,47 @@ class SortType(utils.EnumWithContains):
 SORT_TYPES = [(val.value, val.name) for val in SortType]
 
 
+################################################################################
+
+### Bad Request
+
 class BadRequestSerializer(serializers.Serializer):
     code = serializers.CharField()
-    message = serializers.CharField()
+    detail = serializers.CharField()
 
 
-def parse_datetime(datetime_str):
-    return dt.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+def basic_bad_request_body(code="error_code", detail="error_detail"):
+    return {
+        "code": code,
+        "detail": detail,
+    }
 
 
-def parse_date(date_str):
-    return dt.datetime.strptime(date_str, "%Y-%m-%d")
+def basic_bad_request(code="error_code", detail="error_detail"):
+    # TODO: remove default args
+    # TODO: add BadRequestSerializer
+    return Response(
+        basic_bad_request_body(code, detail),
+        status.HTTP_400_BAD_REQUEST,
+    )
 
 
-def parse_default_datetime(datetime_str):
-    return dt.datetime.strptime(datetime_str, DEFAULT_DATETIME_FORMAT)
+def true_or_400(condition: bool, code="error_code", detail="error_detail"):
+    if condition:
+        return
+    raise BadRequest400(code=code, detail=detail)
+
+
+################################################################################
+
+### Other
+
+def get_object_or_404(get_query, error_detail):
+    try:
+        return get_query()
+    except ObjectDoesNotExist:
+        # TODO: replace it with rest_framework ApiException
+        raise NotFound404(detail=error_detail)
 
 
 def validate_data(
@@ -109,14 +154,6 @@ def validate_and_get_response(
         partial=partial,
     )
     return Response(validated_data, status=status_code)
-
-
-def get_object_or_404(get_query, error_detail):
-    try:
-        return get_query()
-    except ObjectDoesNotExist:
-        # TODO: replace it with rest_framework ApiException
-        raise NotFound404(detail=error_detail)
 
 
 # TODO: unused remove ???
@@ -179,20 +216,6 @@ def single_example(value, name="Basic Example", **kwargs):
             value=value,
         ),
     ]
-
-
-def basic_bad_request_body(code="error_code", detail="error_detail"):
-    return {
-        "code": code,
-        "detail": detail,
-    }
-
-
-def basic_bad_request(code="error_code", detail="error_detail"):
-    return Response(
-        basic_bad_request_body(code, detail),
-        status.HTTP_400_BAD_REQUEST,
-    )
 
 
 class StrictFieldsMixin(serializers.Serializer):
