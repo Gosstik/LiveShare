@@ -1,0 +1,13 @@
+{
+    "posts": [
+        {
+            "post_id": 1,
+            "author_email": "goshikvash@gmail.com",
+            "title": "1 Egor title",
+            "text": "1 Egor text",
+            "created_at": "2025-03-05T13:07:17Z",
+            "likes_count": 0,
+            "comments_count": 0
+        }
+    ]
+}

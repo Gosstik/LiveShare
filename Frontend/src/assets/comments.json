@@ -1,0 +1,74 @@
+[
+  {
+    "postId": 7,
+    "commentId": 1,
+    "author": "Sofa",
+    "text": "Comment comment comment Comment comment comment Comment comment comment Comment comment comment",
+    "likes": 2,
+    "isLiked": false,
+    "createdAt": "2024-10-16T10:00:00+03:00"
+  },
+  {
+    "postId": 7,
+    "commentId": 2,
+    "author": "Andrew",
+    "text": "Comment comment comment Comment comment comment Comment comment comment Comment comment comment",
+    "likes": 1,
+    "isLiked": false,
+    "createdAt": "2024-10-21T12:00:00+03:00"
+  },
+  {
+    "postId": 7,
+    "commentId": 3,
+    "author": "Vasya",
+    "text": "Comment comment comment Comment comment comment Comment comment comment Comment comment comment",
+    "likes": 3,
+    "isLiked": false,
+    "createdAt": "2024-10-24T06:04:00+03:00"
+  },
+  {
+    "postId": 2,
+    "commentId": 1,
+    "author": "Ivan",
+    "text": "Random text from Ivan",
+    "likes": 0,
+    "isLiked": false,
+    "createdAt": "2024-10-29T20:00:38+03:00"
+  },
+  {
+    "postId": 5,
+    "commentId": 1,
+    "author": "Oleg",
+    "text": "Long text long text long text long text long text long text",
+    "likes": 0,
+    "isLiked": false,
+    "createdAt": "2024-11-01T00:04:20+03:00"
+  },
+  {
+    "postId": 7,
+    "commentId": 4,
+    "author": "Roman",
+    "text": "Short text",
+    "likes": 1,
+    "isLiked": false,
+    "createdAt": "2024-11-05T22:46:15+03:00"
+  },
+  {
+    "postId": 2,
+    "commentId": 2,
+    "author": "Bob",
+    "text": "Short text from Bob",
+    "likes": 1,
+    "isLiked": false,
+    "createdAt": "2024-11-08T14:14:28+03:00"
+  },
+  {
+    "postId": 3,
+    "commentId": 1,
+    "author": "Roman",
+    "text": "Short text from Frank + random random random",
+    "likes": 2,
+    "isLiked": false,
+    "createdAt": "2024-11-13T11:59:44+03:00"
+  }
+]

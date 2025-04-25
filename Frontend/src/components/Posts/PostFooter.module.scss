@@ -1,0 +1,60 @@
+@use "../Properties/Properties.module.scss" as Props;
+
+$propPadding: 5px;
+$propImageSize: 30px;
+
+.footerPostData {
+  display: flex;
+  position: relative;
+
+  width: 100%;
+  height: 40px;
+  margin: 0 10px;
+
+  flex-direction: row;
+
+  .createdAt {
+    display: flex;
+    position: relative;
+
+    margin-bottom: 5px;
+    width: 100%;
+
+    align-self: end;
+    align-items: center;
+    justify-content: flex-start;
+
+    user-select: none;
+
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .props {
+    display: flex;
+    position: relative;
+
+    width: 100%;
+
+    flex-direction: row;
+    justify-content: flex-end;
+    align-self: center;
+    align-items: center;
+
+    .simpleProp {
+      @include Props.property($propPadding);
+
+      img {
+        @include Props.propertyImage($propImageSize);
+      }
+    }
+
+    .countProp {
+      @include Props.countProperty($propPadding);
+
+      img {
+        @include Props.propertyImage($propImageSize);
+      }
+    }
+  }
+}

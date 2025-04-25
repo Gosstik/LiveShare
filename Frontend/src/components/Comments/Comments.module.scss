@@ -1,0 +1,244 @@
+@use "../Consts/Consts.module.scss" as *;
+@use "../SortToggles/SortToggles.module.scss" as SortToggles;
+@use "../Properties/Properties.module.scss" as Props;
+@use "../Posts/Posts.module.scss" as Posts;
+
+$commentPropertyImageSize: 22px;
+
+// CommentForm
+$formSidePadding: 5px;
+$formImageSize: 30px; // for image also
+$inputPadding: 16px;
+
+.commentsSection {
+  display: flex;
+  position: relative;
+
+  height: 100%;
+  margin-top: 5px;
+
+  flex-direction: column;
+  overflow-y: auto;
+
+  flex: 3 0 0;
+}
+
+.commentsHeader {
+  display: flex;
+  position: relative;
+
+  width: 100%;
+  padding: 15px 0px;
+  margin-top: 1px;
+
+  outline: $constBorderWidth solid black;
+  border-radius: Posts.$postBorderRadius Posts.$postBorderRadius 0 0;
+
+  flex-direction: column;
+  justify-content: center;
+
+  .title {
+    display: flex;
+    position: relative;
+
+    align-self: center;
+
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .close {
+    display: flex;
+    position: absolute;
+
+    margin-right: 10px;
+
+    align-self: flex-end;
+
+    img {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+  }
+}
+
+.commentsMain {
+  display: flex;
+  position: relative;
+
+  flex-direction: column;
+
+  overflow-y: auto;
+}
+
+.commentsSortToggles {
+  @include SortToggles.sortToggles($padding: 10px, $toggleNameFontSize: 14px);
+}
+
+.comment {
+  display: flex;
+
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  flex-direction: column;
+  text-align: justify;
+
+  .author {
+    display: flex;
+
+    margin-bottom: 5px;
+
+    border: 0px;
+
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .warning {
+    margin-top: 5px;
+
+    color: red;
+    font-weight: bold;
+  }
+
+  textarea {
+    width: 100%;
+
+    font: 1em/1.25em Arial, Helvetica, sans-serif;
+    word-wrap: break-word;
+    resize: none;
+  }
+
+  .commentText {
+    white-space: pre-line;
+  }
+
+  .removeCommentImg {
+    display: flex;
+    position: absolute;
+
+    right: 0px;
+    width: 20px;
+    height: 20px;
+
+    cursor: pointer;
+  }
+
+  .commentBottom {
+    display: flex;
+    position: relative;
+
+    width: 100%;
+    bottom: 0px;
+
+    .commentCreatedAt {
+      display: flex;
+      position: relative;
+
+      margin-left: 5px;
+      margin-bottom: 2px;
+      width: 100%;
+
+      align-self: end;
+      align-items: center;
+      justify-content: flex-start;
+
+      font-size: 15px;
+      font-weight: bold;
+    }
+  }
+}
+
+.commentProperties {
+  display: flex;
+  position: relative;
+
+  margin-right: 10px;
+  width: 100%;
+
+  flex-direction: row;
+  justify-content: flex-end;
+  align-self: center;
+  align-items: center;
+}
+
+.commentProperty {
+  @include Props.property(0px);
+
+  padding: 7px;
+
+  img {
+    @include Props.propertyImage($commentPropertyImageSize);
+  }
+}
+
+.commentCountProperty {
+  @include Props.countProperty(4px);
+
+  img {
+    @include Props.propertyImage($commentPropertyImageSize);
+  }
+}
+
+.footerCommentForm {
+  display: flex;
+  position: relative;
+
+  padding: $formSidePadding;
+
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+
+  input {
+    display: flex;
+    position: relative;
+
+    width: 100%;
+    padding: 10px $inputPadding;
+
+    border: none;
+    outline: 1px solid black;
+    border-radius: calc(2 * $inputPadding);
+
+    font-size: 16px;
+  }
+
+  input:focus {
+    outline-width: 2px;
+  }
+
+  img {
+    display: flex;
+    position: relative;
+
+    width: $formImageSize;
+    height: $formImageSize;
+    padding-left: $formSidePadding;
+  }
+}
+
+hr {
+  display: flex;
+  clear: both;
+
+  width: 96%;
+  height: 1px;
+  margin: 0px;
+  border-width: 0px;
+
+  background-color: grey;
+  align-self: center;
+}
+
+.apiErrorMessage {
+  display: flex;
+  position: relative;
+
+  font-weight: bold;
+
+  align-self: center;
+}

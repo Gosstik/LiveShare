@@ -1,0 +1,64 @@
+@use "../Properties/Properties.module.scss" as Props;
+
+$propImageSize: 30px;
+
+.postHeader {
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+
+  width: 100%;
+  padding: 15px;
+
+  flex: none; // 0 0 auto
+  align-items: center;
+  align-self: center;
+
+  .title {
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+
+    width: 100%;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .leftProps {
+    display: flex;
+    position: absolute;
+
+    left: 0;
+    padding-left: inherit;
+
+    flex-direction: row;
+    align-items: center;
+
+    user-select: none;
+
+    img {
+      @include Props.propertyImage($propImageSize);
+    }
+  }
+
+  .rightProps {
+    display: flex;
+    position: absolute;
+
+    right: 0;
+    padding-right: inherit;
+
+    flex-direction: row;
+    align-items: center;
+
+    user-select: none;
+
+    img {
+      @include Props.propertyImage($propImageSize);
+    }
+  }
+}

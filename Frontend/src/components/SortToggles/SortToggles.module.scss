@@ -1,0 +1,46 @@
+@mixin sortToggles($padding: 10px, $toggleNameFontSize: 20px) {
+  display: flex;
+  position: relative;
+
+  padding: $padding;
+
+  justify-content: space-around;
+
+  user-select: none;
+
+  .sortToggle {
+    display: flex;
+    position: relative;
+
+    padding-left: calc($toggleNameFontSize / 2);
+    padding-right: calc($toggleNameFontSize / 2);
+
+    border-radius: $toggleNameFontSize;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    background-color: rgb(230, 230, 230);
+
+    &:hover {
+      filter: brightness(85%);
+    }
+
+    img {
+      width: $toggleNameFontSize;
+      height: $toggleNameFontSize;
+      padding: 2px;
+    }
+
+    .toggleName {
+      font-size: $toggleNameFontSize;
+      user-select: none;
+    }
+  }
+}
+
+.inactiveSortToggle {
+  opacity: 0.5;
+  color: rgb(133, 133, 133);
+}

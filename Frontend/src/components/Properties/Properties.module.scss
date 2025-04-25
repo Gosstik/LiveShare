@@ -1,0 +1,44 @@
+@mixin property($padding) {
+  display: flex;
+
+  padding: $padding;
+
+  flex-direction: row;
+  align-items: center;
+
+  user-select: none;
+}
+
+@mixin countProperty($padding, $countMargin: 5px) {
+  @include property($padding);
+
+  padding-right: 0px;
+
+  .count {
+    position: relative;
+    margin: $countMargin;
+  }
+}
+
+@mixin propertyImage($imageSize) {
+  width: $imageSize;
+  height: $imageSize;
+
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(75%);
+  }
+}
+
+.button {
+  &-active {
+    opacity: 100%;
+    cursor: pointer;
+  }
+
+  &-inactive {
+    opacity: 50%;
+    cursor: not-allowed;
+  }
+}

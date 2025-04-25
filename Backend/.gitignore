@@ -1,0 +1,4 @@
+__pycache__
+.venv
+
+liveshare.db.sqlite3

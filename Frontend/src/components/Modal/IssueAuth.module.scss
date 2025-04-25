@@ -1,0 +1,85 @@
+.okButton {
+  display: flex;
+  // position: relative;
+
+  width: 24px;
+  height: 20px;
+  padding: 18px;
+  margin: 10px;
+  border-radius: 20px;
+
+  user-select: none;
+
+  align-self: flex-end;
+
+  background-color: rgb(0, 119, 255);
+  cursor: pointer;
+}
+
+// <!DOCTYPE html>
+// <html lang="ru">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>Navigation Bar с плавным появлением</title>
+//     <link rel="stylesheet" href="styles.css">
+// </head>
+// <body>
+//     <div class="header">
+//         <div class="app-title" id="appTitle">Название приложения</div>
+        
+//         <nav class="nav-bar" id="navBar">
+            // <ul>
+            //     <li><a href="#">Главная</a></li>
+            //     <li><a href="#">О нас</a></li>
+            //     <li><a href="#">Сервисы</a></li>
+            //     <li><a href="#">Контакты</a></li>
+            // </ul>
+//         </nav>
+//     </div>
+
+//     <div class="content">
+//         <h1>Содержимое страницы</h1>
+//         <p>Наведите курсор на название приложения, чтобы увидеть навигационное меню.</p>
+//     </div>
+
+//     <script src="script.js"></script>
+// </body>
+// </html>
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//   const appTitle = document.getElementById('appTitle');
+//   const navBar = document.getElementById('navBar');
+//   let isHovered = false;
+  
+//   // Функция для открытия меню
+//   function openNavBar() {
+//       navBar.classList.add('active');
+//       isHovered = true;
+//   }
+  
+//   // Функция для закрытия меню
+//   function closeNavBar() {
+//       if (!isHovered) {
+//           navBar.classList.remove('active');
+//       }
+//   }
+  
+//   // Слушатели событий для блока с названием приложения
+//   appTitle.addEventListener('mouseenter', openNavBar);
+//   appTitle.addEventListener('mouseleave', function() {
+//       isHovered = false;
+//       setTimeout(closeNavBar, 100);
+//   });
+  
+//   // Слушатели событий для навигационной панели
+//   navBar.addEventListener('mouseenter', function() {
+//       isHovered = true;
+//   });
+  
+//   navBar.addEventListener('mouseleave', function() {
+//       isHovered = false;
+//       setTimeout(closeNavBar, 100);
+//   });
+// });

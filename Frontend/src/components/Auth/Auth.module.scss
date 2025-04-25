@@ -1,0 +1,74 @@
+.mainContent {
+  display: flex;
+  position: relative;
+
+  flex-direction: column;
+  align-items: center;
+}
+
+.appIcon {
+  margin: 20px;
+  border: 2px;
+  border-color: grey;
+  border-radius: 80px;
+  border-style: solid;
+
+  user-select: none;
+}
+
+.mainText {
+  font-weight: bold;
+  margin: 10px;
+}
+
+.oauthButtons {
+  display: flex;
+  position: relative;
+
+  flex-direction: column;
+}
+
+.oauthButton {
+  display: flex;
+  position: relative;
+
+  min-width: 200px;
+  max-width: 200px;
+  height: 60px;
+  margin: 10px;
+
+  border-radius: 15px;
+
+  background: black;
+
+  flex-direction: row;
+  align-items: center;
+
+  cursor: pointer;
+
+  .name {
+    width: 100%;
+
+    text-align: center;
+    font-weight: bold;
+    color: white;
+
+    user-select: none;
+  }
+
+  img {
+    width: 50px;
+    margin: 10px;
+    border-radius: 30px;
+
+    user-select: none;
+  }
+
+  // height: 100%;
+  // margin-top: 5px;
+
+  // flex-direction: column;
+  // overflow-y: auto;
+
+  // flex: 3 0 0;
+}

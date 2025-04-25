@@ -1,0 +1,221 @@
+@use "../Consts/Consts.module.scss" as *;
+@use "../SortToggles/SortToggles.module.scss" as SortToggles;
+@use "../Properties/Properties.module.scss" as Props;
+
+$basicPostSize: 40px;
+$postWidth: 10 * $basicPostSize;
+$postHeight: 16 * $basicPostSize;
+$postBorderRadius: 10px;
+
+$postTextSize: 14px;
+
+$defaultTitleFontSize: 20px;
+
+/*----------------------------------------------------------------------------*/
+
+// Debug
+
+* {
+  outline: 1px solid red !important;
+  // outline-color: red !important;
+  // border: 0 !important;
+}
+
+/*----------------------------------------------------------------------------*/
+
+@mixin postText() {
+  display: flex;
+  position: relative;
+  margin: 0px 0px;
+  padding: 2px 30px;
+
+  overflow-y: auto;
+  scrollbar-width: revert;
+  scrollbar-gutter: stable;
+
+  text-align: justify;
+  font-size: $postTextSize;
+}
+
+/*----------------------------------------------------------------------------*/
+
+.posts {
+  display: flex;
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.postsHeader {
+  width: 100%;
+
+  .postsSortToggles {
+    @include SortToggles.sortToggles($padding: 10px, $toggleNameFontSize: 20px);
+    width: 100%;
+  }
+}
+
+.postsMain {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/*----------------------------------------------------------------------------*/
+
+.post {
+  display: flex;
+  position: relative;
+
+  margin: 10px;
+  width: $postWidth;
+  height: $postHeight;
+
+  flex-direction: column;
+
+  border: $constBorderWidth solid black;
+  border-radius: $postBorderRadius;
+
+  text-align: center;
+}
+
+.postLoadFailedContainer {
+  display: flex;
+  position: relative;
+
+  max-height: 100vh;
+  min-height: 50vh;
+
+  overflow-y: auto;
+
+  justify-content: center;
+  align-items: center;
+
+  .postLoadFailed {
+    display: flex;
+    position: relative;
+
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+.postMain {
+  display: flex;
+  position: relative;
+
+  flex: auto; // 1 1 auto
+  flex-direction: column;
+  overflow-y: auto;
+
+  .text {
+    @include postText();
+  }
+
+  .textBeforeComments {
+    @include postText();
+
+    flex: 1 0 0;
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+.postFooter {
+  display: flex;
+  position: relative;
+
+  flex: none; // 0 0 auto
+}
+
+/*----------------------------------------------------------------------------*/
+
+.postFormTitle {
+  display: flex;
+  position: relative;
+
+  padding: 10px;
+  margin-bottom: 10px;
+
+  justify-self: center;
+}
+
+.postTextInput {
+  margin: 20px;
+
+  .textInputName {
+    display: flex;
+    position: relative;
+
+    justify-self: center;
+  }
+
+  textarea {
+    width: 80%;
+    height: 100px;
+    resize: none;
+  }
+}
+
+@mixin formButton {
+  display: flex;
+  position: relative;
+
+  width: 50px;
+  height: 20px;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 20px;
+
+  user-select: none;
+}
+
+.button {
+  &-active {
+    opacity: 100%;
+    cursor: pointer;
+  }
+
+  &-inactive {
+    opacity: 50%;
+    cursor: not-allowed;
+  }
+}
+
+.postFormButtons {
+  display: flex;
+  position: relative;
+
+  width: 100%;
+  right: 0;
+
+  justify-content: flex-end;
+
+  .formSubmitButton {
+    @include formButton;
+
+    background-color: rgb(0, 119, 255);
+  }
+
+  .formCancelButton {
+    @include formButton;
+
+    background-color: grey;
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+.warning {
+  margin-top: 5px;
+
+  color: red;
+  font-weight: bold;
+}

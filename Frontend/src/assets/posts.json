@@ -1,0 +1,47 @@
+[
+  {
+    "postId": 3,
+    "title": "Paris",
+    "text": "My last summer My last summer My last summer My last summer",
+    "likes": 7,
+    "isLiked": false,
+    "commentsCount": 1,
+    "createdAt": "2024-11-16T10:00:00+03:00"
+  },
+  {
+    "postId": 7,
+    "title": "Dresden",
+    "text": "Dresden has a long history as the capital and royal residence for the Electors and Kings of Saxony, who for centuries furnished the city with cultural and artistic splendor, and was once by personal union the family seat of Polish monarchs. The city was known as the Jewel Box, because of its Baroque and Rococo city centre. The controversial American and British bombing of Dresden towards the end of World War II killed approximately 25,000 people, most of whom were civilians, and destroyed the entire city centre. Overflow content is clipped at the element's padding box. There are no scroll bars, and the clipped content is not visible (i.e., clipped content is hidden), but the content still exists. User agents do not add scroll bars and also do not allow users to view the content outside the clipped region by actions such as dragging on a touch screen or using the scroll wheel on a mouse. The content can be scrolled programmatically (for example, by linking to anchor text, by tabbing to a hidden yet focusable element, or by setting the value of the scrollLeft property or the scrollTo() method), in which case the element box is a scroll container. Overflow content is clipped at the element's overflow clip edge that is defined using the overflow-clip-margin property. As a result, content overflows the element's padding box by the <length> value of overflow-clip-margin or by 0px if not set. Overflow content outside the clipped region is not visible, user agents do not add a scroll bar, and programmatic scrolling is also not supported. No new formatting context is created. To establish a formatting context, use overflow: clip along with display: flow-root. The element box is not a scroll container. value of overflow-clip-margin or by 0px if not set. Overflow content outside the clipped region is not visible, user agents do not add a scroll bar, and programmatic scrolling is also not supported. No new formatting context is created. To establish a formatting context, use overflow: clip along with display: flow-root. The element box is not a scroll container.",
+    "likes": 2,
+    "isLiked": false,
+    "commentsCount": 4,
+    "createdAt": "2024-10-20T13:00:00+03:00"
+  },
+  {
+    "postId": 10,
+    "title": "Kitten",
+    "text": "Almost 3 years old! Almost 3 years old! Almost 3 years old! Almost 3 years old! Almost 3 years old! Almost 3 years old! Almost 3 years old!",
+    "likes": 999,
+    "isLiked": false,
+    "commentsCount": 0,
+    "createdAt": "2024-09-25T23:10:00+03:00"
+  },
+  {
+    "postId": 2,
+    "title": "Sunset",
+    "text": "Such beautiful...",
+    "likes": 9,
+    "isLiked": false,
+    "commentsCount": 2,
+    "createdAt": "2024-11-04T08:34:10+03:00"
+  },
+  {
+    "postId": 5,
+    "title": "Tesla",
+    "text": "Car of my life!",
+    "likes": 11,
+    "isLiked": false,
+    "commentsCount": 1,
+    "createdAt": "2024-11-01T00:00:03+03:00"
+  }
+]

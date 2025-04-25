@@ -1,0 +1,67 @@
+.header {
+  background-color: cornflowerblue;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appTitle {
+  margin-left: 40px;
+
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.buttons {
+  display: flex;
+  position: relative;
+
+  margin-right: 20px;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin specificButton($borderWidth: 0px) {
+  padding: 10px;
+  margin: 10px;
+
+  border-radius: 5px;
+  border-width: $borderWidth;
+
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+.simpleButton {
+  @include specificButton($borderWidth: 1px);
+  background: rgba(0,0,0,0.0);
+}
+
+.createPostButton {
+  @include specificButton();
+  background-color: orange;
+}
+
+.loginButton {
+  @include specificButton();
+  background-color: green;
+}
+
+.logoutButton {
+  @include specificButton();
+  background-color: green;
+}
+
+.loginBlock {
+  display: flex;
+  position: relative;
+
+  margin-right: 10px;
+  margin-left: 10px;
+
+  flex-direction: column;
+  align-items: center;
+}
