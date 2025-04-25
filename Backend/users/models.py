@@ -60,8 +60,8 @@ class User(AbstractUser):
 
 
 class Friends(models.Model):
-    user_id = models.IntegerField()
-    friend_id = models.IntegerField()
+    user = models.ForeignKey(User, db_column="user_id", on_delete=models.CASCADE, related_name="user")
+    friend = models.ForeignKey(User, db_column="friend_id", on_delete=models.CASCADE, related_name="friend")
 
     class Meta:
         db_table = "friends"
@@ -75,8 +75,8 @@ class Friends(models.Model):
 
 
 class FriendInvitation(models.Model):
-    from_user_id = models.IntegerField()
-    to_user_id = models.IntegerField()
+    from_user = models.ForeignKey(User, db_column="from_user_id", on_delete=models.CASCADE, related_name="from_user")
+    to_user = models.ForeignKey(User, db_column="to_user_id", on_delete=models.CASCADE, related_name="to_user")
     created_at = models.DateTimeField(db_default=Now())
 
     class Meta:

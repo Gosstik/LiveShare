@@ -31,7 +31,7 @@ class UsersV1SearchParamsSerializer(utils.StrictFieldsMixin):
     )
 
 
-class UserV1SearchResponseSerializer(utils.StrictFieldsMixin):
+class UserV1SearchResponseSerializer(serializers.Serializer):
     users = serializers.ListField(child=UserResponseSerializer())
 
 

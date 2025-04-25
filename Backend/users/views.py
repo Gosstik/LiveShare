@@ -11,6 +11,7 @@ from drf_spectacular.utils import OpenApiTypes
 import Backend.utils as utils
 
 from users.models import User
+from users.models import Friends
 from users.utils import UsersSearchUserType
 from users.serializers import UsersV1SearchParamsSerializer
 from users.serializers import UserV1SearchResponseSerializer
@@ -71,8 +72,6 @@ class UsersV1Search(APIView):
             request.query_params,
             detail="Request params deserialization failed",
         )
-        # current_user_id
-        # users_type
         if params['users_type'] == UsersSearchUserType.FRIENDS:
             # TODO: get info about current user with jwt ???
             utils.true_or_400(
@@ -80,19 +79,20 @@ class UsersV1Search(APIView):
                 code='no_current_user_id',
                 detail='current_user_id was not provided, but is required because of other filters'
             )
-            # TODO: check users in filter
-            # TODO: order_by users by name
-            response_users = User.objects.filter()
-            # TODO: return response
+            friend_ids = Friends.objects.filter(user_id=params['current_user_id']).values_list('friend_id', flat=True)
+            result_users = User.objects.filter(id__in=friend_ids)
+        else:
+            result_users = User.objects.all()
 
-        # # params['users_type'] == UsersSearchUserType.ALL
-        # User.objects.get()
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(status=status.HTTP_204_NO_CONTENT)
-        # return utils.get_serializer_errors_response(serializer)
-    
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        response_data = {
+            'users': result_users.order_by('first_name', 'last_name')
+        }
+
+        return utils.validate_and_get_response(
+            response_data,
+            UserV1SearchResponseSerializer,
+            verbose_code="Serialization of response failed"
+        )
 
 
 class UserV1FriendsInviteApiView(APIView):
