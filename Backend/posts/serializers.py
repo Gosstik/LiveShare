@@ -105,12 +105,12 @@ class GetPostsByFiltersParamsSerializer(utils.StrictFieldsMixin):
     sort_field_name = serializers.ChoiceField(
         required=False,
         choices=POST_SORT_FIELD_NAMES,
-        default=PostSortFieldName.CREATED_AT.value,
+        default=PostSortFieldName.CREATED_AT,
     )
     sort_type = serializers.ChoiceField(
         required=False,
         choices=utils.SORT_TYPES,
-        default=utils.SortType.DESC.value,
+        default=utils.SortType.DESC,
     )
     post_title_search_str = serializers.CharField(
         required=False
@@ -137,6 +137,8 @@ class GetPostResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsM
         required=True, help_text="Is post liked by current authenticated user"
     )
     comments_count = serializers.IntegerField()
+
+    # TODO: use UserResponseSerializer for author
 
     class Meta:
         model = Post

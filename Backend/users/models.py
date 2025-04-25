@@ -7,6 +7,7 @@ class User(AbstractUser):
     # username = None
 
     email = models.EmailField(unique=True, db_index=True)
+    # TODO: add avatar
     # secret_key = models.CharField(max_length=255, default=get_random_secret_key)
 
     USERNAME_FIELD = 'email'
@@ -29,9 +30,9 @@ class User(AbstractUser):
     # TODO: add phone and age
 
 
-from rest_framework import serializers
+# from rest_framework import serializers
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = '__all__'

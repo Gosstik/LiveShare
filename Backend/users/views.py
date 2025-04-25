@@ -1,6 +1,20 @@
-# from rest_framework import serializers
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import serializers
+
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import OpenApiTypes
+
+import Backend.utils as utils
+
+from users.serializers import UsersV1SearchParamsSerializer
+from users.serializers import UserV1SearchResponseSerializer
+from users.serializers import UsersV1FriendsInviteParamsSerializer
+from users.serializers import UserV1FriendsRemoveParamsSerializer
+
+
 
 # from api.mixins import ApiErrorsMixin, ApiAuthMixin, PublicApiMixin
 
@@ -36,3 +50,60 @@
 #         response = jwt_login(response=response, user=user)
 
 #         return response
+
+
+class UsersV1Search(APIView):
+    @extend_schema(
+        parameters=[
+            UsersV1SearchParamsSerializer,
+        ],
+        responses={
+            status.HTTP_200_OK: UserV1SearchResponseSerializer,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+        },
+    )
+    def get(self, request):
+        # TODO
+        serializer = UserV1SearchResponseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return utils.get_serializer_errors_response(serializer)
+
+
+class UserV1FriendsInviteApiView(APIView):
+    @extend_schema(
+        parameters=[
+            UsersV1FriendsInviteParamsSerializer
+        ],
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+        },
+    )
+    def post(self, request):
+        # TODO
+        serializer = UserV1SearchResponseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return utils.get_serializer_errors_response(serializer)
+
+
+class UserV1FriendsRemoveApiView(APIView):
+    @extend_schema(
+        parameters=[
+            UserV1FriendsRemoveParamsSerializer
+        ],
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+        },
+    )
+    def post(self, request):
+        # TODO
+        serializer = UserV1FriendsRemoveParamsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return utils.get_serializer_errors_response(serializer)

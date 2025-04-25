@@ -45,7 +45,7 @@ def make_comments_by_filters_query(params: dict, request_user: User):
 
     # Sorting
     sort_field_name = params["sort_field_name"]
-    if params["sort_type"] == utils.SortType.DESC.value:
+    if params["sort_type"] == utils.SortType.DESC:
         sort_field_name = f"-{params['sort_field_name']}"
     result_set = result_set.order_by(sort_field_name)
 

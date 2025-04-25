@@ -39,6 +39,12 @@ class MetaEnum(EnumMeta):
             return False
         return True
 
+    def __getattribute__(cls, name):
+        value = super().__getattribute__(name)
+        if isinstance(value, cls):
+            value = value.value
+        return value
+
 
 class EnumWithContains(Enum, metaclass=MetaEnum):
     pass
@@ -50,6 +56,11 @@ class SortType(utils.EnumWithContains):
 
 
 SORT_TYPES = [(val.value, val.name) for val in SortType]
+
+
+class BadRequestSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    message = serializers.CharField()
 
 
 def parse_datetime(datetime_str):
@@ -68,9 +79,10 @@ def validate_data(
     response_data,
     serializer_class: serializers.Serializer.__class__,
     raise_exception=True,
-    verbose_code=None
+    verbose_code=None,
+    partial=False,
 ):
-    serializer = serializer_class(data=response_data)
+    serializer = serializer_class(data=response_data, partial=partial)
     serializer.is_valid(raise_exception=raise_exception)
     if not serializer.is_valid():
         error = ValidationError(code=verbose_code, detail=serializer.errors)
@@ -87,12 +99,14 @@ def validate_and_get_response(
     status_code=status.HTTP_200_OK,
     raise_exception=True,
     verbose_code=None,
+    partial=False,
 ):
     validated_data = validate_data(
         response_data,
         serializer_class,
         raise_exception=raise_exception,
         verbose_code=verbose_code,
+        partial=partial,
     )
     return Response(validated_data, status=status_code)
 
@@ -101,6 +115,7 @@ def get_object_or_404(get_query, error_detail):
     try:
         return get_query()
     except ObjectDoesNotExist:
+        # TODO: replace it with rest_framework ApiException
         raise NotFound404(detail=error_detail)
 
 
@@ -219,13 +234,14 @@ def get_serializer_errors_response(serializer: serializers.Serializer, detail=No
 
 
 def deserialize_or_400(
-    serializer_class: serializers.Serializer.__class__,
     data,
-    detail: str,
+    serializer_class: serializers.Serializer.__class__,
+    detail: str = None,
+    partial: bool = False,
 ):
-    serializer = serializer_class(data=data)
+    serializer = serializer_class(data=data, partial=partial)
     if not serializer.is_valid():
-        return utils.get_serializer_errors_response(
+        return get_serializer_errors_response(
             serializer, detail=detail
         )
     return serializer.validated_data

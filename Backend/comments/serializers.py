@@ -95,12 +95,12 @@ class CommentsByFiltersParamsSerializer(utils.StrictFieldsMixin):
     sort_field_name = serializers.ChoiceField(
         required=False,
         choices=COMMENT_SORT_FIELD_NAMES,
-        default=CommentsSortFieldName.CREATED_AT.value,
+        default=CommentsSortFieldName.CREATED_AT,
     )
     sort_type = serializers.ChoiceField(
         required=False,
         choices=utils.SORT_TYPES,
-        default=utils.SortType.DESC.value,
+        default=utils.SortType.DESC,
     )
 
 
