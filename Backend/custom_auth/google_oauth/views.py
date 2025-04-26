@@ -24,7 +24,7 @@ from custom_auth.google_oauth.service import GoogleRawLoginFlowService
 from custom_auth.google_oauth.serializers import GoogleOAuthCallbackParamsSerializer
 
 from custom_auth.utils import PublicApiMixin
-from custom_auth.utils import login_or_refresh_by_cookies, login_or_refresh_by_cookies_django
+from custom_auth.utils import set_new_auth_cookies
 from users.models import User
 
 
@@ -103,7 +103,7 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
         # login(request, user) # TODO: remove
 
         response = redirect(settings.AUTH_REDIRECT_FRONTEND_URL)
-        return login_or_refresh_by_cookies_django(user, response)
+        return set_new_auth_cookies(user, response)
 
     ############################################################################
     ### Internals

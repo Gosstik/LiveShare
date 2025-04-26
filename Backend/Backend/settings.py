@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",  # TODO: remove
     "drf_spectacular",
     "corsheaders",  # TODO
@@ -181,7 +182,9 @@ GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH2_CLIENT_SECRET")
 GOOGLE_OAUTH2_CALLBACK_PATH = os.environ.get("GOOGLE_OAUTH2_CALLBACK_PATH")
 
 AUTH_REDIRECT_FRONTEND_PATH = os.environ.get("AUTH_REDIRECT_FRONTEND_PATH")
-AUTH_REDIRECT_FRONTEND_URL = f"{FRONTEND_BASE_URL}/{AUTH_REDIRECT_FRONTEND_PATH}"
+AUTH_REDIRECT_FRONTEND_URL = (
+    f"{FRONTEND_BASE_URL}/{AUTH_REDIRECT_FRONTEND_PATH}"
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -228,7 +231,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     # TODO: add dev and prod
     "http://localhost:3000",
-    "http://localhost:4200",  # TODO: remove (it is for angular)
     "http://localhost",
     # TODO: add VM IP
 ]
@@ -258,6 +260,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "custom_auth.authentication.CookieJWTAuthentication",
     ),
+    # TODO: uncomment after creating auth
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    # ],
     # Is used as fallback in serializers.DateTimeField()
     "DATETIME_INPUT_FORMATS": [rest_framework.ISO_8601],
     "DATETIME_FORMATS": [rest_framework.ISO_8601],
@@ -269,16 +275,17 @@ SIMPLE_JWT = {
     "AUTH_ACCESS_TOKEN": "liveshare_access_token",
     "AUTH_REFRESH_TOKEN": "liveshare_refresh_token",
     "AUTH_COOKIE_DOMAIN": None,  # TODO: A string like "example.com", or None for standard domain cookie.
-    "AUTH_COOKIE_SECURE": False,
-    "AUTH_COOKIE_HTTP_ONLY": True,
-    "AUTH_COOKIE_PATH": "/",  # TODO: The path of the auth cookie.
+    "AUTH_COOKIE_SECURE": False,  # TODO: enable for prod
+    "AUTH_COOKIE_HTTP_ONLY": True,  # Protection from XSS
+    # Protection from CSRF (works only on modern browsers)
     "AUTH_COOKIE_SAMESITE": "Strict",
+    "AUTH_COOKIE_PATH": "/",  # TODO: The path of the auth cookie.
     ### Predefined JWT claims.
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    # 'ROTATE_REFRESH_TOKENS': False, # TODO: True
-    # 'BLACKLIST_AFTER_ROTATION': False,
+    # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
+    "ROTATE_REFRESH_TOKENS": True,
+    'BLACKLIST_AFTER_ROTATION': True,
     # 'UPDATE_LAST_LOGIN': False,
 }
 
@@ -292,9 +299,3 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 4,
     }
 }
-
-# JWT_AUTH = {
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': timedelta(days=2),
-#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
-# }
