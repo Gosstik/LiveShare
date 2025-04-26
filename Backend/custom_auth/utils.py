@@ -10,6 +10,8 @@ from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from Backend.exceptions import NotFound404
+
 from custom_auth.authentication import CookieJWTAuthentication
 from users.models import User
 
@@ -55,10 +57,9 @@ class ApiErrorsMixin:
 
 ### Cookies
 
-def _get_tokens_for_user(user):
+def _generate_new_tokens_for_user(user: User):
     refresh = RefreshToken.for_user(user)
 
-    print(f"!!! refresh.token_type={refresh.token_type}")
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
@@ -85,14 +86,14 @@ def add_auth_cookies(response: HttpResponse | Response, tokens):
 
 
 
-def set_new_auth_cookies(user, response: HttpResponse) -> HttpResponse:
+def set_new_auth_cookies(user: User, response: HttpResponse) -> HttpResponse:
     if not user.is_active:
-        return HttpResponse(
-            "This account is not active",
-            status=status.HTTP_404_NOT_FOUND,
+        raise NotFound404(
+            code="account_is_not_active",
+            detail=f"failed to set new auth tokens: account for user={user} is not active",
         )
 
-    tokens = _get_tokens_for_user(user)
+    tokens = _generate_new_tokens_for_user(user)
     add_auth_cookies(response, tokens)
 
     return response

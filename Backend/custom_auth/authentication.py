@@ -10,21 +10,6 @@ from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions
 
 
-def generate_jwt_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-
-    print(f"!!! generate_tokens_for_user")
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
-
-
-def update_jwt_tokens():
-    print(f"!!! update_jwt_tokens")
-    pass
-
-
 def enforce_csrf(request):
     """
     Enforce CSRF validation.

@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
+import Cookies, { get } from 'js-cookie';
 import { authBackendUrl } from "../../api/urls";
 
 // /**
@@ -106,19 +107,29 @@ export function AuthProvider({ children }) {
       //   method: "GET",
       //   credentials: "include",
       // });
-      const res = await fetch(`http://localhost:8000/auth/login/check`, {
+      let res = await fetch(`http://localhost:8000/auth/login/check`, {
         method: "GET",
         credentials: "include",
         // credentials: "same-origin",
       });
 
       if (res.status === 401) {
+        const headers = {
+            'x-csrftoken': Cookies.get('csrftoken'),
+        }
         // TODO: add expiration check before sending
         await fetch(`http://localhost:8000/auth/token/refresh`, {
           method: "POST",
+          headers: headers,
           credentials: "include",
           // credentials: "same-origin",
         });
+
+        res = await fetch(`http://localhost:8000/auth/login/check`, {
+            method: "GET",
+            credentials: "include",
+            // credentials: "same-origin",
+          });
       }
 
       console.log(`logged_in res=${JSON.stringify(res)}`);

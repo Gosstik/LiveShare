@@ -50,5 +50,5 @@ Cookies
   - Authorized redirect URIs: `http://localhost:8000/auth/oauth/google/callback` (server side) or `http://localhost:3000/auth/callback` (client side)
 - Wait
 
-Guide for passing jwt as cookies in django: <https://habr.com/ru/articles/873918/>
+Guide for passing jwt as cookies with csrf in django: <https://habr.com/ru/articles/873918/>
 Auth with login and password: <https://habr.com/ru/articles/793058/>

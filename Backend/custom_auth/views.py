@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -27,11 +28,13 @@ from custom_auth.utils import (
     add_auth_cookies,
 )
 from custom_auth.authentication import CookieJWTAuthentication
+from custom_auth.csrf import enforce_csrf
 
 
 class LoginCheck(APIView, PublicApiMixin, ApiErrorsMixin):
     def get(self, request):
         # TODO: add data
+        # TODO: add access token expiration datetime to response
         print("!!! Start LoginCheck")
         # print("!!! request.COOKIES=", request.COOKIES)
         # print("!!! request.headers=", request.headers)
@@ -56,6 +59,7 @@ class LoginCheck(APIView, PublicApiMixin, ApiErrorsMixin):
 class AuthTokenRefreshApiView(CookieJWTAuthentication, TokenRefreshView):
     # TODO: @extended_schema
     # TODO: enforce csrf
+    @method_decorator(enforce_csrf)
     def post(self, request: Request, *args, **kwargs):
         current_refresh_token = (
             request.COOKIES.get(settings.SIMPLE_JWT["AUTH_REFRESH_TOKEN"])

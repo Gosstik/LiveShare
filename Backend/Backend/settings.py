@@ -230,9 +230,12 @@ AUTH_USER_MODEL = "users.User"
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     # TODO: add dev and prod
-    "http://localhost:3000",
-    "http://localhost",
+    FRONTEND_BASE_URL,
     # TODO: add VM IP
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    FRONTEND_BASE_URL,
 ]
 
 # REST_FRAMEWORK = {
@@ -285,7 +288,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
     "ROTATE_REFRESH_TOKENS": True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    "BLACKLIST_AFTER_ROTATION": True,
     # 'UPDATE_LAST_LOGIN': False,
 }
 

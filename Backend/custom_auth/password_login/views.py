@@ -11,17 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.middleware import csrf
 
-from custom_auth.utils import login_or_refresh_by_cookies
-
-
-def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
-
+# TODO
 
 class PasswordLogin(APIView):
     def post(self, request):
@@ -37,5 +27,5 @@ class PasswordLogin(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        response = login_or_refresh_by_cookies(user, response)
+        # response = login_or_refresh_by_cookies(user, response)
         return response
