@@ -284,7 +284,7 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_SAMESITE": "Strict",
     "AUTH_COOKIE_PATH": "/",  # TODO: The path of the auth cookie.
     ### Predefined JWT claims.
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
     "ROTATE_REFRESH_TOKENS": True,

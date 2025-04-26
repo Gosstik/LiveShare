@@ -110,7 +110,7 @@ export function AuthProvider({ children }) {
       const headers = {
         "x-csrftoken": Cookies.get("csrftoken"),
       };
-      let res = await fetch(`http://localhost:8000/auth/login/check`, {
+      let res = await fetch(`http://localhost:8000/auth/user/info`, {
         method: "GET",
         headers: headers,
         credentials: "include",
@@ -126,7 +126,7 @@ export function AuthProvider({ children }) {
           // credentials: "same-origin",
         });
 
-        res = await fetch(`http://localhost:8000/auth/login/check`, {
+        res = await fetch(`http://localhost:8000/auth/user/info`, {
           method: "GET",
           headers: headers,
           credentials: "include",
@@ -134,18 +134,21 @@ export function AuthProvider({ children }) {
         });
       }
 
+      const isAuthenticated = res.status === 200
       console.log(`logged_in res=${JSON.stringify(res)}`);
       const res_json = await res.json();
       console.log(`logged_in res_json=${res_json}`);
 
-      const { is_authenticated, user } = res_json;
+      // const { is_authenticated, user } = res_json;
+      const { access_token_expiration, user } = res_json;
+      console.log(`!!! access_token_expiration=${JSON.stringify(access_token_expiration)}`)
 
       console.log(
-        `!!! is_authenticated fetched: ${JSON.stringify(is_authenticated)}`
+        `!!! is_authenticated fetched: ${JSON.stringify(isAuthenticated)}`
       );
       console.log(`!!! logged_in fetched (user): ${JSON.stringify(user)}`);
       // TODO
-      setLoggedIn(is_authenticated);
+      setLoggedIn(isAuthenticated);
       setUser(user);
     } catch (err) {
       console.error(err);

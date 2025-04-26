@@ -12,7 +12,7 @@ class CookieJWTAuthentication(JWTAuthentication):
         header = self.get_header(request)
 
         if header is None:
-            raw_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN']) or None
+            raw_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN'])
         else:
             # Fallback to get token from headers instead of cookie
             raw_token = self.get_raw_token(header)

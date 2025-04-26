@@ -9,6 +9,7 @@ from users.utils import USERS_SEARCH_USER_TYPES
 
 class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
     id = serializers.IntegerField()
+    email = serializers.CharField()
     displayed_name = serializers.CharField()
 
     class Meta:
@@ -19,6 +20,7 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
             'first_name',
             'last_name',
             'displayed_name',
+            # TODO: add profile_icon
         ]
 
 
