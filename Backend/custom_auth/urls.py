@@ -1,7 +1,5 @@
 from django.urls import path, include
 
-from custom_auth.google_oauth.views import GoogleOAuthRedirect
-
 from custom_auth.views import LoginCheck
 from custom_auth.views import AuthTokenRefreshApiView
 from custom_auth.views import LogoutApiView

@@ -23,8 +23,8 @@ from users.models import User
 class AuthApiMixin:
     authentication_classes = (CookieJWTAuthentication, )
     # authentication_classes = ()
-    # permission_classes = (IsAuthenticated, ) # TODO: fix
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, ) # TODO: fix
+    # permission_classes = ()
 
 
 class PublicApiMixin:

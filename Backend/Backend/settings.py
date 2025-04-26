@@ -264,9 +264,9 @@ REST_FRAMEWORK = {
         "custom_auth.authentication.CookieJWTAuthentication",
     ),
     # TODO: uncomment after creating auth
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.IsAuthenticated",
-    # ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     # Is used as fallback in serializers.DateTimeField()
     "DATETIME_INPUT_FORMATS": [rest_framework.ISO_8601],
     "DATETIME_FORMATS": [rest_framework.ISO_8601],

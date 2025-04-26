@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
 import style from "./Header.module.scss";
@@ -31,11 +32,16 @@ export default function Header() {
     if (loggedIn) {
       try {
         // TODO: make client
+        // TODO: add csrf header
+        const headers = {
+          "x-csrftoken": Cookies.get("csrftoken"),
+        };
         await fetch(
           // `${authBackendUrl}/auth/logout`,
           `http://localhost:8000/auth/logout`,
           {
             method: "POST",
+            headers,
             credentials: "include",
           }
         );
@@ -70,12 +76,8 @@ export default function Header() {
         )}
         {loggedIn && (
           <div className={style.loginBlock}>
-            <div>
-              Logged as:
-            </div>
-            <div>
-              {user.email}
-            </div>
+            <div>Logged as:</div>
+            <div>{user.email}</div>
           </div>
         )}
       </div>

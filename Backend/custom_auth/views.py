@@ -31,8 +31,8 @@ from custom_auth.authentication import CookieJWTAuthentication
 from custom_auth.csrf import enforce_csrf
 
 
-class LoginCheck(APIView, PublicApiMixin, ApiErrorsMixin):
-    def get(self, request):
+class LoginCheck(APIView):
+    def get(self, request: Request):
         # TODO: add data
         # TODO: add access token expiration datetime to response
         print("!!! Start LoginCheck")
@@ -58,7 +58,6 @@ class LoginCheck(APIView, PublicApiMixin, ApiErrorsMixin):
 
 class AuthTokenRefreshApiView(CookieJWTAuthentication, TokenRefreshView):
     # TODO: @extended_schema
-    # TODO: enforce csrf
     @method_decorator(enforce_csrf)
     def post(self, request: Request, *args, **kwargs):
         current_refresh_token = (

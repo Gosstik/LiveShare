@@ -1,29 +1,13 @@
-from django.contrib import auth
 from django.conf import settings
-
-from django.utils.deprecation import MiddlewareMixin
+from django.utils.decorators import method_decorator
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.authentication import CSRFCheck
 
-from rest_framework import exceptions
-
-
-def enforce_csrf(request):
-    """
-    Enforce CSRF validation.
-    """
-    check = CSRFCheck(request) # TODO: verify !!!
-    # populates request.META['CSRF_COOKIE'], which is used in process_view()
-    check.process_request(request)
-    reason = check.process_view(request, None, (), {})
-    if reason:
-        raise exceptions.PermissionDenied(f'CSRF check failed: {reason}')
+from custom_auth.csrf import enforce_csrf
 
 
 class CookieJWTAuthentication(JWTAuthentication):
-    # TODO: enforce csrf decorator
+    @method_decorator(enforce_csrf)
     def authenticate(self, request):
         header = self.get_header(request)
 
@@ -37,5 +21,4 @@ class CookieJWTAuthentication(JWTAuthentication):
             return None
 
         validated_token = self.get_validated_token(raw_token)
-        # enforce_csrf(request)
         return self.get_user(validated_token), validated_token
