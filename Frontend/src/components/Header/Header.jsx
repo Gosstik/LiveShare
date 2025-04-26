@@ -7,8 +7,10 @@ import style from "./Header.module.scss";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
 import { authBackendUrl } from "../../api/urls";
+import defaultAvatar from "../../images/default-avatar.png";
 
-function LoginButton() {}
+
+// function LoginButton() {}
 
 export default function Header() {
   const { user, loggedIn, checkLoginState } = useContext(AuthContext);
@@ -75,10 +77,18 @@ export default function Header() {
           </button>
         )}
         {loggedIn && (
-          <div className={style.loginBlock}>
-            <div>Logged as:</div>
-            <div>{user.email}</div>
-          </div>
+          <>
+            <img
+              src={user?.profile_icon_url || defaultAvatar}
+              onError={(e) => {
+                console.error("Error loading profile icon:", e);
+                e.target.src = defaultAvatar;
+              }}
+              alt="Profile"
+              className={style.profileIcon}
+            />
+            <div>{user?.displayed_name || "Guest"}</div>
+          </>
         )}
       </div>
     </header>
