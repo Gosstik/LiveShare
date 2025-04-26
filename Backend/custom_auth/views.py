@@ -25,8 +25,8 @@ from custom_auth.utils import (
     ApiErrorsMixin,
     PublicApiMixin,
     AuthApiMixin,
-    add_auth_cookies,
 )
+from custom_auth.cookies import add_auth_cookies
 from custom_auth.authentication import CookieJWTAuthentication
 from custom_auth.csrf import enforce_csrf
 

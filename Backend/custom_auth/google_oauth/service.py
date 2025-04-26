@@ -29,8 +29,6 @@ class GoogleAccessTokens:
 
 
 class GoogleRawLoginFlowService:
-    # API_URI = reverse_lazy("api:google-oauth2:login-raw:callback-raw")
-
     GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
     GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
     GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"

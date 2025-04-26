@@ -1,21 +1,12 @@
-import json
-
 from django.conf import settings
-from django.contrib.auth import login
 from django.shortcuts import redirect
-from django.http import HttpResponse
 
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.views import APIView
 
 from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
-from drf_spectacular.utils import OpenApiExample
 from drf_spectacular.utils import OpenApiResponse
-from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
 from Backend.exceptions import BadRequest400
@@ -24,7 +15,7 @@ from custom_auth.google_oauth.service import GoogleRawLoginFlowService
 from custom_auth.google_oauth.serializers import GoogleOAuthCallbackParamsSerializer
 
 from custom_auth.utils import PublicApiMixin
-from custom_auth.utils import set_new_auth_cookies
+from custom_auth.cookies import set_new_auth_cookies
 from users.models import User
 
 
@@ -32,7 +23,7 @@ class GoogleOAuthRedirect(PublicApiMixin, APIView):
     @extend_schema(
         description="Initiates Google OAuth2 flow by redirecting to Google's authorization page",
         responses={
-            302: OpenApiResponse(
+            status.HTTP_302_FOUND: OpenApiResponse(
                 response=None,
                 description="Redirect to Google's authorization page with account selection",
             ),
@@ -52,7 +43,7 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
             GoogleOAuthCallbackParamsSerializer,
         ],
         responses={
-            302: OpenApiResponse(
+            status.HTTP_302_FOUND: OpenApiResponse(
                 response=None,
                 description=(
                     "Redirect with authentication cookies.\n\n"
@@ -62,7 +53,7 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
                     f"- `Set-Cookie`: {settings.SIMPLE_JWT['AUTH_REFRESH_TOKEN']}=[value]; HttpOnly; Path=/"
                 )
             ),
-            400: utils.BadRequestSerializer,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
         },
     )
     def get(self, request: Request):
@@ -98,9 +89,6 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
 
         # TODO: what if name changed? What if it is omitted?
         # We need to update name
-
-        # TODO: replace with jwt login
-        # login(request, user) # TODO: remove
 
         response = redirect(settings.AUTH_REDIRECT_FRONTEND_URL)
         return set_new_auth_cookies(user, response)
