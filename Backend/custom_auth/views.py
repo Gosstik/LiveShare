@@ -9,20 +9,14 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework_simplejwt.tokens import AccessToken
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
-from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
 from users.serializers import UserResponseSerializer
 
 from custom_auth.serializers import AuthUserInfoResponseSerializer
-
 from custom_auth.cookies import add_auth_cookies
 from custom_auth.authentication import CookieJWTAuthentication
 from custom_auth.csrf import enforce_csrf
@@ -41,12 +35,10 @@ class AuthUserInfoApiView(APIView):
             "access_token_expiration": access_token_expiration,
             "user": user_data,
         }
-
-        response = utils.validate_and_get_response(
+        return utils.validate_and_get_response(
             response_data,
             AuthUserInfoResponseSerializer,
         )
-        return response
 
     def _get_access_token_expiration_data(self, request: Request):
         raw_access_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN'])
