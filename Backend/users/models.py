@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.functions import Now
 from django.contrib.auth.models import AbstractUser
@@ -8,8 +9,22 @@ class User(AbstractUser):
     # username = None
 
     email = models.EmailField(unique=True, db_index=True)
-    # TODO: add avatar
-    # secret_key = models.CharField(max_length=255, default=get_random_secret_key)
+    profile_icon = models.ImageField(
+        upload_to='profile_icons',
+        null=True,
+        blank=True,
+        verbose_name='Profile Icon',
+        help_text='User profile picture'
+    )
+
+    @property
+    def profile_icon_url(self):
+        if self.profile_icon:
+            try:
+                return f"{settings.BACKEND_BASE_URL}{self.profile_icon.url}"
+            except Exception as e:
+                print(f"Error getting profile_icon_url: {str(e)}")
+        return None
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'username']

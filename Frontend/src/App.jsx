@@ -20,6 +20,7 @@ import PostRouterWrapper from "./components/Posts/PostRouterWrapper";
 import NotFound from "./components/NotFound/NotFound";
 import Home from "./components/Home/Home";
 import Auth from "./components/Auth/Auth";
+import TestComponent from "./components/TestComponent/TestComponent";
 // import AuthRedirect from "./components/Auth/AuthRedirect";
 import AuthCallback from "./components/Auth/AuthCallback";
 // import NavigationBar from "./components/NavigationBar/NavigationBar"
@@ -49,6 +50,8 @@ function App() {
             <Route path={postsUrl} element={<Posts />}></Route>
 
             <Route path={postUrl} element={<PostRouterWrapper />}></Route>
+
+            <Route path={"/test"} element={<TestComponent />}></Route>
 
             <Route
               path="*"

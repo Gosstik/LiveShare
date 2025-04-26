@@ -11,6 +11,7 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
     id = serializers.IntegerField()
     email = serializers.CharField()
     displayed_name = serializers.CharField()
+    profile_icon_url = serializers.CharField()
 
     class Meta:
         model = User
@@ -20,7 +21,7 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
             'first_name',
             'last_name',
             'displayed_name',
-            # TODO: add profile_icon
+            'profile_icon_url',
         ]
 
 

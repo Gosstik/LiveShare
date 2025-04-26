@@ -128,14 +128,12 @@ def validate_data(
     partial=False,
 ):
     serializer = serializer_class(data=response_data, partial=partial)
-    serializer.is_valid(raise_exception=raise_exception)
-    if not serializer.is_valid():
+    is_valid = serializer.is_valid(raise_exception=raise_exception)
+    if not is_valid:
         error = ValidationError(code=verbose_code, detail=serializer.errors)
-        if raise_exception:
-            raise error
-        else:
-            print(f"ERROR: {error}")
+        print(f"ERROR: {error}")
     return serializer.validated_data
+    # return serializer.data
 
 
 def validate_and_get_response(
@@ -221,6 +219,7 @@ def single_example(value, name="Basic Example", **kwargs):
 class StrictFieldsMixin(serializers.Serializer):
     """
     Serializer mixin to forbid additional properties in deserialization
+    and ensure all fields are included in serialization
     """
 
     def to_internal_value(self, data):
@@ -231,13 +230,21 @@ class StrictFieldsMixin(serializers.Serializer):
         if unknown_fields:
             raise serializers.ValidationError(
                 {
-                    # f"Deserialization of field '{key}' failed": f"Additional properties are not allowed, class={self.__class__.__name__}"
                     key: f"Additional properties are not allowed, class={self.__class__.__name__}"
                     for key in unknown_fields
                 }
             )
 
         return super().to_internal_value(data)
+
+    def to_representation(self, instance):
+        # Get all fields including method fields
+        representation = super().to_representation(instance)
+        # Ensure all declared fields are included
+        for field_name in self.fields.keys():
+            if field_name not in representation:
+                representation[field_name] = self.fields[field_name].get_attribute(instance)
+        return representation
 
 
 class SerializerErrorsSerializer(StrictFieldsMixin):

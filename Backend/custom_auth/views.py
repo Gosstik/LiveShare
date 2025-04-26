@@ -1,18 +1,14 @@
 import datetime as dt
 
 from django.conf import settings
-from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework_simplejwt.views import TokenVerifyView
 from rest_framework_simplejwt.tokens import AccessToken
 
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,11 +23,6 @@ from users.serializers import UserResponseSerializer
 
 from custom_auth.serializers import AuthUserInfoResponseSerializer
 
-from custom_auth.utils import (
-    ApiErrorsMixin,
-    PublicApiMixin,
-    AuthApiMixin,
-)
 from custom_auth.cookies import add_auth_cookies
 from custom_auth.authentication import CookieJWTAuthentication
 from custom_auth.csrf import enforce_csrf
@@ -51,10 +42,11 @@ class AuthUserInfoApiView(APIView):
             "user": user_data,
         }
 
-        return utils.validate_and_get_response(
+        response = utils.validate_and_get_response(
             response_data,
             AuthUserInfoResponseSerializer,
         )
+        return response
 
     def _get_access_token_expiration_data(self, request: Request):
         raw_access_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN'])

@@ -8,6 +8,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Сайт, где можно посмотреть доступные иконки гугла: <https://fonts.google.com/icons?icon.set=Material+Icons>
 - Использование библиотеки: <https://mui.com/joy-ui/integrations/icon-libraries/>
 
+### URLs
+
+- `/` --- Home
+- `/explore`
+- `/friends`
+- `/post/create`
+- `/post/edit`
+- `/post/{post_id}`
+- `/auth/signin`
+- `/auth/signup`
+- `/auth/signout`
+- `/not_found`
+
 ## TODO
 
 - Дизайн для кнопки загрузки

@@ -36,6 +36,7 @@ export class UserData {
     this.email = "";
     this.first_name = "";
     this.last_name = "";
+    this.profile_icon = null;
   }
 }
 

@@ -1,5 +1,8 @@
+import os
 from django.conf import settings
 from django.shortcuts import redirect
+from django.core.files.base import ContentFile
+import requests
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -17,6 +20,12 @@ from custom_auth.google_oauth.serializers import GoogleOAuthCallbackParamsSerial
 from custom_auth.utils import PublicApiMixin
 from custom_auth.cookies import set_new_auth_cookies
 from users.models import User
+
+
+# Ensure media/profile_icons directory exists
+media_root = settings.MEDIA_ROOT
+profile_icons_dir = os.path.join(media_root, 'profile_icons')
+os.makedirs(profile_icons_dir, exist_ok=True)
 
 
 class GoogleOAuthRedirect(PublicApiMixin, APIView):
@@ -76,10 +85,13 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
 
         user, created = User.objects.get_or_create(
             email=id_token_decoded["email"],
-            first_name=id_token_decoded['given_name'],
-            last_name=id_token_decoded['family_name'],
-            # TODO: add fields
+            defaults={
+                'first_name': id_token_decoded['given_name'],
+                'last_name': id_token_decoded.get('family_name', ''),
+            }
         )
+
+        self._save_profile_icon(id_token_decoded, user)
 
         if user is None:
             raise BadRequest400(
@@ -135,3 +147,26 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
                 code='csrf_oauth_failed',
                 detail='CSRF check for oauth failed: session state differs params state'
             )
+
+    def _save_profile_icon(self, id_token_decoded, user: User):
+        if 'picture' not in id_token_decoded:
+            return
+        try:
+            # Download and save the image
+            response = requests.get(id_token_decoded['picture'], stream=True)
+            if response.status_code == 200:
+                # Delete old file if exists
+                if user.profile_icon:
+                    old_file_path = os.path.join(settings.MEDIA_ROOT, str(user.profile_icon))
+                    if os.path.exists(old_file_path):
+                        os.remove(old_file_path)
+                    user.profile_icon = None
+                    user.save()
+
+                # Save new file
+                image_content = ContentFile(response.content)
+                filename = f"profile_{user.id}.jpg"
+                user.profile_icon.save(filename, image_content, save=True)
+                print(f"!!! Profile icon saved to: {user.profile_icon.path}")
+        except Exception as e:
+            print(f"Failed to save profile icon for user={user.id}: {str(e)}")
