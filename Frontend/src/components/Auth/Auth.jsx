@@ -97,13 +97,20 @@ export default function Auth() {
     try {
       console.log(1);
       // const data = await fetch(`${authBackendUrl}/api/auth/oauth/google`); # TODO: remove
-      const data = await fetch(`http://localhost:8000/auth/oauth/google/url`); // Django
-      console.log(`!!! received: JSON.stringify(data)=${JSON.stringify(data)}`);
-      const body = await data.json();
-      console.log(2);
-      console.log(`!!! JSON.stringify(body)=${JSON.stringify(body)}`);
-      console.log(3);
-      window.location.assign(body.url);
+    //   const data = await fetch(`http://localhost:8000/auth/oauth/google/url`); // Django
+      window.location.assign(`http://localhost:8000/auth/oauth/google/redirect`);
+
+      //// Previous flow
+      // const data = await fetch(`http://localhost:8000/auth/oauth/google/redirect`); // Django
+
+      // console.log(`####### returned redirect`)
+      // console.log(`####### data=${JSON.stringify(data)}`)
+      // console.log(`!!! received: JSON.stringify(data)=${JSON.stringify(data)}`);
+      // const body = await data.json();
+      // console.log(2);
+      // console.log(`!!! JSON.stringify(body)=${JSON.stringify(body)}`);
+      // console.log(3);
+      // window.location.assign(body.url);
     } catch (err) {
       console.log("failed to make request to api/auth/oauth/google");
       console.log(err);

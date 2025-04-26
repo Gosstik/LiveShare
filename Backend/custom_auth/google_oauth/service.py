@@ -48,24 +48,19 @@ class GoogleRawLoginFlowService:
         return state
 
     def _get_redirect_uri(self):
-        host = settings.GOOGLE_OAUTH2_CALLBACK_HOST
-        path = settings.GOOGLE_OAUTH2_REDIRECT_PATH
-        # domain = settings.BASE_BACKEND_URL # TODO: remove
-        # api_uri = self.API_URI
+        host = settings.BACKEND_BASE_URL
+        path = settings.GOOGLE_OAUTH2_CALLBACK_PATH
         return f"{host}/{path}"
 
     def get_authorization_url(self):
         redirect_uri = self._get_redirect_uri()
-
-        state = self._generate_state_session_token() # TODO: remove
-
+        state = self._generate_state_session_token()
         params = {
             "response_type": "code",
             "client_id": self._credentials.client_id,
             "redirect_uri": redirect_uri,
             "scope": " ".join(self.SCOPES),
             "state": state,
-            # "state": "standard_oauth",
             "access_type": "offline",
             "include_granted_scopes": "true",
             "prompt": "select_account",
@@ -77,7 +72,7 @@ class GoogleRawLoginFlowService:
 
         return authorization_url, state
 
-    def get_tokens(self, *, code: str) -> GoogleAccessTokens:
+    def get_tokens_by_code(self, *, code: str) -> GoogleAccessTokens:
         redirect_uri = self._get_redirect_uri()
 
         # Reference: https://developers.google.com/identity/protocols/oauth2/web-server#obtainingaccesstokens
@@ -99,6 +94,7 @@ class GoogleRawLoginFlowService:
         if not response.ok:
             raise RuntimeError("Failed to obtain access token from Google.")
 
+        # TODO: replace with serializer
         tokens = response.json()
         google_tokens = GoogleAccessTokens(
             id_token=tokens["id_token"],

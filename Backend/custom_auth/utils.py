@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponse
 # from django.middleware import csrf # TODO
 from django.core.exceptions import ValidationError
 
@@ -57,6 +58,7 @@ def _get_tokens_for_user(user):
     }
 
 
+# TODO: remove ??? All logic is inside login_or_refresh_by_cookies_django
 def login_or_refresh_by_cookies(user, response: Response) -> Response:
     if not user.is_active:
         return Response(
@@ -114,6 +116,35 @@ def get_first_matching_attr(obj, *attrs, default=None):
             return getattr(obj, attr)
 
     return default
+
+
+def login_or_refresh_by_cookies_django(user, response: HttpResponse) -> HttpResponse:
+    """Similar to login_or_refresh_by_cookies but works with Django's HttpResponse"""
+    if not user.is_active:
+        return HttpResponse(
+            "This account is not active",
+            status=404
+        )
+
+    data = _get_tokens_for_user(user)
+    response.set_cookie(
+        key=settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN'],
+        value=data["access"],
+        expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+        secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+        httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+        samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+    )
+    response.set_cookie(
+        key=settings.SIMPLE_JWT['AUTH_REFRESH_TOKEN'],
+        value=data["refresh"],
+        expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+        secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+        httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+        samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+    )
+
+    return response
 
 
 def get_error_message(exc) -> str:

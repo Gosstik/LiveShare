@@ -39,8 +39,20 @@ class CookieJWTAuthentication(JWTAuthentication):
         return self.get_user(validated_token), validated_token
 
 
+# TODO: remove
 class CookieAuthenticationMiddleware(MiddlewareMixin):
+    # List of paths that should skip authentication
+    PUBLIC_PATHS = [
+        '/auth/oauth/google/redirect',
+        '/auth/oauth/google/callback',
+    ]
+
     def process_request(self, request):
+        # Skip authentication for public paths
+        if request.path in self.PUBLIC_PATHS:
+            return
+
+        # Original implementation below
         # TODO: remove or None
         access_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN']) or None
         if access_token is None:
@@ -48,22 +60,27 @@ class CookieAuthenticationMiddleware(MiddlewareMixin):
             # TODO: logout user --- need email
             return
 
-        jwt_object  = JWTAuthentication()
-        # TODO: skip ??? To manage 401
-        validated_token = jwt_object.get_validated_token(access_token)
-        print(f"validated_token={validated_token}")
-        user = jwt_object.get_user(validated_token)
-        print(type(user))
-        print(f"user_email={user}")
+        try:
+            # TODO: replace JWTAuthentication with CookieJWTAuthentication ???
+            jwt_object = JWTAuthentication()
+            # TODO: skip ??? To manage 401
+            validated_token = jwt_object.get_validated_token(access_token)
+            print(f"validated_token={validated_token}")
+            user = jwt_object.get_user(validated_token)
+            print(type(user))
+            print(f"user_email={user}")
 
-        # id = request.COOKIES.get(user_cookie_name)
-        # this will find the right backend
-        # user = auth.authenticate(request)
-        # print(type(user))
-        # print(f"user={user}")
-        # user = auth.authenticate(id)
-        request.user = user
-        # TODO: validate token
-        request.is_access_token_expired = False
-        # if you want to persist this user with Django cookie do the following
-        #auth.login(request, user)
+            # id = request.COOKIES.get(user_cookie_name)
+            # this will find the right backend
+            # user = auth.authenticate(request)
+            # print(type(user))
+            # print(f"user={user}")
+            # user = auth.authenticate(id)
+            request.user = user
+            # TODO: validate token
+            request.is_access_token_expired = False
+            # if you want to persist this user with Django cookie do the following
+            #auth.login(request, user)
+        except Exception:
+            # If token validation fails, just return without setting user
+            return

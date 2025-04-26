@@ -6,3 +6,4 @@ __pycache__
 .venv
 
 liveshare.db.sqlite3
+id_token_decoded.json

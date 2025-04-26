@@ -13,6 +13,14 @@ MODE = os.environ.get("MODE", "dev")
 load_dotenv(BASE_DIR / f"{MODE}.env")
 load_dotenv(BASE_DIR / "auth.env")
 
+### Choose host
+
+NETWORK_PROTOCOL = os.environ.get("NETWORK_PROTOCOL")
+BACKEND_HOST = os.environ.get("BACKEND_HOST")
+BACKEND_BASE_URL = f"{NETWORK_PROTOCOL}://{BACKEND_HOST}"
+FRONTEND_HOST = os.environ.get("FRONTEND_HOST")
+FRONTEND_BASE_URL = f"{NETWORK_PROTOCOL}://{FRONTEND_HOST}"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -61,7 +69,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",  # TODO: remove or write own ???
-    "custom_auth.authentication.CookieAuthenticationMiddleware",
+    # "custom_auth.authentication.CookieAuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -170,9 +178,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 GOOGLE_OAUTH2_CLIENT_ID = os.environ.get("GOOGLE_OAUTH2_CLIENT_ID")
 GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH2_CLIENT_SECRET")
-GOOGLE_OAUTH2_REDIRECT_PATH = os.environ.get("GOOGLE_OAUTH2_REDIRECT_PATH")
-GOOGLE_OAUTH2_CALLBACK_HOST = os.environ.get("GOOGLE_OAUTH2_CALLBACK_HOST")
+GOOGLE_OAUTH2_CALLBACK_PATH = os.environ.get("GOOGLE_OAUTH2_CALLBACK_PATH")
 
+AUTH_REDIRECT_FRONTEND_PATH = os.environ.get("AUTH_REDIRECT_FRONTEND_PATH")
+AUTH_REDIRECT_FRONTEND_URL = f"{FRONTEND_BASE_URL}/{AUTH_REDIRECT_FRONTEND_PATH}"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -219,7 +228,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     # TODO: add dev and prod
     "http://localhost:3000",
-    "http://localhost:4200",
+    "http://localhost:4200",  # TODO: remove (it is for angular)
     "http://localhost",
     # TODO: add VM IP
 ]
@@ -279,7 +288,7 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "displayOperationId": True,
-        "defaultModelsExpandDepth": -1, # hide models
+        "defaultModelsExpandDepth": -1,  # hide models
         "defaultModelExpandDepth": 4,
     }
 }

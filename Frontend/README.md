@@ -2,6 +2,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Полезное
+
+- Пакет с иконками: <https://www.npmjs.com/package/@mui/icons-material>
+- Сайт, где можно посмотреть доступные иконки гугла: <https://fonts.google.com/icons?icon.set=Material+Icons>
+- Использование библиотеки: <https://mui.com/joy-ui/integrations/icon-libraries/>
+
 ## TODO
 
 - Дизайн для кнопки загрузки
@@ -11,6 +17,23 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - docs for installing and running
 - add cleanup for `useEffect` and DB queries: [link](https://legacy.reactjs.org/docs/hooks-effect.html)
 
+
+### Home
+
+- Фильтры: <https://mui.com/joy-ui/getting-started/templates/order-dashboard/>
+
+### MUI
+
+- Окно с выбором и возможностью нажать крест, чтобы оставить ввод пустым: <https://mui.com/joy-ui/react-autocomplete/#grouped-options>
+- Возможность добавить загрузку к раскрывающемуся окну: <https://mui.com/joy-ui/react-autocomplete/#loading>
+- Tooltip for buttons: <https://mui.com/joy-ui/react-button-group/#using-it-with-a-tooltip>
+- UI loading effect: <https://mui.com/joy-ui/react-skeleton/>
+- Пример с постом в инстаграме: <https://mui.com/joy-ui/react-card/#instagram-post>
+- Menu icon button: <https://mui.com/joy-ui/react-menu/#icon-button-menu>
+- Светлая и тёмная тема: <https://mui.com/joy-ui/customization/dark-mode/>
+- Цветные кнопки для левого navbar-а: <https://mui.com/joy-ui/react-tabs/#mobile-bottom-navigation>
+- Пример с загрузкой: <https://mui.com/joy-ui/react-link/#common-examples>
+- Окно с регистрацией: <https://mui.com/joy-ui/getting-started/templates/sign-in-side/>
 
 ## Available Scripts
 

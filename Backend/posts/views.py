@@ -154,8 +154,8 @@ class GetPostsByFiltersApiView(APIView):
     def get(self, request: Request):
         # TODO: support cursor
         params = utils.deserialize_or_400(
-            GetPostsByFiltersParamsSerializer,
             request.query_params,
+            GetPostsByFiltersParamsSerializer,
             detail="Request params deserialization failed",
         )
 
@@ -182,8 +182,8 @@ class PostsV1SearchApiView(APIView):
     def get(self, request: Request):
         # TODO: support cursor
         params = utils.deserialize_or_400(
-            GetPostsByFiltersParamsSerializer,
             request.query_params,
+            GetPostsByFiltersParamsSerializer,
             detail="Request params deserialization failed",
         )
 

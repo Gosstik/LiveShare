@@ -1,125 +1,149 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth import login
 from django.shortcuts import redirect
+from django.http import HttpResponse
 
 from rest_framework import serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import OpenApiExample
+from drf_spectacular.utils import OpenApiResponse
+from drf_spectacular.utils import OpenApiTypes
+
+import Backend.utils as utils
+from Backend.exceptions import BadRequest400
+
 from custom_auth.google_oauth.service import GoogleRawLoginFlowService
-# from styleguide_example.users.selectors import user_list # TODO
+from custom_auth.google_oauth.serializers import GoogleOAuthCallbackParamsSerializer
 
 from custom_auth.utils import PublicApiMixin
-from custom_auth.utils import login_or_refresh_by_cookies
+from custom_auth.utils import login_or_refresh_by_cookies, login_or_refresh_by_cookies_django
 from users.models import User
 
 
-class GoogleOAuthUrl(APIView, PublicApiMixin):
-    def get(self, request, *args, **kwargs):
+class GoogleOAuthRedirect(PublicApiMixin, APIView):
+    @extend_schema(
+        description="Initiates Google OAuth2 flow by redirecting to Google's authorization page",
+        responses={
+            302: OpenApiResponse(
+                response=None,
+                description="Redirect to Google's authorization page with account selection",
+            ),
+        },
+    )
+    def get(self, request):
         google_login_flow = GoogleRawLoginFlowService()
-
         authorization_url, state = google_login_flow.get_authorization_url()
+        request.session["google_oauth2_state"] = state
+        return redirect(authorization_url)
 
-        # request.session["google_oauth2_state"] = state # TODO: remove
 
-        # TODO: JUST RETURN body.url
-        return Response(
-            {"url" : authorization_url},
-            status=status.HTTP_200_OK,
+class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
+    @extend_schema(
+        description="Handles the OAuth2 callback from Google after user authorization",
+        parameters=[
+            GoogleOAuthCallbackParamsSerializer,
+        ],
+        responses={
+            302: OpenApiResponse(
+                response=None,
+                description=(
+                    "Redirect with authentication cookies.\n\n"
+                    "**Headers:**\n"
+                    f"- `Location`: {settings.AUTH_REDIRECT_FRONTEND_URL}\n"
+                    f"- `Set-Cookie`: {settings.SIMPLE_JWT['AUTH_ACCESS_TOKEN']}=[value]; HttpOnly; Path=/\n"
+                    f"- `Set-Cookie`: {settings.SIMPLE_JWT['AUTH_REFRESH_TOKEN']}=[value]; HttpOnly; Path=/"
+                )
+            ),
+            400: utils.BadRequestSerializer,
+        },
+    )
+    def get(self, request: Request):
+        params = utils.deserialize_or_400(
+            request.query_params,
+            GoogleOAuthCallbackParamsSerializer,
+            detail="Request params deserialization failed",
         )
-        # return redirect(authorization_url)
 
+        self._check_error(params)
+        self._check_greenflow_params(params)
+        self._check_csrf_state(request, params['state'])
 
-class GoogleOAuthTokenLogin(APIView, PublicApiMixin):
-    class InputSerializer(serializers.Serializer):
-        code = serializers.CharField(required=False)
-        error = serializers.CharField(required=False)
-        # state = serializers.CharField(required=False)
-
-    def get(self, request, *args, **kwargs):
-        # input_form = self.InputValidationForm(data=request.GET)
-
-        # if not input_form.is_valid():
-        #     return
-
-        # validated_data = input_form.cleaned_data
-
-        print("request.query_params=", request.query_params)
-        code = request.query_params.get('code')
-        # code = validated_data["code"] if validated_data.get("code") != "" else None
-        # error = validated_data["error"] if validated_data.get("error") != "" else None
-        error = request.query_params.get('error')
-        # state = validated_data["state"] if validated_data.get("state") != "" else None
-
-        if error is not None:
-            return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
-
-        # if code is None or state is None:
-        #     return JsonResponse({"error": "Code and state are required"}, status=400)
-
-        if code is None:
-            print("HERE code!!!")
-            return Response(
-                {"error": "'code' is required but not presented"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # session_state = request.session.get("google_oauth2_state")
-
-        # if session_state is None:
-        #     return JsonResponse({"error": "CSRF check failed."}, status=400)
-
-        # del request.session["google_oauth2_state"]
-
-        # if state != session_state:
-        #     return JsonResponse({"error": "CSRF check failed."}, status=400)
-
+        # Logic with authorization
         google_login_flow = GoogleRawLoginFlowService()
 
-        google_tokens = google_login_flow.get_tokens(code=code)
+        google_tokens = google_login_flow.get_tokens_by_code(code=params['code'])
         id_token_decoded = google_tokens.decode_id_token()
-        user_info = google_login_flow.get_user_info(google_tokens=google_tokens)
+        # user_info = google_login_flow.get_user_info(google_tokens=google_tokens)
 
-        user_email = id_token_decoded["email"]
-        # TODO: what if name changed? What if it is omitted?
-        print("!!! user_info=", user_info)
         user, created = User.objects.get_or_create(
-            email=user_email,
-            first_name=user_info['given_name'],
-            last_name=user_info['family_name'],
+            email=id_token_decoded["email"],
+            first_name=id_token_decoded['given_name'],
+            last_name=id_token_decoded['family_name'],
+            # TODO: add fields
         )
-        # user = user_queryset.first()
-        # request_user_list = user_list(filters={"email": user_email}) # TODO
-        # user = request_user_list.get() if request_user_list else None
 
         if user is None:
-            message = f"Google OAuth: unable to find or create user with email={user_email}"
-            return Response(
-                {"error": message},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            raise BadRequest400(
+                code='google_oauth_error',
+                detail=f"google oauth error: unable to find or create user with email={id_token_decoded['email']}"
             )
 
-        # TODO: replace with jwt login
+        # TODO: what if name changed? What if it is omitted?
+        # We need to update name
 
+        # TODO: replace with jwt login
         # login(request, user) # TODO: remove
 
-        result = {
-            "id_token_decoded": id_token_decoded,
-            "user_info": user_info, # TODO: probably remove ???
-        }
-        response = Response(result, status=status.HTTP_200_OK)
-        response = login_or_refresh_by_cookies(user, response)
+        response = redirect(settings.AUTH_REDIRECT_FRONTEND_URL)
+        return login_or_refresh_by_cookies_django(user, response)
 
-        # response.data = {
-        #     **response.data,
-        #     "id_token_decoded": id_token_decoded,
-        #     "user_info": user_info, # TODO: probably remove ???
-        # }
-        # response.status_code = status.HTTP_200_OK
-        # return response
+    ############################################################################
+    ### Internals
 
-        # TODO: start session ???
+    def _check_error(self, params):
+        if 'error' in params:
+            # TODO: handle exception to show user
+            raise BadRequest400(
+                code='google_oauth_error',
+                detail=f"google oauth error: {params['error']}"
+            )
 
-        return response
+    def _check_greenflow_params(self, params):
+        if 'code' not in params:
+            # TODO: handle exception to show user
+            raise BadRequest400(
+                code='google_oauth_error',
+                detail="google oauth error: 'code' is required but not presented"
+            )
+
+        if 'state' not in params:
+            # TODO: handle exception to show user
+            raise BadRequest400(
+                code='google_oauth_error',
+                detail="google oauth error: 'state' is required but not presented. You are potentially under CSRF attack!!!"
+            )
+
+    def _check_csrf_state(self, request: Request, params_state):
+        session_state = request.session.get("google_oauth2_state")
+        if session_state is None:
+            # TODO: handle exception to show user
+            raise BadRequest400(
+                code='csrf_oauth_failed',
+                detail='CSRF check for oauth failed: no session state detected'
+            )
+        del request.session["google_oauth2_state"]
+
+        if params_state != session_state:
+            # TODO: handle exception to show user
+            raise BadRequest400(
+                code='csrf_oauth_failed',
+                detail='CSRF check for oauth failed: session state differs params state'
+            )

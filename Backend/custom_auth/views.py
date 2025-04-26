@@ -7,6 +7,10 @@ from rest_framework_simplejwt.views import TokenVerifyView
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import OpenApiTypes
+
 from custom_auth.utils import (
     ApiErrorsMixin,
     PublicApiMixin,
@@ -78,6 +82,7 @@ class LoginCheck(APIView, PublicApiMixin, ApiErrorsMixin):
 class SessionTokenRefresh(APIView, AuthApiMixin, ApiErrorsMixin):
     def post(self, request):
         refresh_token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_REFRESH_TOKEN"])
+        # TODO: replace JWTAuthentication with CookieJWTAuthentication ???
         jwt_object = JWTAuthentication()
         # TODO: skip ??? To manage 401
         # TODO: in case invalid token must logout user
