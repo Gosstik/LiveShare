@@ -9,6 +9,8 @@ from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
 from custom_auth.mixins import OptionalAuthApiMixin
+from custom_auth.mixins import OptionalCookieJWTAuthentication
+from custom_auth.mixins import OptionalAuthForGetOnlyPermission
 
 from posts.models import Post, PostLike
 from posts.utils import get_post_or_404
@@ -39,10 +41,16 @@ class CreatePostApiView(APIView):
 
 
 class GetEditDeletePostApiView(APIView):
+    authentication_classes = (OptionalCookieJWTAuthentication,)
+    permission_classes = (OptionalAuthForGetOnlyPermission,)
+
     @extend_schema(
         responses=GetPostResponseSerializer,
     )
     def get(self, request: Request, post_id: int):
+        self.authentication_classes = (OptionalCookieJWTAuthentication,)
+        self.permission_classes = ()
+
         params = utils.validate_data(
             {"post_id": post_id}, GetPostsByFiltersParamsSerializer
         )

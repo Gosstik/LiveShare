@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework import exceptions as rest_exceptions
 from rest_framework.permissions import IsAuthenticated
 
@@ -45,6 +46,17 @@ class ApiErrorsMixin:
             return super().handle_exception(drf_exception)
 
         return super().handle_exception(exc)
+
+
+class OptionalAuthForGetOnlyPermission(BasePermission):
+    """
+        Permission class that makes optional authentication for GET requests,
+        but require authentication for other methods
+    """
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        return request.user and request.user.is_authenticated
 
 
 ################################################################################
