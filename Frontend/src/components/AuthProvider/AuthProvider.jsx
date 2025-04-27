@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import Cookies from "js-cookie";
-import { signinUrl } from "../../api/urls";
 
 import { ENV } from "../../config";
 
@@ -26,7 +25,6 @@ export const updateTokensInLocalStorage = async (
   onError = () => {},
   refreshTokens = false
 ) => {
-  console.log(`!!! updateTokensInLocalStorage`);
   const apiAuthInfo = new ApiAuthInfo();
   const userInfoResponse = refreshTokens
     ? await apiAuthInfo.refreshUserTokens()
