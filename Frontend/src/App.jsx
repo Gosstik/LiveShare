@@ -10,6 +10,7 @@ import {
   authCallbackUrl,
   postsUrl,
   postUrl,
+  postCreateUrl,
   signupUrl,
 } from "./api/urls";
 
@@ -24,6 +25,8 @@ import Auth from "./components/Auth/Auth";
 import Signin from "./components/Auth/Signin";
 import Signup from "./components/Auth/Signup";
 import TestComponent from "./components/TestComponent/TestComponent";
+import PostCreate from "./components/Posts/PostCreate/PostCreate";
+import PostShow from "./components/Posts/PostShow/PostShow";
 // import AuthRedirect from "./components/Auth/AuthRedirect";
 import AuthCallback from "./components/Auth/AuthCallback";
 // import NavigationBar from "./components/NavigationBar/NavigationBar"
@@ -54,7 +57,9 @@ function App() {
 
             <Route path={postsUrl} element={<Posts />}></Route>
 
-            <Route path={postUrl} element={<PostRouterWrapper />}></Route>
+            {/* <Route path={postUrl} element={<PostRouterWrapper />}></Route> */}
+            <Route path={postCreateUrl} element={<PostCreate />}></Route>
+            <Route path={postUrl} element={<PostShow />}></Route>
 
             <Route path={"/test"} element={<TestComponent />}></Route>
 

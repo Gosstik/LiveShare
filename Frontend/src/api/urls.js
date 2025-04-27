@@ -4,4 +4,5 @@ export const signupUrl = "/signup";
 export const authCallbackUrl = "/auth/callback";
 export const postsUrl = "/posts";
 export const postUrl = "/posts/:postId";
+export const postCreateUrl = "/posts/create";
 export const authBackendUrl = `http://localhost:5000`;

@@ -18,41 +18,42 @@ POST_SORT_FIELD_NAMES = [(val.value, val.name) for val in PostSortFieldName]
 
 
 def edit_post_request_example():
-    return {"title": "Test post title", "text_content": "Text content"}
+    return {
+        "title": "Test post title",
+        "text_content": "Text content",
+        # "attached_image": None, # TODO: ???
+    }
 
 
 @extend_schema_serializer(
     examples=utils.single_example(edit_post_request_example()),
 )
 class EditPostRequestSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
-    # # TODO: add image and make it required=False (just delete)
-    text_content = serializers.CharField(
-        required=True,
-    )
+    attached_image = serializers.ImageField(required=False)
 
     class Meta:
         model = Post
-        fields = ["title", "text_content"]
+        fields = ["title", "text_content", "attached_image"]
 
+    def create(self, validated_data):
+        request = self.context.get('request')
+        attached_image = None
+        if 'attached_image' in validated_data:
+            attached_image = validated_data.pop('attached_image')
 
-def create_post_request_example():
-    return {
-        "author_id": 1,
-        **edit_post_request_example(),
-    }
+        if request and request.user:
+            validated_data['author'] = request.user
 
+        post = Post.objects.create(**validated_data)
 
-@extend_schema_serializer(
-    examples=utils.single_example(create_post_request_example()),
-)
-class CreatePostRequestSerializer(EditPostRequestSerializer):
-    author_id = serializers.IntegerField(
-        required=True, help_text="Id of user that create post"
-    )
+        if attached_image:
+            # Generate filename using post ID
+            ext = attached_image.name.split('.')[-1]
+            attached_image.name = f'post_{post.id}.{ext}'
+            post.attached_image = attached_image
+            post.save()
 
-    class Meta:
-        model = Post
-        fields = ["author_id", *EditPostRequestSerializer.Meta.fields]
+        return post
 
 
 class GetPostsByFiltersParamsSerializer(utils.StrictFieldsMixin):
@@ -90,6 +91,7 @@ class GetPostResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsM
         required=True, help_text="Is post liked by current authenticated user"
     )
     comments_count = serializers.IntegerField()
+    attached_image_url = serializers.CharField(required=False)
 
     class Meta:
         model = Post
@@ -103,10 +105,22 @@ class GetPostResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsM
             "likes_count",
             "is_liked_by_user",
             "comments_count",
+            "attached_image_url",
         ]
         extra_kwargs = {
             "text_content": {"required": True},  # TODO: make it optional
         }
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Check if instance is a Post object (not a dict/ReturnDict)
+        if hasattr(instance, 'attached_image') and instance.attached_image:
+            representation['attached_image_url'] = instance.attached_image_url
+        # Remove all None values from the output
+        for field in self.fields.keys():
+            if representation.get(field) is None:
+                representation.pop(field, None)
+        return representation
 
 
 # TODO

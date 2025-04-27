@@ -1,6 +1,7 @@
 import datetime as dt
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.db.models.query import QuerySet
 from django.db.models.functions import Now
 from django.db import models
@@ -16,10 +17,23 @@ class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
     author = models.ForeignKey(User, db_column="author_id", on_delete=models.CASCADE)
     title = models.TextField()
-    text_content = models.TextField(blank=True)
+    text_content = models.TextField()
     attached_image = models.ImageField(
-        upload_to="images/posts", blank=True, help_text="Attached image"
+        upload_to='posts_attached_images',
+        null=True,
+        blank=True,
+        verbose_name='Post Image',
+        help_text="Attached image"
     )
+
+    @property
+    def attached_image_url(self):
+        if self.attached_image:
+            try:
+                return f"{settings.BACKEND_BASE_URL}{self.attached_image.url}"
+            except Exception as e:
+                print(f"Error getting attached_image_url: {str(e)}")
+        return None
     created_at = models.DateTimeField(db_default=Now()) # default=dt.datetime.now
     edited_at = models.DateTimeField(db_default=Now())
 

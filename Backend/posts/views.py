@@ -16,7 +16,6 @@ from posts.utils import post_404_response
 from posts.utils import get_posts_by_filters_from_db
 from posts.utils import transform_db_posts_for_response
 
-from posts.serializers import CreatePostRequestSerializer
 from posts.serializers import EditPostRequestSerializer
 from posts.serializers import GetPostResponseSerializer
 from posts.serializers import GetPostsByFiltersResponseSerializer
@@ -25,14 +24,14 @@ from posts.serializers import GetPostsByFiltersParamsSerializer
 
 class CreatePostApiView(APIView):
     @extend_schema(
-        request=CreatePostRequestSerializer,
+        request=EditPostRequestSerializer,
         responses={
             status.HTTP_204_NO_CONTENT: None,
             status.HTTP_400_BAD_REQUEST: utils.SerializerErrorsSerializer,
         },
     )
     def post(self, request):
-        serializer = CreatePostRequestSerializer(data=request.data)
+        serializer = EditPostRequestSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)

@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models.functions import Now
 from django.contrib.auth.models import AbstractUser
-# from django.core.management.utils import get_random_secret_key
 
 
 class User(AbstractUser):
@@ -42,36 +41,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return str(self.email)
-
-    # TODO: add phone and age
-
-
-# class Post(models.Model):
-#     id = models.BigAutoField(primary_key=True)
-#     author = models.ForeignKey(User, db_column="author_id", on_delete=models.CASCADE)
-#     title = models.TextField()
-#     text_content = models.TextField(blank=True)
-#     attached_image = models.ImageField(
-#         upload_to="images/posts", blank=True, help_text="Attached image"
-#     )
-#     created_at = models.DateTimeField(db_default=Now()) # default=dt.datetime.now
-#     edited_at = models.DateTimeField(db_default=Now())
-
-#     class Meta:
-#         db_table = "posts"
-#         indexes = [
-#             models.Index(fields=["created_at"], name="posts__created_at__idx"),
-#         ]
-#         verbose_name_plural = "Posts"
-#         ordering = ["-created_at"]
-
-#     def __str__(self):
-#         return f"{str(self.id)}, {str(self.author)}: {str(self.title)}"
-
-#     def save(self, *args, **kwargs):
-#         if self.id:
-#             self.edited_at = dt.datetime.now()
-#         return super().save(*args, **kwargs)
 
 
 class Friends(models.Model):

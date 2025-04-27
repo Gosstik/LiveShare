@@ -31,7 +31,6 @@ class AuthUserInfoApiView(APIView):
     def get(self, request: Request):
         access_token_expiration = self._get_access_token_expiration_data(request)
         user_data = UserResponseSerializer(request.user).data
-        print(f"!!! user_data={user_data}")
         response_data = {
             "access_token_expiration": access_token_expiration,
             "user": user_data,
