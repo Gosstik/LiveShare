@@ -27,7 +27,6 @@ import Signup from "./components/Auth/Signup";
 import TestComponent from "./components/TestComponent/TestComponent";
 import PostCreate from "./components/Posts/PostCreate/PostCreate";
 import PostShow from "./components/Posts/PostShow/PostShow";
-// import AuthRedirect from "./components/Auth/AuthRedirect";
 import AuthCallback from "./components/Auth/AuthCallback";
 // import NavigationBar from "./components/NavigationBar/NavigationBar"
 import { AuthProvider } from "./components/AuthProvider/AuthProvider";

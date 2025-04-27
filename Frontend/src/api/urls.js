@@ -6,3 +6,4 @@ export const postsUrl = "/posts";
 export const postUrl = "/posts/:postId";
 export const postCreateUrl = "/posts/create";
 export const authBackendUrl = `http://localhost:5000`;
+export const afterAuthPath = `/`;

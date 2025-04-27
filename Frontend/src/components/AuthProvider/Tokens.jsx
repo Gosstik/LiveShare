@@ -18,7 +18,9 @@ const saveRefreshTokenData = (secondsLeft) => saveTokenData(TOKEN_STORAGE_KEY.RE
 
 const getTokenData = (type) => {
   const data = localStorage.getItem(type);
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
   return JSON.parse(data);
 };
 
@@ -35,8 +37,8 @@ const isTokenExpired = (tokenData, bufferSeconds = 0) => {
   return now > expirationTime - bufferSeconds * 1000;
 };
 
-const isAccessTokenExpired = () => isTokenExpired(TOKEN_STORAGE_KEY.ACCESS, ENV.ACCESS_TOKEN_BUFFER_SEC);
-const isRefreshedTokenExpired = () => isTokenExpired(TOKEN_STORAGE_KEY.REFRESH);
+const isAccessTokenExpired = () => isTokenExpired(getAccessTokenData(), ENV.ACCESS_TOKEN_BUFFER_SEC);
+const isRefreshedTokenExpired = () => isTokenExpired(getRefreshTokenData());
 
 const removeTokensData = () => {
   localStorage.removeItem(TOKEN_STORAGE_KEY.ACCESS);

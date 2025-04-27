@@ -53,7 +53,7 @@ class PasswordSignupApiView(PublicApiMixin, APIView):
 class PasswordSigninApiView(PublicApiMixin, APIView):
     @extend_schema(
         request={
-            'multipart/form-data': PasswordSigninRequestSerializer,
+            'content/json': PasswordSigninRequestSerializer
         },
         responses={
             status.HTTP_204_NO_CONTENT: None,

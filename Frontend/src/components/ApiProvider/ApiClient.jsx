@@ -80,12 +80,6 @@ class ApiClient {
     path,
     { method = "GET", body = null, headers = {}, options = {} }
   ) {
-    // const auth = useAuth(); // TODO: get data about auth
-    // if (auth.isAuthLoading) {
-    //   // TODO: wait to change status ???
-    //   // Even csrftoken may not be here at that time
-    // }
-
     // Prepare request options
     const requestOptions = {
       method,
@@ -170,11 +164,12 @@ class ApiClient {
   }
 
   authOAuthGoogleRedirect() {
+    // It must not return
     this.get(`/auth/oauth/google/redirect`);
   }
 
-  authPasswordSignIn(email, password) {
-    this.post(`/auth/password/signin`, {
+  authPasswordSignIn({email, password}) {
+    return this.post(`/auth/password/signin`, {
       body: {
         email,
         password,
@@ -182,6 +177,12 @@ class ApiClient {
       headers: {
         "Content-Type": "application/json",
       },
+    });
+  }
+
+  authPasswordSignUp(body) {
+    return this.post(`/auth/password/signup`, {
+      body,
     });
   }
 }

@@ -20,10 +20,13 @@ import {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//// For authenticate functions (oauth, signin, signup)
+
 export const updateTokensInLocalStorage = async (
   onError = () => {},
   refreshTokens = false
 ) => {
+  console.log(`!!! updateTokensInLocalStorage`);
   const apiAuthInfo = new ApiAuthInfo();
   const userInfoResponse = refreshTokens
     ? await apiAuthInfo.refreshUserTokens()
@@ -72,6 +75,7 @@ export class ApiAuthInfo {
   }
 }
 
+// TODO: remove export
 export class UserData {
   // TODO: replace all with null
   constructor() {

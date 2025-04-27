@@ -1,10 +1,11 @@
 import style from "./Auth.module.scss";
 
 import { appIconImg, yaEngImg, googleImg } from "../Consts/Consts";
-import { authCallbackUrl, authBackendUrl } from "../../api/urls";
+import { afterAuthPath } from "../../api/urls";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthProvider/AuthProvider";
+import { useApi } from "../ApiProvider/ApiProvider";
+import { useAuth, updateTokensInLocalStorage } from "../AuthProvider/AuthProvider";
 
 import { googleOAuthOnClick } from "./Auth"
 
@@ -18,14 +19,11 @@ function OAuthButton(props) {
   );
 }
 
-// TODO
-// backendUrl = process.env.REACT_APP_BACKEND_URL;
-// const backendUrl = `http://localhost:3000`;
-// const authBackendUrl = `http://localhost:5000`;
-
 export default function Signin() {
   const navigate = useNavigate();
-  const { user, loggedIn, checkLoginState } = useContext(AuthContext);
+  const apiClient = useApi();
+
+  const { isAuthenticated, updateLoginState } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -45,17 +43,11 @@ export default function Signin() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/auth/password/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(formData)
-      });
-
+      const response = await apiClient.authPasswordSignIn(formData);
       if (response.ok) {
-        navigate('/');
+        await updateTokensInLocalStorage();
+        updateLoginState();
+        navigate(afterAuthPath);
       } else {
         const data = await response.json();
         if (data.code && ['email_does_not_exist', 'invalid_password'].includes(data.code)) {
@@ -72,7 +64,7 @@ export default function Signin() {
 
   return (
     <div className={style.mainContent}>
-      {loggedIn && <div>You are already logged in !!!</div>}
+      {isAuthenticated && <div>You are already logged in !!!</div>}
       <img
         className={style.appIcon}
         src={appIconImg}

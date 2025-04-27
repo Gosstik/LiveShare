@@ -102,6 +102,7 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
         # TODO: what if name changed? What if it is omitted?
         # We need to update name
 
+        print(f"!!! settings.AUTH_REDIRECT_FRONTEND_URL={settings.AUTH_REDIRECT_FRONTEND_URL}")
         response = redirect(settings.AUTH_REDIRECT_FRONTEND_URL)
         return set_new_auth_cookies(user, response)
 

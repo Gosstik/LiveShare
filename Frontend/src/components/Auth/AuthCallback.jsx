@@ -4,8 +4,9 @@ import { signinUrl } from "../../api/urls";
 import { current } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import { AuthContext, LoginStates } from "../AuthProvider/AuthProvider";
+import { useAuth } from "../AuthProvider/AuthProvider";
 
-import { authBackendUrl } from "../../api/urls";
+import { afterAuthPath } from "../../api/urls";
 
 import {
   updateTokensInLocalStorage,
@@ -13,17 +14,20 @@ import {
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  // const apiClient
+  const { updateLoginState } = useAuth();
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       console.log(`AuthCallback start useEffect`);
 
       await updateTokensInLocalStorage();
-      navigate("/");
+      updateLoginState();
+      navigate(afterAuthPath);
     };
 
     fetchUserInfo();
-  }, [navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   console.log("AuthCallback finished");
 
