@@ -12,15 +12,7 @@ from comments.models import Comment
 
 from posts.models import Post
 from posts.models import PostLike
-
-
-class PostSortFieldName(utils.EnumWithContains):
-    CREATED_AT = "created_at"
-    LIKES_COUNT = "likes_count"
-    COMMENTS_COUNT = "comments_count"
-
-
-POST_SORT_FIELD_NAMES = [(val.value, val.name) for val in PostSortFieldName]
+from posts.serializers import GetPostResponseSerializer
 
 
 def get_post_or_404(post_id: int):
@@ -87,25 +79,28 @@ def transform_db_posts_for_response(posts):
     # TODO: (profiling) prefetch author
     posts_data = []
     for post in posts:
-        author_display_name = utils.get_user_display_name(
-            post.author.email,
-            post.author.first_name,
-            post.author.last_name,
-        )
-        posts_data.append(
-            {
-                "post_id": post.id,
-                "author_id": post.author.id,
-                "author_email": post.author.email,
-                "author_display_name": author_display_name,
-                "title": post.title,
-                "text_content": post.text_content,
-                "created_at": post.created_at,
-                "edited_at": post.edited_at,
-                "likes_count": post.likes_count,
-                "is_liked_by_user": post.is_liked_by_user,
-                "comments_count": post.comments_count,
-                # TODO: add user emails that liked
-            }
-        )
+        posts_data.append(GetPostResponseSerializer(post).data)
+        # author_display_name = utils.get_user_display_name(
+        #     post.author.email,
+        #     post.author.first_name,
+        #     post.author.last_name,
+        # )
+        # TODO: replace with serializer
+        # posts_data.append(
+        #     {
+        #         "post_id": post.id,
+        #         "author": post.author,
+        #         # "author_id": post.author.id,
+        #         # "author_email": post.author.email,
+        #         # "author_display_name": author_display_name,
+        #         "title": post.title,
+        #         "text_content": post.text_content,
+        #         "created_at": post.created_at,
+        #         "edited_at": post.edited_at,
+        #         "likes_count": post.likes_count,
+        #         "is_liked_by_user": post.is_liked_by_user,
+        #         "comments_count": post.comments_count,
+        #         # TODO: add user emails that liked
+        #     }
+        # )
     return posts_data

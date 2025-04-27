@@ -8,7 +8,7 @@ from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
-from custom_auth.mixins import PublicApiMixin, AuthApiMixin
+from custom_auth.mixins import OptionalAuthApiMixin
 
 from posts.models import Post, PostLike
 from posts.utils import get_post_or_404
@@ -21,7 +21,6 @@ from posts.serializers import EditPostRequestSerializer
 from posts.serializers import GetPostResponseSerializer
 from posts.serializers import GetPostsByFiltersResponseSerializer
 from posts.serializers import GetPostsByFiltersParamsSerializer
-from posts.serializers import PostsV1SearchParamsSerializer
 
 
 class CreatePostApiView(APIView):
@@ -102,7 +101,7 @@ class GetEditDeletePostApiView(APIView):
 #     lookup_url_kwarg = "post_id"
 
 
-class PostLikeApiView(APIView, AuthApiMixin):
+class PostLikeApiView(APIView):
     @extend_schema(
         responses={
             status.HTTP_204_NO_CONTENT: None,
@@ -121,7 +120,7 @@ class PostLikeApiView(APIView, AuthApiMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class PostUnlikeApiView(APIView, AuthApiMixin):
+class PostUnlikeApiView(APIView):
     @extend_schema(
         responses={
             status.HTTP_204_NO_CONTENT: None,
@@ -141,7 +140,7 @@ class PostUnlikeApiView(APIView, AuthApiMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GetPostsByFiltersApiView(APIView):
+class GetPostsByFiltersApiView(OptionalAuthApiMixin, APIView):
     @extend_schema(
         parameters=[
             GetPostsByFiltersParamsSerializer,
@@ -153,34 +152,7 @@ class GetPostsByFiltersApiView(APIView):
     )
     def get(self, request: Request):
         # TODO: support cursor
-        params = utils.deserialize_or_400(
-            request.query_params,
-            GetPostsByFiltersParamsSerializer,
-            detail="Request params deserialization failed",
-        )
-
-        # Create posts for response
-        posts = get_posts_by_filters_from_db(params, request.user)
-        response_data = {"posts": transform_db_posts_for_response(posts)}
-        return utils.validate_and_get_response(
-            response_data,
-            GetPostsByFiltersResponseSerializer,
-            raise_exception=True,
-        )
-
-
-class PostsV1SearchApiView(APIView):
-    @extend_schema(
-        parameters=[
-            PostsV1SearchParamsSerializer,
-        ],
-        responses={
-            status.HTTP_200_OK: GetPostsByFiltersResponseSerializer,
-            # TODO: add 500 in case of serializer error
-        },
-    )
-    def get(self, request: Request):
-        # TODO: support cursor
+        # TODO: support search for friends
         params = utils.deserialize_or_400(
             request.query_params,
             GetPostsByFiltersParamsSerializer,
