@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { authUrl } from "../../api/urls";
+import { signinUrl } from "../../api/urls";
 import { current } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";

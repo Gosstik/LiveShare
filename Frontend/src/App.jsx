@@ -6,10 +6,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import {
   homeUrl,
-  authUrl,
+  signinUrl,
   authCallbackUrl,
   postsUrl,
   postUrl,
+  signupUrl,
 } from "./api/urls";
 
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -20,6 +21,8 @@ import PostRouterWrapper from "./components/Posts/PostRouterWrapper";
 import NotFound from "./components/NotFound/NotFound";
 import Home from "./components/Home/Home";
 import Auth from "./components/Auth/Auth";
+import Signin from "./components/Auth/Signin";
+import Signup from "./components/Auth/Signup";
 import TestComponent from "./components/TestComponent/TestComponent";
 // import AuthRedirect from "./components/Auth/AuthRedirect";
 import AuthCallback from "./components/Auth/AuthCallback";
@@ -40,7 +43,9 @@ function App() {
           {/* <NavigationBar /> */}
           <Routes>
             <Route path={homeUrl} element={<Home />} />
-            <Route path={authUrl} element={<Auth />} />
+            <Route path={"/auth"} element={<Auth />} />
+            <Route path={signinUrl} element={<Signin />} />
+            <Route path={signupUrl} element={<Signup />} />
             <Route
               path={authCallbackUrl}
               element={<AuthCallback />}

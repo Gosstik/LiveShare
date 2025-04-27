@@ -11,7 +11,7 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
     id = serializers.IntegerField()
     email = serializers.CharField()
     displayed_name = serializers.CharField()
-    profile_icon_url = serializers.CharField()
+    profile_icon_url = serializers.CharField(required=False)
 
     class Meta:
         model = User
@@ -23,6 +23,15 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
             'displayed_name',
             'profile_icon_url',
         ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Remove all None values from the output
+        # for field in ['profile_icon_url', 'other_optional_field']:  # Add fields as needed
+        for field in self.fields.keys():  # Add fields as needed
+            if representation.get(field) is None:
+                representation.pop(field, None)
+        return representation
 
 
 class UsersV1SearchParamsSerializer(utils.StrictFieldsMixin):

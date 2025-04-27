@@ -32,98 +32,25 @@ const yandexOAuthOnClick = async () => {
   form.submit();
 };
 
+// https://oauth.yandex.ru/
+// https://console.cloud.google.com/auth
+// https://console.cloud.google.com/apis/credentials
+export const googleOAuthOnClick = () => {
+  console.log("!!! start googleOAuthOnClick");
+
+  try {
+    // TODO: replace localhost with backend constant
+    window.location.assign(`http://localhost:8000/auth/oauth/google/redirect`);
+  } catch (err) {
+    console.log("Failed to redirect to google oauth");
+    console.log(err);
+  }
+};
+
 export default function Auth() {
   console.log("Auth start");
 
-  // const [scriptIsAdded, setScriptIsAdded] = useState(false);
-
-  // useEffect(() => {
-  //   const script = document.createElement("script");
-
-  //   script.src =
-  //     "https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js";
-  //   script.async = true;
-
-  //   document.body.appendChild(script);
-
-  //   setScriptIsAdded(true);
-
-  //   return () => {
-  //     document.body.removeChild(script);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!scriptIsAdded) {
-  //     console.log("!!! !scriptIsAdded");
-  //     return;
-  //   }
-  //   if (!window.YaAuthSuggest) {
-  //     console.log("!!! !window.YaAuthSuggest");
-  //   }
-  //   window.YaAuthSuggest.init(
-  //     {
-  //       client_id: "72c9e0f728954a2e9b4ebf26ae35d248",
-  //       response_type: "token",
-  //       redirect_uri: `http://localhost:3000${authRedirectUrl}`,
-  //     },
-  //     "http://localhost:3000",
-  //     {
-  //       view: "button",
-  //       parentId: "buttonContainerId",
-  //       buttonSize: "m",
-  //       buttonView: "main",
-  //       buttonTheme: "light",
-  //       buttonBorderRadius: "0",
-  //       buttonIcon: "ya",
-  //     }
-  //   )
-  //     .then(({ handler }) => handler())
-  //     .then((data) => console.log("Сообщение с токеном", data))
-  //     .catch((error) => console.log("Обработка ошибки", error));
-  // }, [scriptIsAdded]);
-
-  //////////////////////////////////
-
   console.log("Auth after");
-
-  // https://oauth.yandex.ru/
-  // https://console.cloud.google.com/auth
-  // https://console.cloud.google.com/apis/credentials
-  const googleOAuthOnClick = async () => {
-    console.log("start googleOAuthOnClick");
-
-    // Gets authentication url from backend server
-    try {
-      console.log(1);
-      // const data = await fetch(`${authBackendUrl}/api/auth/oauth/google`); # TODO: remove
-    //   const data = await fetch(`http://localhost:8000/auth/oauth/google/url`); // Django
-      window.location.assign(`http://localhost:8000/auth/oauth/google/redirect`);
-
-      //// Previous flow
-      // const data = await fetch(`http://localhost:8000/auth/oauth/google/redirect`); // Django
-
-      // console.log(`####### returned redirect`)
-      // console.log(`####### data=${JSON.stringify(data)}`)
-      // console.log(`!!! received: JSON.stringify(data)=${JSON.stringify(data)}`);
-      // const body = await data.json();
-      // console.log(2);
-      // console.log(`!!! JSON.stringify(body)=${JSON.stringify(body)}`);
-      // console.log(3);
-      // window.location.assign(body.url);
-    } catch (err) {
-      console.log("failed to make request to api/auth/oauth/google");
-      console.log(err);
-    }
-
-    // const form = document.createElement('form');
-
-    // form.setAttribute('method', 'GET'); // Send as a GET request.
-    // form.setAttribute('action', `${authBackendUrl}/api/auth/oauth/google`);
-
-    // document.body.appendChild(form);
-    // form.submit();
-  };
 
   const { user, loggedIn, checkLoginState } = useContext(AuthContext);
 

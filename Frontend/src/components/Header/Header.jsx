@@ -25,8 +25,12 @@ export default function Header() {
     navigate("/");
   };
 
-  const login = () => {
-    navigate("/auth");
+  const signin = () => {
+    navigate("/signin");
+  };
+
+  const signup = () => {
+    navigate("/signup");
   };
 
   const logout = async () => {
@@ -67,13 +71,18 @@ export default function Header() {
         </button>
         <button className={style.createPostButton}>Create post</button>
         {!loggedIn && (
-          <button className={style.loginButton} onClick={login}>
-            log in
+          <button className={style.loginButton} onClick={signin}>
+            Sign in
+          </button>
+        )}
+        {!loggedIn && (
+          <button className={style.loginButton} onClick={signup}>
+            Sign up
           </button>
         )}
         {loggedIn && (
           <button className={style.logoutButton} onClick={logout}>
-            logout
+            Logout
           </button>
         )}
         {loggedIn && (
@@ -86,6 +95,8 @@ export default function Header() {
               }}
               alt="Profile"
               className={style.profileIcon}
+              width={50}
+              height={50}
             />
             <div>{user?.displayed_name || "Guest"}</div>
           </>
