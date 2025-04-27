@@ -86,15 +86,13 @@ class UserV1FriendsInviteApiView(APIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class UserV1FriendsInviteCancelApiView(APIView):
     @extend_schema(
         responses={
             status.HTTP_204_NO_CONTENT: None,
             status.HTTP_404_NOT_FOUND: utils.Api4xxSerializer,
         },
     )
-    def post(self, request: Request, other_user_id: int):
+    def delete(self, request: Request, other_user_id: int):
         with transaction.atomic():
             invitations = FriendInvitation.objects.filter(
                 from_user=request.user,
@@ -148,14 +146,14 @@ class UserV1FriendsInviteRejectApiView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class UserV1FriendsRemoveApiView(APIView):
+class UserV1FriendsApiView(APIView):
     @extend_schema(
         responses={
             status.HTTP_204_NO_CONTENT: None,
             status.HTTP_404_NOT_FOUND: utils.Api4xxSerializer,
         },
     )
-    def post(self, request: Request, other_user_id: int):
+    def delete(self, request: Request, other_user_id: int):
         with transaction.atomic():
             friends = Friends.objects.filter(
                 user=request.user,
