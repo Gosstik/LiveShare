@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
-import { googleOAuthOnClick } from "./Auth"
+import { googleOAuthOnClick } from "./Auth";
 
 function OAuthButton(props) {
   const { icon, name, onClick } = props;
@@ -27,70 +27,73 @@ export default function Signup() {
   const { user, loggedIn, checkLoginState } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     profileIcon: null,
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    repeatPassword: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    repeatPassword: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === 'image/jpeg') {
-      setFormData(prev => ({
+    if (file && file.type === "image/jpeg") {
+      setFormData((prev) => ({
         ...prev,
-        profileIcon: file
+        profileIcon: file,
       }));
     }
   };
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+
     const formDataToSend = new FormData();
     if (formData.profileIcon) {
-      formDataToSend.append('profile_icon', formData.profileIcon);
+      formDataToSend.append("profile_icon", formData.profileIcon);
     }
-    formDataToSend.append('first_name', formData.firstName);
-    formDataToSend.append('last_name', formData.lastName);
-    formDataToSend.append('email', formData.email);
-    formDataToSend.append('password', formData.password);
+    formDataToSend.append("first_name", formData.firstName);
+    formDataToSend.append("last_name", formData.lastName);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("password", formData.password);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/password/signup', {
-        method: 'POST',
-        credentials: 'include',
-        body: formDataToSend
-      });
-      
+      const response = await fetch(
+        "http://localhost:8000/auth/password/signup",
+        {
+          method: "POST",
+          credentials: "include",
+          body: formDataToSend,
+        }
+      );
+
       if (response.ok) {
         // Navigate to home page after successful signup
-        navigate('/');
+        navigate("/");
       } else {
         // TODO: change to code
         const data = await response.json();
-        if (data.code === 'email_already_exists') {
+        if (data.code === "email_already_exists") {
           // TODO: maybe some additional logic?
           setError(data.detail);
         } else {
           // setError(data.detail);
-          setError('Signup failed. Please try again.');
+          setError("Signup failed. Please try again.");
         }
       }
     } catch (error) {
-      setError('Error during signup. Please try again.');
-      console.error('Error during signup:', error);
+      setError("Error during signup. Please try again.");
+      console.error("Error during signup:", error);
     }
   };
 

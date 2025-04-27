@@ -1,3 +1,8 @@
+import Cookies from "js-cookie";
+import { ENV } from "../config";
+
+// import { toast } from 'react-toastify'; // Or your preferred notification library
+
 const handleNetworkError = (taskName) => (error) => {
   console.log(`%cAPI call '${taskName}' failed: network error`, "color: red");
   Promise.reject(error);
@@ -30,7 +35,7 @@ const getResponseWithApiErrorHandling = (taskName) => async (response) => {
 
 // Clients
 
-function auxApiGetCall(api_path, task_name, headers={}, credMode="omit") {
+function auxApiGetCall(api_path, task_name, headers = {}, credMode = "omit") {
   return fetch(`http://localhost:8000/${api_path}`, {
     method: "GET",
     headers,

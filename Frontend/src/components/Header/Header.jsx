@@ -5,15 +5,18 @@ import { useNavigate } from "react-router-dom";
 import style from "./Header.module.scss";
 
 import { AuthContext } from "../AuthProvider/AuthProvider";
+import { useAuth } from "../AuthProvider/AuthProvider";
+import { useApi } from "../ApiProvider/ApiProvider";
 
-import { authBackendUrl } from "../../api/urls";
 import defaultAvatar from "../../images/default-avatar.png";
 
 
 // function LoginButton() {}
 
 export default function Header() {
-  const { user, loggedIn, checkLoginState } = useContext(AuthContext);
+  // const { user, loggedIn, checkLoginState } = useContext(AuthContext);
+  const { user, isAuthenticated, isGuest, isAuthLoading, logoutUser} = useAuth();
+  const apiClient = useApi();
 
   const navigate = useNavigate();
 
@@ -34,27 +37,12 @@ export default function Header() {
   };
 
   const logout = async () => {
-    console.log(`logout cb`);
-    if (loggedIn) {
+    if (isAuthenticated) {
       try {
-        // TODO: make client
-        // TODO: add csrf header
-        const headers = {
-          "x-csrftoken": Cookies.get("csrftoken"),
-        };
-        await fetch(
-          // `${authBackendUrl}/auth/logout`,
-          `http://localhost:8000/auth/logout`,
-          {
-            method: "POST",
-            headers,
-            credentials: "include",
-          }
-        );
-        // Check login state again
-        checkLoginState();
+        apiClient.authLogout();
+        logoutUser();
       } catch (err) {
-        console.error(`!!! logout err: `, err);
+        console.error(`Logout error: ${err}`);
       }
     }
   };
@@ -70,22 +58,22 @@ export default function Header() {
           Home
         </button>
         <button className={style.createPostButton}>Create post</button>
-        {!loggedIn && (
+        {isGuest && (
           <button className={style.loginButton} onClick={signin}>
             Sign in
           </button>
         )}
-        {!loggedIn && (
+        {isGuest && (
           <button className={style.loginButton} onClick={signup}>
             Sign up
           </button>
         )}
-        {loggedIn && (
+        {isAuthenticated && (
           <button className={style.logoutButton} onClick={logout}>
             Logout
           </button>
         )}
-        {loggedIn && (
+        {isAuthenticated && (
           <>
             <img
               src={user?.profile_icon_url || defaultAvatar}

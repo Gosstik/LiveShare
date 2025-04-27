@@ -31,6 +31,7 @@ import PostShow from "./components/Posts/PostShow/PostShow";
 import AuthCallback from "./components/Auth/AuthCallback";
 // import NavigationBar from "./components/NavigationBar/NavigationBar"
 import { AuthProvider } from "./components/AuthProvider/AuthProvider";
+import { ApiProvider } from "./components/ApiProvider/ApiProvider";
 
 import { UrlNotFound } from "./components/NotFound/NotFound";
 
@@ -39,37 +40,39 @@ import style from "./components/Sidebar/Sidebar.module.scss";
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Sidebar />
-        <div className={style.bodyOutOfSidebar}>
-          <Header />
-          {/* <NavigationBar /> */}
-          <Routes>
-            <Route path={homeUrl} element={<Home />} />
-            <Route path={"/auth"} element={<Auth />} />
-            <Route path={signinUrl} element={<Signin />} />
-            <Route path={signupUrl} element={<Signup />} />
-            <Route
-              path={authCallbackUrl}
-              element={<AuthCallback />}
-              onEnter={() => console.log(`Entered ${authCallbackUrl}`)}
-            />
+      <ApiProvider>
+        <BrowserRouter>
+          <Sidebar />
+          <div className={style.bodyOutOfSidebar}>
+            <Header />
+            {/* <NavigationBar /> */}
+            <Routes>
+              <Route path={homeUrl} element={<Home />} />
+              <Route path={"/auth"} element={<Auth />} />
+              <Route path={signinUrl} element={<Signin />} />
+              <Route path={signupUrl} element={<Signup />} />
+              <Route
+                path={authCallbackUrl}
+                element={<AuthCallback />}
+                onEnter={() => console.log(`!!! Entered ${authCallbackUrl}`)}
+              />
 
-            <Route path={postsUrl} element={<Posts />}></Route>
+              <Route path={postsUrl} element={<Posts />}></Route>
 
-            {/* <Route path={postUrl} element={<PostRouterWrapper />}></Route> */}
-            <Route path={postCreateUrl} element={<PostCreate />}></Route>
-            <Route path={postUrl} element={<PostShow />}></Route>
+              {/* <Route path={postUrl} element={<PostRouterWrapper />}></Route> */}
+              <Route path={postCreateUrl} element={<PostCreate />}></Route>
+              <Route path={postUrl} element={<PostShow />}></Route>
 
-            <Route path={"/test"} element={<TestComponent />}></Route>
+              <Route path={"/test"} element={<TestComponent />}></Route>
 
-            <Route
-              path="*"
-              element={<NotFound messageComponent={UrlNotFound} />}
-            ></Route>
-          </Routes>
-        </div>
-      </BrowserRouter>
+              <Route
+                path="*"
+                element={<NotFound messageComponent={UrlNotFound} />}
+              ></Route>
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </ApiProvider>
     </AuthProvider>
   );
 }
