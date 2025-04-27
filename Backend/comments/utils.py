@@ -28,9 +28,9 @@ def get_comment_or_404(comment_id: int):
     )
 
 
-def make_comments_by_filters_query(params: dict, request_user: User):
-    post = get_post_or_404(params["post_id"])
-    result_set = post.comment_set.all()
+def get_comments_for_post(params: dict, post_id: int, request_user: User):
+    post = get_post_or_404(post_id)
+    result_comments = post.get_related_comments()
 
     # Create subqueries for count fields
     likes_count_subquery = (
@@ -39,7 +39,7 @@ def make_comments_by_filters_query(params: dict, request_user: User):
         .annotate(count=Count("id"))
         .values("count")
     )
-    result_set = result_set.annotate(
+    result_comments = result_comments.annotate(
         likes_count=Coalesce(Subquery(likes_count_subquery), V(0))
     )
 
@@ -47,15 +47,15 @@ def make_comments_by_filters_query(params: dict, request_user: User):
     sort_field_name = params["sort_field_name"]
     if params["sort_type"] == utils.SortType.DESC:
         sort_field_name = f"-{params['sort_field_name']}"
-    result_set = result_set.order_by(sort_field_name)
+    result_comments = result_comments.order_by(sort_field_name)
 
     # Set is_liked_by_user
     if request_user.is_authenticated:
         like_exists_subquery = CommentLike.objects.filter(
             comment_id=OuterRef("pk"), user_id=request_user.id
         )
-        result_set = result_set.annotate(is_liked_by_user=Exists(like_exists_subquery))
+        result_comments = result_comments.annotate(is_liked_by_user=Exists(like_exists_subquery))
     else:
-        result_set = result_set.annotate(is_liked_by_user=V(False))
+        result_comments = result_comments.annotate(is_liked_by_user=V(False))
 
-    return result_set
+    return result_comments

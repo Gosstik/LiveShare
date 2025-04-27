@@ -1,8 +1,15 @@
 import datetime as dt
-from django.db import models
+from typing import TYPE_CHECKING
+
+from django.db.models.query import QuerySet
 from django.db.models.functions import Now
+from django.db import models
 
 from users.models import User
+
+
+if TYPE_CHECKING:
+    from comments.models import Comment
 
 
 class Post(models.Model):
@@ -31,6 +38,9 @@ class Post(models.Model):
         if self.id:
             self.edited_at = dt.datetime.now()
         return super().save(*args, **kwargs)
+
+    def get_related_comments(self) -> 'QuerySet[Comment]':
+        return self.comment_set.all()
 
 
 class PostLike(models.Model):

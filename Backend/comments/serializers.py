@@ -3,6 +3,7 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer
 
 import Backend.utils as utils
+from users.serializers import UserResponseSerializer
 
 from comments.models import Comment
 from comments.utils import COMMENT_SORT_FIELD_NAMES
@@ -16,30 +17,7 @@ def transform_db_comments_for_response(filtered_comments):
     # TODO: (profiling) prefetch author
     comments_data = []
     for comment in filtered_comments:
-        author_display_name = utils.get_user_display_name(
-            comment.author.email,
-            comment.author.first_name,
-            comment.author.last_name,
-        )
-
-        # TODO: add user profile image
-        comment_data = {
-            "comment_id": comment.id,
-            "author_id": comment.author.id,
-            "author_email": comment.author.email,
-            "author_display_name": author_display_name,
-            "text_content": comment.text_content,
-            "created_at": comment.created_at,
-            "edited_at": comment.edited_at,
-            "likes_count": comment.likes_count,
-            "is_liked_by_user": comment.is_liked_by_user,
-        }
-        utils.validate_data(
-            comment_data,
-            CommentByFiltersSerializer,
-            verbose_code=f"Validation for comment_id={comment.id}",
-        )
-        comments_data.append(comment_data)
+        comments_data.append(CommentForPostSerializer(comment).data)
 
     return comments_data
 
@@ -91,7 +69,6 @@ def comment_by_post_example():
 
 
 class CommentsByFiltersParamsSerializer(utils.StrictFieldsMixin):
-    post_id = serializers.IntegerField(required=True)
     sort_field_name = serializers.ChoiceField(
         required=False,
         choices=COMMENT_SORT_FIELD_NAMES,
@@ -107,23 +84,19 @@ class CommentsByFiltersParamsSerializer(utils.StrictFieldsMixin):
 @extend_schema_serializer(
     examples=utils.single_example(comment_by_post_example()),
 )
-class CommentByFiltersSerializer(
+class CommentForPostSerializer(
     serializers.ModelSerializer, utils.StrictFieldsMixin
 ):
-    comment_id = serializers.IntegerField()
-    author_id = serializers.IntegerField(help_text="Id of user that create comment")
-    author_email = serializers.CharField()
-    author_display_name = serializers.CharField()
+    id = serializers.IntegerField()
+    author = UserResponseSerializer()
     likes_count = serializers.IntegerField()
     is_liked_by_user = serializers.BooleanField()
 
     class Meta:
         model = Comment
         fields = [
-            "comment_id",
-            "author_id",
-            "author_email",
-            "author_display_name",
+            "id",
+            "author",
             "text_content",
             "created_at",
             "edited_at",
@@ -133,6 +106,6 @@ class CommentByFiltersSerializer(
 
 
 # TODO: schema example
-class CommentsByFilterSerializer(utils.StrictFieldsMixin):
+class CommentsForPostSerializer(utils.StrictFieldsMixin):
     post_id = serializers.IntegerField()
-    comments = CommentByFiltersSerializer(many=True)
+    comments = CommentForPostSerializer(many=True)

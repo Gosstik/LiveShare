@@ -15,7 +15,7 @@ from posts.models import PostLike
 from posts.serializers import GetPostResponseSerializer
 
 
-def get_post_or_404(post_id: int):
+def get_post_or_404(post_id: int) -> Post:
     return utils.get_object_or_404(
         lambda: Post.objects.get(id=post_id),
         error_detail=f"Post with post_id={post_id} not found",
