@@ -10,6 +10,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.middleware import csrf
 
+from drf_spectacular.utils import extend_schema
+
+import Backend.utils as utils
+from Backend.exceptions import BadRequest400
+
 from custom_auth.utils import PublicApiMixin
 from custom_auth.cookies import set_new_auth_cookies
 from custom_auth.password_auth.serializers import (
@@ -17,36 +22,53 @@ from custom_auth.password_auth.serializers import (
     PasswordSigninRequestSerializer
 )
 
-# TODO
 
 class PasswordSignupApiView(PublicApiMixin, APIView):
+    @extend_schema(
+        request={
+            'multipart/form-data': PasswordSignupRequestSerializer,
+        },
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+        }
+    )
     def post(self, request):
         serializer = PasswordSignupRequestSerializer(data=request.data)
 
         try:
             if serializer.is_valid(raise_exception=True):
                 user = serializer.save()
-                # TODO: add cookies
-                print(f"!!! Created user: {user}")
                 response = Response(status=status.HTTP_204_NO_CONTENT)
                 return set_new_auth_cookies(user, response)
         except serializers.ValidationError as e:
             if 'email' in e.detail and "User with this email already exists" in str(e.detail['email'][0]):
-                return Response(
-                    {"error": "User with this email already exists"},
-                    status=status.HTTP_400_BAD_REQUEST
+                raise BadRequest400(
+                    code="email_already_exists",
+                    detail="User with this email already exists",
                 )
-            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+            raise BadRequest400(detail=e.detail)
 
 
 class PasswordSigninApiView(PublicApiMixin, APIView):
+    @extend_schema(
+        request={
+            'multipart/form-data': PasswordSigninRequestSerializer,
+        },
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+        }
+    )
     def post(self, request):
         serializer = PasswordSigninRequestSerializer(data=request.data)
-        
+
         try:
             if serializer.is_valid(raise_exception=True):
                 user = serializer.validated_data['user']
                 response = Response(status=status.HTTP_204_NO_CONTENT)
                 return set_new_auth_cookies(user, response)
         except serializers.ValidationError as e:
+            if 'error' in e.detail:
+                raise BadRequest400(code=e.detail['error'][0].code, detail=e.detail['error'][0])
             return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)

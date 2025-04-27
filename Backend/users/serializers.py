@@ -51,5 +51,9 @@ class UsersV1FriendsInviteParamsSerializer(utils.StrictFieldsMixin):
     invited_user_id = serializers.IntegerField()
 
 
+class UsersV1FriendsInviteActionParamsSerializer(utils.StrictFieldsMixin):
+    other_user_id = serializers.IntegerField()
+
+
 class UserV1FriendsRemoveParamsSerializer(utils.StrictFieldsMixin):
     removed_user_id = serializers.IntegerField()

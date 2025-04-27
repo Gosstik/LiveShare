@@ -78,10 +78,13 @@ export default function Signup() {
         // Navigate to home page after successful signup
         navigate('/');
       } else {
+        // TODO: change to code
         const data = await response.json();
-        if (data.error) {
-          setError(data.error);
+        if (data.code === 'email_already_exists') {
+          // TODO: maybe some additional logic?
+          setError(data.detail);
         } else {
+          // setError(data.detail);
           setError('Signup failed. Please try again.');
         }
       }

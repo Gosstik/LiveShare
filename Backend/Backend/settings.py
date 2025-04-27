@@ -276,6 +276,7 @@ REST_FRAMEWORK = {
     "DATETIME_INPUT_FORMATS": [rest_framework.ISO_8601],
     "DATETIME_FORMATS": [rest_framework.ISO_8601],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'EXCEPTION_HANDLER': 'Backend.exceptions.custom_exception_handler',
 }
 
 SIMPLE_JWT = {

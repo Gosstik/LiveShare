@@ -43,7 +43,7 @@ export default function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     try {
       const response = await fetch('http://localhost:8000/auth/password/signin', {
         method: 'POST',
@@ -53,13 +53,13 @@ export default function Signin() {
         credentials: 'include',
         body: JSON.stringify(formData)
       });
-      
+
       if (response.ok) {
         navigate('/');
       } else {
         const data = await response.json();
-        if (data.error) {
-          setError(data.error);
+        if (data.code && ['email_does_not_exist', 'invalid_password'].includes(data.code)) {
+          setError(data.detail);
         } else {
           setError('Sign in failed. Please try again.');
         }

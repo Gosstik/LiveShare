@@ -103,11 +103,3 @@ class FriendInvitation(models.Model):
 
     def __str__(self):
         return f'{str(self.user_id)} -> {str(self.friend_id)}'
-
-
-# from rest_framework import serializers
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = '__all__'

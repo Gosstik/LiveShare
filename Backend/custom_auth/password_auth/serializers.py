@@ -15,11 +15,21 @@ class PasswordSigninRequestSerializer(serializers.Serializer):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError({"error": "User with that email does not exist"})
+            raise serializers.ValidationError(
+                code="email_does_not_exist",
+                detail={
+                    "error": "User with that email does not exist"
+                },
+            )
 
         # Check password
         if not user.check_password(password):
-            raise serializers.ValidationError({"error": "Password is incorrect"})
+            raise serializers.ValidationError(
+                code="invalid_password",
+                detail={
+                    "error": "Password is incorrect. Try again"
+                },
+            )
 
         data['user'] = user
         return data
