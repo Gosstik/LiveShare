@@ -16,9 +16,11 @@ from users.models import Friends
 from users.models import FriendInvitation
 from users.serializers import UserResponseSerializer
 from users.serializers import UsersV1SearchParamsSerializer
-from users.serializers import UserV1SearchResponseSerializer
+from users.serializers import UserSearchResponseSerializer
+from users.serializers import UsersSearchResponseSerializer
 from users.utils import UsersSearchUserType
 from users.utils import create_friends
+from users.utils import get_users_by_filters
 
 
 class UsersV1Search(OptionalAuthApiMixin, APIView):
@@ -27,7 +29,7 @@ class UsersV1Search(OptionalAuthApiMixin, APIView):
             UsersV1SearchParamsSerializer,
         ],
         responses={
-            status.HTTP_200_OK: UserV1SearchResponseSerializer,
+            status.HTTP_200_OK: UsersSearchResponseSerializer,
             status.HTTP_400_BAD_REQUEST: utils.Api4xxSerializer,
         },
     )
@@ -37,26 +39,17 @@ class UsersV1Search(OptionalAuthApiMixin, APIView):
             UsersV1SearchParamsSerializer,
             detail="Request params deserialization failed",
         )
-        if params['users_type'] == UsersSearchUserType.FRIENDS:
-            utils.true_or_400(
-                request.user.is_authenticated,
-                code='invalid_filters',
-                detail='Unauthorized request to list friends'
-            )
-            friend_ids = Friends.objects.filter(user=request.user).values_list('friend_id', flat=True)
-            result_users = User.objects.filter(id__in=friend_ids)
-        else:
-            result_users = User.objects.all()
 
+        result_users = get_users_by_filters(request.user, params)
         result_users = result_users.order_by('first_name', 'last_name')
-        result_users = [UserResponseSerializer(user).data for user in result_users]
+        result_users = [UserSearchResponseSerializer(user).data for user in result_users]
         response_data = {
             'users': result_users
         }
 
         return utils.validate_and_get_response(
             response_data,
-            UserV1SearchResponseSerializer,
+            UsersSearchResponseSerializer,
             verbose_code="Serialization of response failed"
         )
 

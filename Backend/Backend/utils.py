@@ -240,10 +240,20 @@ class StrictFieldsMixin(serializers.Serializer):
     def to_representation(self, instance):
         # Get all fields including method fields
         representation = super().to_representation(instance)
+
         # Ensure all declared fields are included
-        for field_name in self.fields.keys():
+        for field_name, field in self.fields.items():
             if field_name not in representation:
-                representation[field_name] = self.fields[field_name].get_attribute(instance)
+                try:
+                    # Try to safely get the attribute
+                    value = field.get_attribute(instance)
+                    representation[field_name] = field.to_representation(value)
+                except (KeyError, AttributeError):
+                    # Skip if the attribute doesn't exist
+                    pass
+                except Exception as e:
+                    # Log or handle other exceptions as needed
+                    print(f"Error getting attribute {field_name}: {str(e)}")
         return representation
 
 

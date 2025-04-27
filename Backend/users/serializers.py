@@ -5,6 +5,8 @@ import Backend.utils as utils
 from users.models import User
 from users.utils import UsersSearchUserType
 from users.utils import USERS_SEARCH_USER_TYPES
+from users.utils import UserFriendStatus
+from users.utils import USER_FRIEND_STATUSES
 
 
 class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
@@ -42,6 +44,15 @@ class UsersV1SearchParamsSerializer(utils.StrictFieldsMixin):
     )
 
 
-class UserV1SearchResponseSerializer(serializers.Serializer):
-    users = serializers.ListField(child=UserResponseSerializer())
+class UserSearchResponseSerializer(UserResponseSerializer):
+    friend_status = serializers.ChoiceField(
+        required=False,
+        choices=USER_FRIEND_STATUSES,
+    )
 
+    class Meta(UserResponseSerializer.Meta):
+        fields = UserResponseSerializer.Meta.fields + ['friend_status']
+
+
+class UsersSearchResponseSerializer(serializers.Serializer):
+    users = serializers.ListField(child=UserSearchResponseSerializer())
