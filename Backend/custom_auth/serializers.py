@@ -11,4 +11,5 @@ class AuthTokenExpirationSerializer(serializers.Serializer):
 
 class AuthUserInfoResponseSerializer(serializers.Serializer):
     access_token_expiration = AuthTokenExpirationSerializer()
+    refresh_token_expiration = AuthTokenExpirationSerializer()
     user = UserResponseSerializer()

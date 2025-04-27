@@ -268,7 +268,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "custom_auth.authentication.CookieJWTAuthentication",
     ),
-    # TODO: uncomment after creating auth
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
@@ -277,6 +276,17 @@ REST_FRAMEWORK = {
     "DATETIME_FORMATS": [rest_framework.ISO_8601],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     'EXCEPTION_HANDLER': 'Backend.exceptions.custom_exception_handler',
+    # CamelCaseXXX allows to use CamelCase for parameters on frontend
+    # and snake_case on backend
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    ),
 }
 
 SIMPLE_JWT = {
