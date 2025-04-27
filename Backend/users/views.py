@@ -9,18 +9,19 @@ from drf_spectacular.utils import extend_schema
 
 import Backend.utils as utils
 from Backend.exceptions import NotFound404
-from custom_auth.mixins import PublicApiMixin
+from custom_auth.mixins import OptionalAuthApiMixin
 
 from users.models import User
 from users.models import Friends
 from users.models import FriendInvitation
+from users.serializers import UserResponseSerializer
 from users.serializers import UsersV1SearchParamsSerializer
 from users.serializers import UserV1SearchResponseSerializer
 from users.utils import UsersSearchUserType
 from users.utils import create_friends
 
 
-class UsersV1Search(PublicApiMixin, APIView):
+class UsersV1Search(OptionalAuthApiMixin, APIView):
     @extend_schema(
         parameters=[
             UsersV1SearchParamsSerializer,
@@ -32,8 +33,8 @@ class UsersV1Search(PublicApiMixin, APIView):
     )
     def get(self, request: Request):
         params = utils.deserialize_or_400(
-            UsersV1SearchParamsSerializer,
             request.query_params,
+            UsersV1SearchParamsSerializer,
             detail="Request params deserialization failed",
         )
         if params['users_type'] == UsersSearchUserType.FRIENDS:
@@ -47,8 +48,10 @@ class UsersV1Search(PublicApiMixin, APIView):
         else:
             result_users = User.objects.all()
 
+        result_users = result_users.order_by('first_name', 'last_name')
+        result_users = [UserResponseSerializer(user).data for user in result_users]
         response_data = {
-            'users': result_users.order_by('first_name', 'last_name')
+            'users': result_users
         }
 
         return utils.validate_and_get_response(

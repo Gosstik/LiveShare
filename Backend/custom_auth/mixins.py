@@ -4,6 +4,7 @@ from rest_framework import exceptions as rest_exceptions
 from rest_framework.permissions import IsAuthenticated
 
 from custom_auth.authentication import CookieJWTAuthentication
+from custom_auth.authentication import OptionalCookieJWTAuthentication
 from users.models import User
 
 
@@ -16,6 +17,11 @@ class AuthApiMixin:
 
 class PublicApiMixin:
     authentication_classes = ()
+    permission_classes = ()
+
+
+class OptionalAuthApiMixin:
+    authentication_classes = (OptionalCookieJWTAuthentication,)
     permission_classes = ()
 
 

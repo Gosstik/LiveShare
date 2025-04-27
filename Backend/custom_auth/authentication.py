@@ -22,3 +22,17 @@ class CookieJWTAuthentication(JWTAuthentication):
 
         validated_token = self.get_validated_token(raw_token)
         return self.get_user(validated_token), validated_token
+
+    def get_user(self, validated_token):
+        user = super().get_user(validated_token)
+        # Additional debugging
+        print(f"User authenticated: {user}, is_authenticated: {user.is_authenticated}")
+        return user
+
+
+class OptionalCookieJWTAuthentication(CookieJWTAuthentication):
+    def authenticate(self, request):
+        try:
+            return super().authenticate(request)
+        except:
+            return None
