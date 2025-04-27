@@ -9,7 +9,7 @@ from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import OpenApiTypes
 
 import Backend.utils as utils
-from custom_auth.utils import PublicApiMixin, AuthApiMixin
+from custom_auth.mixins import PublicApiMixin, AuthApiMixin
 from posts.utils import get_post_or_404
 
 from comments.models import Comment

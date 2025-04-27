@@ -102,4 +102,4 @@ class FriendInvitation(models.Model):
         ]
 
     def __str__(self):
-        return f'{str(self.user_id)} -> {str(self.friend_id)}'
+        return f'{self.from_user.id} -> {self.to_user.id} ({str(self.from_user)} -> {str(self.to_user)})'

@@ -17,7 +17,7 @@ from Backend.exceptions import BadRequest400
 from custom_auth.google_oauth.service import GoogleRawLoginFlowService
 from custom_auth.google_oauth.serializers import GoogleOAuthCallbackParamsSerializer
 
-from custom_auth.utils import PublicApiMixin
+from custom_auth.mixins import PublicApiMixin
 from custom_auth.cookies import set_new_auth_cookies
 from users.models import User
 
@@ -62,7 +62,7 @@ class GoogleOAuthCallbackApiView(PublicApiMixin, APIView):
                     f"- `Set-Cookie`: {settings.SIMPLE_JWT['AUTH_REFRESH_TOKEN']}=[value]; HttpOnly; Path=/"
                 )
             ),
-            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+            status.HTTP_400_BAD_REQUEST: utils.Api4xxSerializer,
         },
     )
     def get(self, request: Request):

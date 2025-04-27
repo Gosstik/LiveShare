@@ -15,7 +15,7 @@ from drf_spectacular.utils import extend_schema
 import Backend.utils as utils
 from Backend.exceptions import BadRequest400
 
-from custom_auth.utils import PublicApiMixin
+from custom_auth.mixins import PublicApiMixin
 from custom_auth.cookies import set_new_auth_cookies
 from custom_auth.password_auth.serializers import (
     PasswordSignupRequestSerializer,
@@ -30,7 +30,7 @@ class PasswordSignupApiView(PublicApiMixin, APIView):
         },
         responses={
             status.HTTP_204_NO_CONTENT: None,
-            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+            status.HTTP_400_BAD_REQUEST: utils.Api4xxSerializer,
         }
     )
     def post(self, request):
@@ -57,7 +57,7 @@ class PasswordSigninApiView(PublicApiMixin, APIView):
         },
         responses={
             status.HTTP_204_NO_CONTENT: None,
-            status.HTTP_400_BAD_REQUEST: utils.BadRequestSerializer,
+            status.HTTP_400_BAD_REQUEST: utils.Api4xxSerializer,
         }
     )
     def post(self, request):

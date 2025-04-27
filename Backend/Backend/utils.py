@@ -81,7 +81,7 @@ SORT_TYPES = [(val.value, val.name) for val in SortType]
 
 ### Bad Request
 
-class BadRequestSerializer(serializers.Serializer):
+class Api4xxSerializer(serializers.Serializer):
     code = serializers.CharField()
     detail = serializers.CharField()
 

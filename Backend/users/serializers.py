@@ -35,7 +35,6 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
 
 
 class UsersV1SearchParamsSerializer(utils.StrictFieldsMixin):
-    current_user_id = serializers.IntegerField(required=False)
     users_type = serializers.ChoiceField(
         required=False,
         choices=USERS_SEARCH_USER_TYPES,
@@ -46,14 +45,3 @@ class UsersV1SearchParamsSerializer(utils.StrictFieldsMixin):
 class UserV1SearchResponseSerializer(serializers.Serializer):
     users = serializers.ListField(child=UserResponseSerializer())
 
-
-class UsersV1FriendsInviteParamsSerializer(utils.StrictFieldsMixin):
-    invited_user_id = serializers.IntegerField()
-
-
-class UsersV1FriendsInviteActionParamsSerializer(utils.StrictFieldsMixin):
-    other_user_id = serializers.IntegerField()
-
-
-class UserV1FriendsRemoveParamsSerializer(utils.StrictFieldsMixin):
-    removed_user_id = serializers.IntegerField()
