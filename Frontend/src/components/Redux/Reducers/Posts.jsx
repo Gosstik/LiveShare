@@ -115,25 +115,9 @@ const postsSlice = createSlice(
 // Middlewares
 
 export function postsLoad(apiClient) {
-  // return async function thunk(dispatch, getState) {
-  //   const loaded = getState().posts.loaded;
-  //   if (!loaded) {
-  //     apiGetPosts().then((postEls) => {
-  //       dispatch(
-  //         postsLoaded({
-  //           postEls,
-  //         })
-  //       );
-  //     }).catch(() => {
-  //       dispatch(postsLoadFailed())
-  //     });
-  //   }
-  // };
-
   return async function thunk(dispatch, getState) {
     const loaded = getState().posts.loaded;
     if (!loaded) {
-      // TODO: replace API
       apiClient
         .postsV1ByFilters()
         .then(async (response) => {
@@ -166,28 +150,6 @@ export function postsLoad(apiClient) {
         .catch(() => {
           dispatch(postsLoadFailed());
         });
-
-      // apiGetPosts()
-      //   .then((response_body) => {
-      //     const postEls = Array.from(response_body.posts, (post) => ({
-      //       postId: post.post_id,
-      //       authorEmail: post.author_email, // TODO: add handler
-      //       title: post.title,
-      //       text: post.text,
-      //       likes: post.likes_count,
-      //       isLiked: post.is_liked_by_user ?? false,
-      //       commentsCount: post.comments_count,
-      //       createdAt: post.created_at,
-      //     }));
-      //     dispatch(
-      //       postsLoaded({
-      //         postEls,
-      //       })
-      //     );
-      //   })
-      //   .catch(() => {
-      //     dispatch(postsLoadFailed());
-      //   });
     }
   };
 }
@@ -234,19 +196,6 @@ export function postLike(payload) {
         postId, newIsLiked,
       })
     );
-
-    // const isLiked = selectPostIsLiked(postId)(getState());
-    // (async () =>
-    //   apiUpdatePostLike({
-    //     post_id: postId,
-    //     set_like: !isLiked,
-    //   }))();
-    // dispatch(
-    //   postLikeSync({
-    //     postId,
-    //     newIsLiked: !isLiked,
-    //   })
-    // );
   };
 }
 
