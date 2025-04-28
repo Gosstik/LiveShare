@@ -75,9 +75,7 @@ const postsSlice = createSlice(
         post.title = newTitle;
       },
       postRemoveSync(state, action) {
-        const { postId, apiClient } = action.payload;
-
-        apiClient.postsV1PostDelete(postId);
+        const { postId } = action.payload;
 
         state.posts = state.posts.filter((post) => post.postId !== postId);
       },

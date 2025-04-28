@@ -44,7 +44,11 @@ export default function Post(props) {
 
   const onFormCancel = () => setIsModalOpened(false);
 
-  const onPostRemove = () => dispatch(postRemove({ postId, apiClient }));
+  console.log(`!!! before lambda: ${apiClient}`)
+  const onPostRemove = () => {
+    console.log(`!!! inside onPostRemove: ${apiClient}`)
+    dispatch(postRemove({ postId, apiClient }))
+  };
 
   const [areCommentsShown, setAreCommentsShown] = useState(false);
   const swapIsCommentShown = () => setAreCommentsShown(!areCommentsShown);
