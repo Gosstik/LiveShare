@@ -38,7 +38,7 @@ import AuthCallback from "./components/Auth/AuthCallback";
 //// New components
 
 import Home from "./components/Home/Home";
-import Explore from "./components/Explore/Explore";
+// import Explore from "./components/Explore/Explore";
 import SinglePost from "./components/SinglePost/SinglePost";
 import CreatePost from "./components/CreatePost/CreatePost";
 import EditPost from "./components/EditPost/EditPost";
@@ -66,7 +66,8 @@ function App() {
             <Routes>
               {/* New components */}
               <Route path={homeUrl} element={<Home />} />
-              <Route path={exploreUrl} element={<Explore />} />
+              {/* <Route path={exploreUrl} element={<Explore />} /> */}
+              <Route path={exploreUrl} element={<Posts />} />
               <Route path={singlePostUrl} element={<SinglePost />} />
               <Route path={createPostUrl} element={<CreatePost />} />
               <Route path={editPostUrl} element={<EditPost />} />

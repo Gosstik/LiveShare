@@ -7,6 +7,7 @@ import LoadingPost from "./LoadingPost";
 import SortToggles from "../SortToggles/SortToggles";
 import NotFound from "../NotFound/NotFound";
 import { PostNotFound } from "../NotFound/NotFound";
+import { useApi } from "../ApiProvider/ApiProvider";
 
 import {
   postsLoading,
@@ -28,6 +29,7 @@ const filterById = (postId) => (post) => Number(post.postId) === Number(postId);
 
 export default function Posts() {
   const dispatch = useDispatch();
+  const apiClient = useApi();
 
   // Handle single post
 
@@ -41,7 +43,7 @@ export default function Posts() {
   const areLoaded = useSelector(selectPostsLoaded);
   const isLoadFailed = useSelector(selectPostsLoadFailed);
   if (!areLoaded && !areLoading && !isLoadFailed) {
-    dispatch(postsLoad());
+    dispatch(postsLoad(apiClient));
     dispatch(
       postsLoading({
         loadingPosts: Array(isSinglePost ? 1 : 5).fill(null),

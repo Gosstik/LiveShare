@@ -11,6 +11,8 @@ import {
 import { postLike } from "../Redux/Reducers/Posts";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import IssueAuth from "../Modal/IssueAuth";
+import { useApi } from "../ApiProvider/ApiProvider";
+import { useAuth } from "../AuthProvider/AuthProvider";
 
 import style from "./PostFooter.module.scss";
 
@@ -30,7 +32,7 @@ function PostProperty(props) {
 function PostCountProperty(props) {
   const { image, alt, onClick, count } = props;
 
-  const { loggedIn } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuth();
 
   // TODO: modal with auth
   const [isModalOpened, setIsModalOpened] = useState(false);
@@ -40,8 +42,8 @@ function PostCountProperty(props) {
 
   return (
     <div className={style.countProp}>
-      {loggedIn && <img src={image} alt={alt} onClick={onClick} draggable="false" />}
-      {!loggedIn && <img src={image} alt={alt} onClick={openModal} draggable="false" />}
+      {isAuthenticated && <img src={image} alt={alt} onClick={onClick} draggable="false" />}
+      {!isAuthenticated && <img src={image} alt={alt} onClick={openModal} draggable="false" />}
       {isModalOpened && <IssueAuth onOkClick={closeModal} />}
       <div className={style.count}>{count}</div>
     </div>
@@ -57,6 +59,7 @@ export default function PostFooterProps(props) {
   } = props;
 
   const dispatch = useDispatch();
+  const apiClient = useApi();
 
   // Likes
 
@@ -66,18 +69,16 @@ export default function PostFooterProps(props) {
   const onLikeClick = () => {
     dispatch(
       postLike({
-        postId,
+        postId, apiClient
       })
     );
   };
-
-  // CreatedAt
 
   const createdAt = useSelector(selectPostCreatedAt(postId))
 
   const createdAtDisplay = moment(createdAt).fromNow();
   // TODO: if diff > month - print YYYY:MM:DD
-  // console.log(`postCreatedAtStr: ${postCreatedAtStr}`);
+  // console.log(`!!! createdAtDisplay: ${createdAtDisplay}`);
 
   const commentsCount = useSelector(selectPostCommentsCount(postId));
 

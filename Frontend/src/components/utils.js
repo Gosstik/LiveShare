@@ -1,3 +1,16 @@
+export const LoadingState = {
+  NOT_STARTED: "not_started",
+  LOADING: "loading",
+  SUCCESS: "success",
+  FAILURE: "failure",
+};
+
+export const PostsSortOptions = {
+  LIKES: "likes",
+  CREATED_AT: "createdAt",
+  COMMENTS: "comments",
+}
+
 export const getSortedArray = (values, lessCmp, isAscending = true) => {
   return values.slice().sort((lhs, rhs) => {
     if (lhs === null) {

@@ -8,6 +8,7 @@ import PostFooterProps from "./PostFooterProps";
 import PostForm from "./PostForm";
 import Comments from "../Comments/Comments";
 import CommentsForm from "../Comments/CommentsForm";
+import { useApi } from "../ApiProvider/ApiProvider";
 
 import { postFormUpdate, postRemove } from "../Redux/Reducers/Posts";
 import { selectPost, selectPostText } from "../Redux/Reducers/Posts";
@@ -20,6 +21,7 @@ export default function Post(props) {
   const { postId, isSinglePost } = props;
 
   const dispatch = useDispatch();
+  const apiClient = useApi();
 
   const post = useSelector(selectPost(postId));
 
@@ -34,6 +36,7 @@ export default function Post(props) {
         postId,
         newTitle,
         newText,
+        apiClient,
       })
     );
     setIsModalOpened(false);
@@ -41,7 +44,7 @@ export default function Post(props) {
 
   const onFormCancel = () => setIsModalOpened(false);
 
-  const onPostRemove = () => dispatch(postRemove({ postId }));
+  const onPostRemove = () => dispatch(postRemove({ postId, apiClient }));
 
   const [areCommentsShown, setAreCommentsShown] = useState(false);
   const swapIsCommentShown = () => setAreCommentsShown(!areCommentsShown);

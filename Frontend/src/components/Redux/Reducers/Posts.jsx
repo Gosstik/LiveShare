@@ -23,6 +23,7 @@ const initialState = {
 
 const postsSlice = createSlice(
   {
+    // TODO: send data to backend for all tasks
     name: "posts",
     initialState,
     reducers: {
@@ -66,18 +67,19 @@ const postsSlice = createSlice(
           isAscending,
         };
       },
-      postFormUpdate(state, action) {
+      postFormUpdateSync(state, action) {
         const { postId, newText, newTitle } = action.payload;
 
         const post = getInnerPostById(state, postId);
         post.text = newText;
         post.title = newTitle;
       },
-      postRemove(state, action) {
-        const { postId } = action.payload;
+      postRemoveSync(state, action) {
+        const { postId, apiClient } = action.payload;
+
+        apiClient.postsV1PostDelete(postId);
 
         state.posts = state.posts.filter((post) => post.postId !== postId);
-        // TODO: api call
       },
       postLikeSync(state, action) {
         const { postId, newIsLiked } = action.payload;
@@ -85,7 +87,7 @@ const postsSlice = createSlice(
         const post = state.posts.find((post) => post.postId === postId);
         if (post.isLiked !== newIsLiked) {
           post.isLiked = newIsLiked;
-          post.likes += (newIsLiked ? 1 : -1)
+          post.likes += newIsLiked ? 1 : -1;
         }
       },
       postUpdateCommentsCount(state, action) {
@@ -95,6 +97,7 @@ const postsSlice = createSlice(
         post.commentsCount = newCommentsCount;
       },
       postAdd(state, action) {
+        // TODO: add apiClient
         // TODO: add UI
         // const { postId } = action.payload;
         // const post = {}
@@ -113,7 +116,7 @@ const postsSlice = createSlice(
 
 // Middlewares
 
-export function postsLoad() {
+export function postsLoad(apiClient) {
   // return async function thunk(dispatch, getState) {
   //   const loaded = getState().posts.loaded;
   //   if (!loaded) {
@@ -133,17 +136,28 @@ export function postsLoad() {
     const loaded = getState().posts.loaded;
     if (!loaded) {
       // TODO: replace API
-      apiGetPosts()
-        .then((response_body) => {
-          const postEls = Array.from(response_body.posts, (post) => ({
-            postId: post.post_id,
-            authorEmail: post.author_email, // TODO: add handler
+      apiClient
+        .postsV1ByFilters()
+        .then(async (response) => {
+          const body = await response.json();
+          const postEls = Array.from(body.posts, (post) => ({
+            postId: post.id,
+            author: {
+              id: post.author.id,
+              email: post.author.email,
+              firstName: post.author.firstName,
+              lastName: post.author.lastName,
+              displayedName: post.author.displayedName,
+              profileIconUrl: post.author.profileIconUrl,
+            },
             title: post.title,
-            text: post.text,
-            likes: post.likes_count,
-            isLiked: post.is_liked_by_user ?? false,
-            commentsCount: post.comments_count,
-            createdAt: post.created_at,
+            text: post.textContent,
+            createdAt: post.createdAt,
+            editedAt: post.editedAt,
+            likes: post.likesCount,
+            isLiked: post.isLikedByUser ?? false,
+            commentsCount: post.commentsCount,
+            attachedImageUrl: post.attachedImageUrl,
           }));
           dispatch(
             postsLoaded({
@@ -154,24 +168,87 @@ export function postsLoad() {
         .catch(() => {
           dispatch(postsLoadFailed());
         });
+
+      // apiGetPosts()
+      //   .then((response_body) => {
+      //     const postEls = Array.from(response_body.posts, (post) => ({
+      //       postId: post.post_id,
+      //       authorEmail: post.author_email, // TODO: add handler
+      //       title: post.title,
+      //       text: post.text,
+      //       likes: post.likes_count,
+      //       isLiked: post.is_liked_by_user ?? false,
+      //       commentsCount: post.comments_count,
+      //       createdAt: post.created_at,
+      //     }));
+      //     dispatch(
+      //       postsLoaded({
+      //         postEls,
+      //       })
+      //     );
+      //   })
+      //   .catch(() => {
+      //     dispatch(postsLoadFailed());
+      //   });
     }
   };
 }
 
-export function postLike(payload) {
-  const { postId } = payload;
+export function postFormUpdate(payload) {
+  const { postId, newText, newTitle, apiClient } = payload;
   return async function thunk(dispatch, getState) {
-    // TODO: replace API
-    const isLiked = selectPostIsLiked(postId)(getState());
-    (async () => apiUpdatePostLike({
-      post_id: postId,
-      set_like: !isLiked,
-    }))();
+    apiClient.postsV1PostPatch(postId, {
+      title: newTitle,
+      textContent: newText,
+    });
     dispatch(
-      postLikeSync({
-        postId, newIsLiked: !isLiked
+      postFormUpdateSync({
+        postId, newText, newTitle,
       })
     );
+  }
+}
+
+export function postRemove(payload) {
+  const { postId, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    apiClient.postsV1PostDelete(postId);
+    dispatch(
+      postRemoveSync({
+        postId,
+      })
+    );
+  }
+}
+
+export function postLike(payload) {
+  const { postId, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    const isLiked = selectPostIsLiked(postId)(getState());
+    const newIsLiked = !isLiked;
+    if (newIsLiked) {
+      apiClient.postsV1PostLike(postId);
+    } else {
+      apiClient.postsV1PostUnlike(postId);
+    }
+    dispatch(
+      postLikeSync({
+        postId, newIsLiked,
+      })
+    );
+
+    // const isLiked = selectPostIsLiked(postId)(getState());
+    // (async () =>
+    //   apiUpdatePostLike({
+    //     post_id: postId,
+    //     set_like: !isLiked,
+    //   }))();
+    // dispatch(
+    //   postLikeSync({
+    //     postId,
+    //     newIsLiked: !isLiked,
+    //   })
+    // );
   };
 }
 
@@ -219,8 +296,8 @@ export const {
   postsLoaded,
   postsLoadFailed,
   postsSort,
-  postFormUpdate,
-  postRemove,
+  postFormUpdateSync,
+  postRemoveSync,
   postLikeSync,
   postUpdateCommentsCount,
 } = postsSlice.actions;
