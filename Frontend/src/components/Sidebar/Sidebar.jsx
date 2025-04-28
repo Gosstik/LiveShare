@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import classNames from "classnames/bind";
 
 import { Settings } from "lucide-react";
@@ -9,48 +11,18 @@ import { Settings } from "lucide-react";
 import style from "./Sidebar.module.scss";
 import { current } from "@reduxjs/toolkit";
 
+import {
+  homeUrl,
+  createPostUrl,
+  friendsUrl,
+  exploreUrl,
+} from "../../api/urls";
+
 const cx = classNames.bind(style);
 
-// export default function TopNavMenu() {
-//   return (
-//     <body>
-//       <header>
-//         <section className={style.headerTitleLine}>
-//           <h1 className={style.headerTitle}>Acme Co.</h1>
-//           <button className={style.menuButton}>
-//             <div className={style.menuIcon}></div>
-//           </button>
-//         </section>
-
-//         <div className={style.aboveNav}>
-//           <nav>
-//             <ul>
-//               <li>
-//                 <a href="#">Products</a>
-//               </li>
-//               <li>
-//                 <a href="#">Forum</a>
-//               </li>
-//               <li>
-//                 <a href="#">About</a>
-//               </li>
-//               <li>
-//                 <a href="#">Contact</a>
-//               </li>
-//             </ul>
-//           </nav>
-//         </div>
-//       </header>
-//     </body>
-//   );
-// }
-
 export default function Sidebar({ children }) {
-  // add event listeners
-  // TODO: check mouse already on Sidebar
-  // console.log("reinit component");
+  const navigate = useNavigate();
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
-  // console.log(`isSidebarOpened=${isSidebarOpened}`);
   const sidebar = useRef(null);
 
   const openSidebar = () => {
@@ -88,17 +60,18 @@ export default function Sidebar({ children }) {
       </div>
       <ul>
         <li>
-          <a href="#">Home</a>
+          <div onClick={() => navigate(homeUrl)}>Home</div>
         </li>
         <li>
-          <a href="#">Posts</a>
+          <div onClick={() => navigate(exploreUrl)}>Explore</div>
         </li>
         <li>
-          <a href="#">Search Posts</a>
+          <div onClick={() => navigate(createPostUrl)}>Create Post</div>
         </li>
         <li>
-          <a href="#">Friends</a>
+          <div onClick={() => navigate(friendsUrl)}>Friends</div>
         </li>
+        {/* TODO: About, SignIn, SignUp */}
       </ul>
     </div>
   );

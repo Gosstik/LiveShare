@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from "@reduxjs/toolkit";
 
-import postsReducer from "./Reducers/Posts"
-import commentsReducer from "./Reducers/Comments"
+import postsReducer from "./Reducers/Posts";
+import commentsReducer from "./Reducers/Comments";
 
 const store = configureStore({
   reducer: {
@@ -9,6 +9,6 @@ const store = configureStore({
     comments: commentsReducer,
   },
   devTools: true,
-})
+});
 
-export default store
+export default store;

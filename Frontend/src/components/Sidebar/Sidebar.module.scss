@@ -76,7 +76,7 @@ $sidebarClosedWidth: 62px;
   border-bottom: none;
 }
 
-.sidebar ul li a {
+.sidebar ul li div {
   color: white;
   padding: 12px 20px;
   display: block;
@@ -84,7 +84,7 @@ $sidebarClosedWidth: 62px;
   transition: background-color 0.3s;
 }
 
-.sidebar ul li a:hover {
+.sidebar ul li div:hover {
   background-color: #555;
 }
 

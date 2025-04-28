@@ -2,12 +2,14 @@ import style from "./Auth.module.scss";
 
 import { appIconImg, yaEngImg, googleImg } from "../Consts/Consts";
 import { afterAuthPath } from "../../api/urls";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../ApiProvider/ApiProvider";
 import { useAuth, updateTokensInLocalStorage } from "../AuthProvider/AuthProvider";
 
-import { googleOAuthOnClick } from "./Auth"
+import Divider from '@mui/joy/Divider';
+
+import { googleOAuthOnClick } from "./Auth";
 
 function OAuthButton(props) {
   const { icon, name, onClick } = props;
@@ -84,7 +86,7 @@ export default function Signin() {
           onClick={googleOAuthOnClick}
         />
       </div>
-      <h1 className={style.mainText}>---- or -----</h1>
+      <Divider>Visual indicator</Divider>
       <form onSubmit={handleSubmit} className={style.signupForm}>
         {error && <div className={style.errorMessage}>{error}</div>}
         

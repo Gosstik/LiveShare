@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
+import Avatar from '@mui/joy/Avatar';
+import Box from '@mui/joy/Box';
+
 import style from "./Header.module.scss";
 
 import { AuthContext } from "../AuthProvider/AuthProvider";
@@ -9,6 +12,7 @@ import { useAuth } from "../AuthProvider/AuthProvider";
 import { useApi } from "../ApiProvider/ApiProvider";
 
 import defaultAvatar from "../../images/default-avatar.png";
+import src from "@emotion/styled";
 
 
 // function LoginButton() {}
@@ -73,7 +77,7 @@ export default function Header() {
             Logout
           </button>
         )}
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <>
             <img
               src={user?.profile_icon_url || defaultAvatar}
@@ -88,6 +92,18 @@ export default function Header() {
             />
             <div>{user?.displayed_name || "Guest"}</div>
           </>
+        )} */}
+        {isAuthenticated && (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {user?.profileIconUrl ? (
+                <Avatar size="sm" src={user?.profileIconUrl}/>
+              ) : (
+                <Avatar />
+              )
+            }
+            {/* <Avatar>JG</Avatar> */}
+            {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> */}
+          </Box>
         )}
       </div>
     </header>

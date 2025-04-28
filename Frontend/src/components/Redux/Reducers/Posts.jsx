@@ -132,6 +132,7 @@ export function postsLoad() {
   return async function thunk(dispatch, getState) {
     const loaded = getState().posts.loaded;
     if (!loaded) {
+      // TODO: replace API
       apiGetPosts()
         .then((response_body) => {
           const postEls = Array.from(response_body.posts, (post) => ({
@@ -160,6 +161,7 @@ export function postsLoad() {
 export function postLike(payload) {
   const { postId } = payload;
   return async function thunk(dispatch, getState) {
+    // TODO: replace API
     const isLiked = selectPostIsLiked(postId)(getState());
     (async () => apiUpdatePostLike({
       post_id: postId,

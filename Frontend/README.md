@@ -21,6 +21,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - `/auth/signout`
 - `/not_found`
 
+Profile ???
+
 ## TODO
 
 - Дизайн для кнопки загрузки
