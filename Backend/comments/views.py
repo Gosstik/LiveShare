@@ -32,7 +32,7 @@ class CreateCommentApiView(APIView):
         },
     )
     def post(self, request):
-        serializer = CreateCommentRequestSerializer(data=request.data)
+        serializer = CreateCommentRequestSerializer(data=request.data, context={'request_user': request.user})
         if serializer.is_valid():
             get_post_or_404(serializer.validated_data["post_id"])
             serializer.save()

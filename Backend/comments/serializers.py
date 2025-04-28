@@ -54,11 +54,14 @@ def create_comment_request_example():
 )
 class CreateCommentRequestSerializer(EditCommentRequestSerializer):
     post_id = serializers.IntegerField()
-    author_id = serializers.IntegerField(help_text="Id of user that create comment")
 
     class Meta:
         model = Comment
         fields = ["post_id", "author_id", *EditCommentRequestSerializer.Meta.fields]
+
+    def create(self, validated_data):
+        validated_data['author'] = self.context.get('request_user')
+        return Comment.objects.create(**validated_data)
 
 
 def comment_by_post_example():
