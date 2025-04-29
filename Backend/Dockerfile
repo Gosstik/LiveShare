@@ -13,7 +13,7 @@ RUN groupadd -g 1000 liveshare_admin_group && \
     chown -R liveshare_admin:liveshare_admin_group /app
 USER liveshare_admin
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
 
