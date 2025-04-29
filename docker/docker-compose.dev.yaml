@@ -4,6 +4,7 @@ services:
     container_name: liveshare_db
     env_file:
       - ../Backend/dev.db.env
+    # Forward ports to be able to use DBeaver
     ports:
       - 5432:5432
     healthcheck:
@@ -42,9 +43,6 @@ services:
     environment:
       - MODE=dev
       - DOCKER_COMPOSE_ENV=True
-    # TODO: do we actually need ports in case of nginx ???
-    ports:
-      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -65,8 +63,6 @@ services:
       network: host
     image: liveshare_frontend
     container_name: liveshare_frontend
-    ports:
-      - "3000:3000"
     restart: unless-stopped
     networks:
       - liveshare_frontend
@@ -85,8 +81,6 @@ services:
     depends_on:
       - backend
       - frontend
-    # volumes:
-    #   - static_content:/static/html
     restart: unless-stopped
     networks:
       - liveshare_frontend

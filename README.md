@@ -6,6 +6,19 @@
 
 ### Installation
 
+Create volumes
+
+```bash
+mkdir Volumes/backend_media Volumes/backend_static
+```
+
+Run docker-compose.
+
+```bash
+cd docker
+docker-compose up -d
+```
+
 ### Handlers
 
 !!! Продумать заглушку для отсутствия постов

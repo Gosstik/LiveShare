@@ -30,6 +30,7 @@
   },
   "scripts": {
     "start": "env-cmd -f .env.development react-scripts start",
+    "start:docker": "env-cmd -f .env.development env-cmd -f .env.development.docker -f .env.development.docker.local --silent react-scripts start",
     "lint": "eslint .",
     "build:development": "env-cmd -f .env.development react-scripts build",
     "build:staging": "env-cmd -f .env.staging react-scripts build",
