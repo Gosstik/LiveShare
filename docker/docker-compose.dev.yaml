@@ -1,0 +1,117 @@
+services:
+  db:
+    image: bitnami/postgresql:17.4.0
+    container_name: liveshare_db
+    env_file:
+      - ../Backend/dev.db.env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "$${POSTGRES_USER}", "-d", "$${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    volumes:
+      - liveshare_dev_db_volume:/var/lib/postgresql/data
+    networks:
+      - liveshare_backend
+
+  backend_migrations:
+    build:
+      context: ../Backend
+      dockerfile: Dockerfile
+      # Use host network for fetching dependencies
+      network: host
+    image: liveshare_backend
+    container_name: liveshare_backend_migrations
+    command: ["python3", "manage.py", "migrate"]
+    environment:
+      - MODE=dev
+      - DOCKER_COMPOSE_ENV=True
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - liveshare_backend
+
+  backend:
+  # TODO: remove from backend_migrations ???
+    # build:
+    #   context: ../Backend
+    #   dockerfile: Dockerfile
+    #   network: host
+    image: liveshare_backend
+    container_name: liveshare_backend
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    environment:
+      - MODE=dev
+      - DOCKER_COMPOSE_ENV=True
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      backend_migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    volumes:
+      - liveshare_backend_media:/app/Backend/media
+      - liveshare_backend_static:/app/Backend/static
+    networks:
+      - liveshare_backend
+      - liveshare_frontend
+
+  frontend:
+    build:
+      context: ../Frontend
+      dockerfile: Dockerfile
+      network: host
+    image: liveshare_frontend
+    container_name: liveshare_frontend
+    restart: unless-stopped
+    env_file:
+      - ../Frontend/.env
+      - ../Frontend/.env.development
+    networks:
+      - liveshare_frontend
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      network: host
+    container_name: liveshare_nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+      - frontend
+    # volumes:
+    #   - static_content:/static/html
+    restart: unless-stopped
+    networks:
+      - liveshare_frontend
+
+volumes:
+  liveshare_dev_db_volume:
+    # Note that if make it local you will have permission issues
+  liveshare_backend_media:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ../Volumes/backend_media
+  liveshare_backend_static:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ../Volumes/backend_static
+
+networks:
+  liveshare_backend:
+    driver: bridge
+  liveshare_frontend:
+    driver: bridge
+    # external: true # ???

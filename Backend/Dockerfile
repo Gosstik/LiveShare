@@ -1,12 +1,16 @@
-FROM python3:11
+FROM python:3.10
+
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-WORKDIR /Backend
-COPY requirements.txt /.
-COPY ./ ./
-RUN pip install -r requirements.txt
-EXPOSE 8000
 
-# TODO
-RUN python migrate
+RUN mkdir /app
+COPY ./ /app
+WORKDIR /app
+
+# TODO: create user ???
+
+RUN pip install -r requirements.txt
+
 CMD python3 manage.py runserver 0.0.0.0:8000
+
+EXPOSE 8000

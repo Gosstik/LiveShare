@@ -8,9 +8,13 @@ import rest_framework
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODE = os.environ.get("MODE", "dev")
 
+MODE = os.environ.get("MODE", "dev")
+DOCKER_COMPOSE_ENV = eval(os.environ.get('DOCKER_COMPOSE_ENV', False))
+
+# Load other environment variables
 load_dotenv(BASE_DIR / f"{MODE}.env")
+load_dotenv(BASE_DIR / f"{MODE}.db.env")
 load_dotenv(BASE_DIR / "auth.env")
 
 ### Choose host
@@ -111,49 +115,23 @@ TEMPLATES = [
     },
 ]
 
-# TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'DIRS': [BASE_DIR / 'templates'],
-#         'APP_DIRS': True,
-#         'OPTIONS': {
-#             'context_processors': [
-#                 'django.template.context_processors.debug',
-#                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#         },
-#     },
-# ]
-
 WSGI_APPLICATION = "Backend.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# TODO: postgres
+DB_HOST = 'db' if DOCKER_COMPOSE_ENV else os.environ.get('DB_HOST', 'localhost')
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "liveshare.db.sqlite3",
-    }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': DB_HOST,
+        'PORT': os.environ.get('DB_PORT'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+    },
 }
-
-# DATABASES = {
-#     'default': {
-#         # TODO: remove sqlite3
-#         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3'),
-#         'HOST': os.environ.get('DB_HOST'),
-#         'PORT': os.environ.get('DB_PORT'),
-#         'NAME': os.environ.get('DB_NAME', 'db.sqlite3.liveshare'),
-#         'USER': os.environ.get('DB_USER'),
-#         'PASSWORD': os.environ.get('DB_PASS'),
-#     },
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

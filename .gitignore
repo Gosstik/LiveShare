@@ -1,3 +1,8 @@
 /Backend/static
 /Backend/media
+/Volumes
 # TODO: remove node_modiles from root
+
+
+# Docker
+/docker/.env
