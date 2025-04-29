@@ -36,17 +36,13 @@ services:
       - liveshare_backend
 
   backend:
-  # TODO: remove from backend_migrations ???
-    # build:
-    #   context: ../Backend
-    #   dockerfile: Dockerfile
-    #   network: host
     image: liveshare_backend
     container_name: liveshare_backend
     command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
     environment:
       - MODE=dev
       - DOCKER_COMPOSE_ENV=True
+    # TODO: do we actually need ports in case of nginx ???
     ports:
       - "8000:8000"
     depends_on:
@@ -65,33 +61,32 @@ services:
   frontend:
     build:
       context: ../Frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       network: host
     image: liveshare_frontend
     container_name: liveshare_frontend
+    ports:
+      - "3000:3000"
     restart: unless-stopped
-    env_file:
-      - ../Frontend/.env
-      - ../Frontend/.env.development
     networks:
       - liveshare_frontend
 
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-      network: host
-    container_name: liveshare_nginx
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
-      - frontend
-    # volumes:
-    #   - static_content:/static/html
-    restart: unless-stopped
-    networks:
-      - liveshare_frontend
+  # nginx:
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #     network: host
+  #   container_name: liveshare_nginx
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - backend
+  #     - frontend
+  #   # volumes:
+  #   #   - static_content:/static/html
+  #   restart: unless-stopped
+  #   networks:
+  #     - liveshare_frontend
 
 volumes:
   liveshare_dev_db_volume:

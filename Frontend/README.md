@@ -2,6 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Development
+
+Install eslint ???
+
+Make linting of code
+
+```bash
+npm lint
+```
+
 ## Полезное
 
 - Пакет с иконками: <https://www.npmjs.com/package/@mui/icons-material>
@@ -22,6 +32,16 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - `/not_found`
 
 Profile ???
+
+### `.env` files
+
+Tutorial: <https://dev.to/samirasaad/environment-variables-for-a-react-js-app-329j>
+React docs: <https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used>
+
+```bash
+npm install react-scripts@0.2.3 env-cmd
+```
+
 
 ## TODO
 

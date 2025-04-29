@@ -1,0 +1,21 @@
+FROM node:alpine3.20 AS build
+
+COPY . /app
+WORKDIR /app
+RUN npm ci && npm run build:production
+
+FROM node:alpine3.20
+
+# Deployment of react app
+# https://create-react-app.dev/docs/deployment/
+
+COPY --from=build /app/build /app/build
+WORKDIR /app
+RUN npm install -g serve
+
+# TODO: which environment to use
+# TODO: create simple user ???
+
+EXPOSE 3000
+
+ENTRYPOINT ["serve", "-s", "-l", "3000", "build"]

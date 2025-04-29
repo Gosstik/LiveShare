@@ -54,7 +54,10 @@ import { UrlNotFound } from "./components/NotFound/NotFound";
 
 import style from "./components/Sidebar/Sidebar.module.scss";
 
+import { ENV } from "./config";
+
 function App() {
+  console.log(`You are running this application in ${ENV.NODE_ENV} mode.`)
   return (
     <AuthProvider>
       <ApiProvider>
