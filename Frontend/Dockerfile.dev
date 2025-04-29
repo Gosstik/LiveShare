@@ -2,6 +2,13 @@ FROM node:alpine3.20
 
 COPY . /app
 WORKDIR /app
+
+# Creating user
+RUN addgroup -g 1001 -S liveshare_admin_group && \
+    adduser -u 1001 -S liveshare_admin -G liveshare_admin_group && \
+    chown -R liveshare_admin:liveshare_admin_group /app
+USER liveshare_admin
+
 RUN npm ci
 
 EXPOSE 3000

@@ -12,6 +12,9 @@ Make linting of code
 npm lint
 ```
 
+To use scripts from `package.json` you have to run `npm run <command>`.
+
+
 ## Полезное
 
 - Пакет с иконками: <https://www.npmjs.com/package/@mui/icons-material>
