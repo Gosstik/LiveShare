@@ -71,22 +71,25 @@ services:
     networks:
       - liveshare_frontend
 
-  # nginx:
-  #   build:
-  #     context: ./nginx
-  #     dockerfile: Dockerfile
-  #     network: host
-  #   container_name: liveshare_nginx
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - backend
-  #     - frontend
-  #   # volumes:
-  #   #   - static_content:/static/html
-  #   restart: unless-stopped
-  #   networks:
-  #     - liveshare_frontend
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      network: host
+      args:
+        APP_BUILD_ENV: dev
+    image: liveshare_nginx
+    container_name: liveshare_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    # volumes:
+    #   - static_content:/static/html
+    restart: unless-stopped
+    networks:
+      - liveshare_frontend
 
 volumes:
   liveshare_dev_db_volume:

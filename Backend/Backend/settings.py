@@ -33,13 +33,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = eval(os.environ.get("DEBUG"))
 
-ALLOWED_HOSTS = [
-    "*",  # TODO: remove
-    "127.0.0.1",
-    "localhost",
-    # TODO: add VM IP
-]
-
 # TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
 # TEST_OUTPUT_DIR = 'junit-output'
 
@@ -92,9 +85,36 @@ if DEBUG:
         *MIDDLEWARE,
     ]
 
+################################################################################
+
+### Attacks protection
+
+ALLOWED_HOSTS = [
+    "*",  # TODO: remove
+    "127.0.0.1",
+    "localhost",
+    # TODO: add VM IP
+]
+
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    # TODO: add dev and prod
+    FRONTEND_BASE_URL,
+    "http://localhost:60543", # for development on VM with port forwarding
+    # TODO: add VM IP
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    FRONTEND_BASE_URL,
+]
+
+if DEBUG:
     INTERNAL_IPS = [  # TODO
         "127.0.0.1",
     ]
+
+################################################################################
 
 ROOT_URLCONF = "Backend.urls"
 
@@ -208,18 +228,6 @@ AUTH_USER_MODEL = "users.User"
 # }
 
 ################################################################################
-
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    # TODO: add dev and prod
-    FRONTEND_BASE_URL,
-    # TODO: add VM IP
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    FRONTEND_BASE_URL,
-]
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': (

@@ -1,11 +1,13 @@
 FROM alpine:3.21
 
+ARG APP_BUILD_ENV=dev
+
 # Install nginx
 RUN apk add --no-cache nginx && \
-        rm -rf /etc/nginx/* \
+        rm -rf /etc/nginx/* && \
         touch /run/nginx.pid
 
-COPY conf/* /etc/nginx/
+COPY conf/${APP_BUILD_ENV}/* /etc/nginx/
 
 # Creating user
 RUN addgroup -g 1000 -S nginx_group && \
