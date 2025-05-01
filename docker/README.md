@@ -146,8 +146,19 @@ docker network inspect bridge
 ```
 
 ```bash
+# Check ipv4 is enabled
+cat /proc/sys/net/ipv4/ip_forward
+
 # Check if IPv6 is enabled at the kernel level
 cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+# sudo sysctl -w net.ipv6.conf.all.forwarding=1 # temp changes
+```
+
+Run the following command to see what dns resolvers you are currently using:
+
+```bash
+/etc/resolv.conf
 ```
 
 Run `docker network inspect bridge` and check that `"EnableIPv6": true,` and in `IPAM` config `Subnet` and `Gateway` options are set with `ipv6` addresses.
