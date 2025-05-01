@@ -1,3 +1,5 @@
+# Neworks for backend and frontend are not created to simplify work on VM
+# You may uncomment them if necessary.
 services:
   db:
     image: bitnami/postgresql:17.4.0
@@ -22,8 +24,6 @@ services:
     build:
       context: ../Backend
       dockerfile: Dockerfile
-      # Use host network for fetching dependencies
-      network: host
     image: liveshare_backend
     container_name: liveshare_backend_migrations
     command: ["python3", "manage.py", "migrate"]
@@ -77,7 +77,8 @@ services:
     image: liveshare_nginx
     container_name: liveshare_nginx
     ports:
-      - "80:80"
+      - 80:80
+      - 443:443
     depends_on:
       - backend
       - frontend
@@ -87,7 +88,8 @@ services:
 
 volumes:
   liveshare_dev_db_volume:
-    # Note that if make it local you will have permission issues
+    # Note that it should be inside docker
+    # Making it with local driver will have permission issues
   liveshare_backend_media:
     driver: local
     driver_opts:
@@ -101,9 +103,12 @@ volumes:
       o: bind
       device: ../Volumes/backend_static
 
+# Example of network configuration:
+# https://rohanzi.gitlab.io/balberin-clouds/project/composenetworking/
 networks:
   liveshare_backend:
     driver: bridge
+    enable_ipv6: true
   liveshare_frontend:
     driver: bridge
-    # external: true # ???
+    enable_ipv6: true

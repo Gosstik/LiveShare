@@ -17,6 +17,12 @@ load_dotenv(BASE_DIR / f"{MODE}.env")
 load_dotenv(BASE_DIR / f"{MODE}.db.env")
 load_dotenv(BASE_DIR / "auth.env")
 
+if DOCKER_COMPOSE_ENV:
+    load_dotenv(BASE_DIR / f"docker.{MODE}.env", override=True)
+    local_docker_env = BASE_DIR / f"local.docker.{MODE}.env"
+    if os.path.exists(str(local_docker_env)):
+        load_dotenv(local_docker_env, override=True)
+
 ### Choose host
 
 NETWORK_PROTOCOL = os.environ.get("NETWORK_PROTOCOL")
@@ -24,6 +30,8 @@ BACKEND_HOST = os.environ.get("BACKEND_HOST")
 BACKEND_BASE_URL = f"{NETWORK_PROTOCOL}://{BACKEND_HOST}"
 FRONTEND_HOST = os.environ.get("FRONTEND_HOST")
 FRONTEND_BASE_URL = f"{NETWORK_PROTOCOL}://{FRONTEND_HOST}"
+
+GOOGLE_ACCESS_TOKEN_OBTAIN_URL = os.environ.get("GOOGLE_ACCESS_TOKEN_OBTAIN_URL")
 
 
 # Quick-start development settings - unsuitable for production

@@ -29,8 +29,11 @@ class GoogleAccessTokens:
 
 
 class GoogleRawLoginFlowService:
+    # That url is used on frontend to redirect to google oauth
     GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
-    GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
+    # These urls are used on backend, so they need to be overrided from .env
+    # in docker to make requests through nginx
+    GOOGLE_ACCESS_TOKEN_OBTAIN_URL = settings.GOOGLE_ACCESS_TOKEN_OBTAIN_URL
     GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
     SCOPES = ['openid', 'profile', 'email']
@@ -83,11 +86,13 @@ class GoogleRawLoginFlowService:
         }
 
         # TODO: handle exceeded timeout
+        print(f"!!!!! Before token request, self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL={self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL}")
         response = requests.post(
             self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL,
             data=data,
             timeout=4, # 4 seconds
         )
+        print("!!!!! After token request")
 
         if not response.ok:
             raise RuntimeError("Failed to obtain access token from Google.")
@@ -101,6 +106,7 @@ class GoogleRawLoginFlowService:
 
         return google_tokens
 
+    # TODO: remove it ? It is not used, only needed for offline access
     def get_user_info(self, *, google_tokens: GoogleAccessTokens) -> Dict[str, Any]:
         access_token = google_tokens.access_token
         # Reference: https://developers.google.com/identity/protocols/oauth2/web-server#callinganapi

@@ -3,6 +3,9 @@ prod.env
 prod.db.env
 auth.env
 
+# local env
+local.docker.dev.env
+
 # Build artefacts
 __pycache__
 .venv

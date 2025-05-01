@@ -7,6 +7,7 @@ RUN apk add --no-cache nginx && \
         rm -rf /etc/nginx/* && \
         touch /run/nginx.pid
 
+# TODO: make it as a volume instead of COPY
 COPY conf/${APP_BUILD_ENV}/* /etc/nginx/
 
 # Creating user

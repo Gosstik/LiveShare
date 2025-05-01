@@ -22,6 +22,19 @@ pip install -r requirements.txt
 ./manage.py runserver
 ```
 
+TODO: create migrations with mock data
+
+### ENV
+
+You may use the following env files:
+
+TODO: add more files
+
+`dev.db.env` &mdash; dev database settings
+`dev.env` &mdash; dev settings
+`docker.dev.env` &mdash; dev settings for docker, overrides `dev.env`
+(in .gitignore) `local.docker.env` &mdash; for setting in specific machine, overrides `docker.dev.env`
+
 
 ### Guides
 
