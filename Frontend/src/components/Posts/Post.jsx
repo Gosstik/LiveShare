@@ -22,7 +22,6 @@ import PostFooterProps from "./PostFooterProps"
 import style from "./Posts.module.scss";
 import defaultAvatar from "../../images/default-avatar.png";
 import { newTabImg, trashImg, editImg } from "../Consts/Consts";
-import { DeleteIcon } from "lucide-react";
 
 export const cx = classNames.bind(style);
 
@@ -153,6 +152,11 @@ export default function Post(props) {
       </div>
 
       <div className={style.postContent}>
+        {post.attachedImageUrl && (
+          <div className={style.postImage}>
+            <img src={post.attachedImageUrl} alt="Post attachment" />
+          </div>
+        )}
         <div className={style.postTitle}>{post.title}</div>
         <div className={style.postMain}>
           <div
