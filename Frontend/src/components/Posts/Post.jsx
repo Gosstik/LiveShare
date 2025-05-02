@@ -9,9 +9,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
-// MUI icons that can be used instead:
-// import EditIcon from "@mui/icons-material/Edit";
-// import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import PostForm from "./PostForm";
 import Comments from "../Comments/Comments";
@@ -25,6 +22,7 @@ import PostFooterProps from "./PostFooterProps"
 import style from "./Posts.module.scss";
 import defaultAvatar from "../../images/default-avatar.png";
 import { newTabImg, trashImg, editImg } from "../Consts/Consts";
+import { DeleteIcon } from "lucide-react";
 
 export const cx = classNames.bind(style);
 
@@ -119,7 +117,6 @@ export default function Post(props) {
             aria-haspopup="true"
             onClick={handleMenuClick}
           >
-            {/* Can be replaced with: <MoreVertIcon fontSize="small" /> */}
             <svg width="24" height="24" viewBox="0 0 24 24" style={{fill: 'currentColor'}}>
               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
             </svg>
