@@ -1,27 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { Link, CircularProgress } from '@mui/material';
 
 import styles from './CreatePost.module.scss';
 
 import { useApi } from "../ApiProvider/ApiProvider"
 import { useAuth } from "../AuthProvider/AuthProvider"
-import { homeUrl, signinUrl } from '../../api/urls';
+import { homeUrl } from '../../api/urls';
+import ModalRequireAuth from '../ModalRequireAuth/ModalRequireAuth';
 
 export default function CreatePost() {
   const navigate = useNavigate();
   const apiClient = useApi();
-  const { isGuest } = useAuth();
+  const { isGuest, isAuthLoading } = useAuth();
   const [title, setTitle] = useState('');
   const [textContent, setTextContent] = useState('');
   const [attachedImage, setAttachedImage] = useState(null);
   const [error, setError] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    if (isGuest) {
-      // TODO: add modal that user has to authorize before creating a post
-      navigate(signinUrl);
+    if (!isAuthLoading && isGuest) {
+      setShowAuthModal(true);
     }
-  }, [isGuest]);
+  }, [isGuest, isAuthLoading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,15 +37,8 @@ export default function CreatePost() {
     }
 
     try {
-      apiClient.postsV1PostCreate(formData);
+      await apiClient.postsV1PostCreate(formData);
       navigate(homeUrl);
-      // // Clear form after successful submission
-      // setTitle('');
-      // setTextContent('');
-      // setAttachedImage(null);
-      // // Reset file input
-      // const fileInput = document.querySelector('input[type="file"]');
-      // if (fileInput) fileInput.value = '';
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred while creating the post');
     }
@@ -55,8 +50,29 @@ export default function CreatePost() {
     }
   };
 
+  if (isAuthLoading) {
+    return (
+      <div className={styles.container}>
+        <Link
+          component="button"
+          variant="plain"
+          startDecorator={<CircularProgress />}
+          sx={{ p: 1 }}
+        >
+          Loading...
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
+      {showAuthModal && (
+        <ModalRequireAuth
+          onClose={() => setShowAuthModal(false)}
+          shallRedirect={true}
+        />
+      )}
       <h2 className={styles.createPostTitle}>Create New Post</h2>
       {error && <div className={styles.error}>{error}</div>}
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -97,4 +113,4 @@ export default function CreatePost() {
       </form>
     </div>
   );
-};
+}
