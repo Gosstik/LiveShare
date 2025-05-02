@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-import Avatar from '@mui/joy/Avatar';
-import Box from '@mui/joy/Box';
+import Avatar from "@mui/joy/Avatar";
+import Box from "@mui/joy/Box";
 
 import style from "./Header.module.scss";
 
@@ -13,32 +13,20 @@ import { useApi } from "../ApiProvider/ApiProvider";
 
 import defaultAvatar from "../../images/default-avatar.png";
 import src from "@emotion/styled";
-
-
-// function LoginButton() {}
+import {
+  createPostUrl,
+  homeUrl,
+  postsUrl,
+  signinUrl,
+  signupUrl,
+} from "../../api/urls";
 
 export default function Header() {
-  // const { user, loggedIn, checkLoginState } = useContext(AuthContext);
-  const { user, isAuthenticated, isGuest, isAuthLoading, logoutUser} = useAuth();
+  const { user, isAuthenticated, isGuest, isAuthLoading, logoutUser } =
+    useAuth();
   const apiClient = useApi();
 
   const navigate = useNavigate();
-
-  const posts = () => {
-    navigate("/posts");
-  };
-
-  const home = () => {
-    navigate("/");
-  };
-
-  const signin = () => {
-    navigate("/signin");
-  };
-
-  const signup = () => {
-    navigate("/signup");
-  };
 
   const logout = async () => {
     if (isAuthenticated) {
@@ -55,20 +43,37 @@ export default function Header() {
     <header className={style.header}>
       <div className={style.appTitle}>LiveShare</div>
       <div className={style.buttons}>
-        <button className={style.simpleButton} onClick={posts}>
+        <button
+          className={style.simpleButton}
+          onClick={() => navigate(postsUrl)}
+        >
           Posts
         </button>
-        <button className={style.simpleButton} onClick={home}>
+        <button
+          className={style.simpleButton}
+          onClick={() => navigate(homeUrl)}
+        >
           Home
         </button>
-        <button className={style.createPostButton}>Create post</button>
+        <button
+          className={style.createPostButton}
+          onClick={() => navigate(createPostUrl)}
+        >
+          Create post
+        </button>
         {isGuest && (
-          <button className={style.loginButton} onClick={signin}>
+          <button
+            className={style.loginButton}
+            onClick={() => navigate(signinUrl)}
+          >
             Sign in
           </button>
         )}
         {isGuest && (
-          <button className={style.loginButton} onClick={signup}>
+          <button
+            className={style.loginButton}
+            onClick={() => navigate(signupUrl)}
+          >
             Sign up
           </button>
         )}
@@ -94,13 +99,12 @@ export default function Header() {
           </>
         )} */}
         {isAuthenticated && (
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             {user?.profileIconUrl ? (
-                <Avatar size="sm" src={user?.profileIconUrl}/>
-              ) : (
-                <Avatar />
-              )
-            }
+              <Avatar size="sm" src={user?.profileIconUrl} />
+            ) : (
+              <Avatar />
+            )}
             {/* <Avatar>JG</Avatar> */}
             {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> */}
           </Box>

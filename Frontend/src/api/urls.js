@@ -12,6 +12,7 @@ export const friendsUrl = "/friends";
 export const signinUrl = "/signin";
 export const signupUrl = "/signup";
 export const authCallbackUrl = "/auth/callback";
+export const logoutUrl = "/logout";
 
 export const postUrl = "/posts/:postId";
 export const postsUrl = "/posts";
