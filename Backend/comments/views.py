@@ -1,26 +1,21 @@
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
-from drf_spectacular.utils import OpenApiTypes
-
 import Backend.utils as utils
+from comments.models import Comment, CommentLike
+from comments.serializers import (
+    CommentsByFiltersParamsSerializer,
+    CommentsForPostSerializer,
+    CreateCommentRequestSerializer,
+    EditCommentRequestSerializer,
+    transform_db_comments_for_response,
+)
+from comments.utils import get_comment_or_404, get_comments_for_post
 from custom_auth.mixins import OptionalAuthApiMixin
 from posts.utils import get_post_or_404
-
-from comments.models import Comment
-from comments.models import CommentLike
-from comments.utils import get_comment_or_404
-from comments.utils import get_comments_for_post
-
-from comments.serializers import CreateCommentRequestSerializer
-from comments.serializers import EditCommentRequestSerializer
-from comments.serializers import CommentsByFiltersParamsSerializer
-from comments.serializers import CommentsForPostSerializer
-from comments.serializers import transform_db_comments_for_response
 
 
 class CreateCommentApiView(APIView):
@@ -32,7 +27,9 @@ class CreateCommentApiView(APIView):
         },
     )
     def post(self, request):
-        serializer = CreateCommentRequestSerializer(data=request.data, context={'request_user': request.user})
+        serializer = CreateCommentRequestSerializer(
+            data=request.data, context={"request_user": request.user}
+        )
         if serializer.is_valid():
             get_post_or_404(serializer.validated_data["post_id"])
             serializer.save()
@@ -102,9 +99,7 @@ class CommentsForPostApiView(OptionalAuthApiMixin, APIView):
             "post_id": post_id,
             "comments": comments_data,
         }
-        return utils.validate_and_get_response(
-            response_data, CommentsForPostSerializer
-        )
+        return utils.validate_and_get_response(response_data, CommentsForPostSerializer)
 
 
 class CommentLikeApiView(APIView):

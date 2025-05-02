@@ -1,23 +1,7 @@
-from django.db import transaction
-from django.db.models import OuterRef
-from django.db.models import Count
-from django.db.models import Exists
-from django.db.models import Subquery
-from django.db.models import Value as V
-from django.db.models.functions import Coalesce
-from django.db.models import Case, When, Value, CharField, Q, Exists, OuterRef
+from django.db.models import Case, CharField, Exists, OuterRef, Value, When
 
 import Backend.utils as utils
-from Backend.exceptions import NotFound404
-from users.models import User
-from comments.models import Comment
-
-from posts.models import Post
-from posts.models import PostLike
-
-from users.models import User
-from users.models import Friends
-from users.models import FriendInvitation
+from users.models import FriendInvitation, Friends, User
 
 
 class UsersSearchUserType(utils.EnumWithContains):
@@ -62,7 +46,8 @@ def _get_users_with_friend_status(auth_user: User):
         friend_status=Case(
             When(Exists(is_friend), then=Value(UserFriendStatus.FRIEND)),
             When(
-                Exists(received_invitation), then=Value(UserFriendStatus.RECEIVED_INVITATION)
+                Exists(received_invitation),
+                then=Value(UserFriendStatus.RECEIVED_INVITATION),
             ),
             When(Exists(sent_invitation), then=Value(UserFriendStatus.SENT_INVITATION)),
             default=Value(UserFriendStatus.NOT_FRIEND),
@@ -74,14 +59,16 @@ def _get_users_with_friend_status(auth_user: User):
 
 
 def get_users_by_filters(request_user: User, params):
-    if params['users_type'] == UsersSearchUserType.FRIENDS:
+    if params["users_type"] == UsersSearchUserType.FRIENDS:
         utils.true_or_400(
             request_user.is_authenticated,
-            code='invalid_filters',
-            detail='Unauthorized request to list friends'
+            code="invalid_filters",
+            detail="Unauthorized request to list friends",
         )
         result_users = _get_users_with_friend_status(request_user)
-        friend_ids = Friends.objects.filter(user=request_user).values_list('friend_id', flat=True)
+        friend_ids = Friends.objects.filter(user=request_user).values_list(
+            "friend_id", flat=True
+        )
         return result_users.filter(id__in=friend_ids)
     elif request_user.is_authenticated:
         return _get_users_with_friend_status(request_user)

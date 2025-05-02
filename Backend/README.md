@@ -35,6 +35,85 @@ TODO: add more files
 `docker.dev.env` &mdash; dev settings for docker, overrides `dev.env`
 (in .gitignore) `local.docker.env` &mdash; for setting in specific machine, overrides `docker.dev.env`
 
+### Linting
+
+Precommit hooks with gitlab CI: <https://blog.mounirmesselmeni.de/pre-commit-your-django-projects>
+
+Ruff
+
+```bash
+ruff check --fix
+ruff check --watch
+ruff format
+```
+
+### Testing
+
+To create fixture data for local development you may run (take into consideration that it will clear the current database state):
+
+```bash
+manage.py make_dev_data_migrations
+```
+
+[Guide](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Testing).
+
+[Usage of fixtures and mocks](https://dev.to/ifihan/testing-in-django-26e5)
+
+[Django test classes (official doc)](https://docs.djangoproject.com/en/5.2/topics/testing/tools/#provided-test-case-classes)
+
+[REST framework test classes (official doc)](https://www.django-rest-framework.org/api-guide/testing/#api-test-cases)
+
+Usage of `pytest-django`: <https://tamerlan.dev/how-to-test-drf-apis/>
+
+A lot about fixtures with django unittest and pytest: <https://realpython.com/django-pytest-fixtures/>
+
+Dump and load data:
+
+```bash
+# Dump
+python manage.py dumpdata auth.Group --pk 1 --indent 4 > group.json
+# Load
+python manage.py loaddata group.json
+```
+
+Example of serializers testing: <https://apidog.com/articles/how-to-test-django-rest-framework/>
+
+Questions:
+
+- How to make fixtures?
+- Will fixtures affect database?
+
+
+Django uses `unittest` for testing.
+
+Run tests
+
+```bash
+python3 manage.py test
+python3 manage.py test --verbosity 2 # 0, 1 (default), 2 or 3
+python3 manage.py test --parallel auto
+
+# Run the specified module
+python3 manage.py test catalog.tests.test_models
+# Run the specified class
+python3 manage.py test catalog.tests.test_models.YourTestClass
+# Run the specified method
+python3 manage.py test catalog.tests.test_models.YourTestClass.test_one_plus_one_equals_two
+
+# With pytest
+pytest
+```
+
+If you use `addopts = --reuse-db` in `pytest.ini`, you have to run `pytest --create-db` to force re-creation of the test database after changing its schema.
+
+pytest isntallation:
+
+```bash
+pip install pytest
+pip install pytest-django
+```
+
+pytest doc for django: <https://pytest-django.readthedocs.io/_/downloads/en/stable/pdf/>
 
 ### Guides
 

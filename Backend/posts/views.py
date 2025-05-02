@@ -1,27 +1,27 @@
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
-from drf_spectacular.utils import OpenApiTypes
-
 import Backend.utils as utils
-from custom_auth.mixins import OptionalAuthApiMixin
-from custom_auth.mixins import OptionalCookieJWTAuthentication
-from custom_auth.mixins import OptionalAuthForGetOnlyPermission
-
-from posts.models import Post, PostLike
-from posts.utils import get_post_or_404
-from posts.utils import post_404_response
-from posts.utils import get_posts_by_filters_from_db
-from posts.utils import transform_db_posts_for_response
-
-from posts.serializers import EditPostRequestSerializer
-from posts.serializers import GetPostResponseSerializer
-from posts.serializers import GetPostsByFiltersResponseSerializer
-from posts.serializers import GetPostsByFiltersParamsSerializer
+from custom_auth.mixins import (
+    OptionalAuthApiMixin,
+    OptionalAuthForGetOnlyPermission,
+    OptionalCookieJWTAuthentication,
+)
+from posts.models import PostLike
+from posts.serializers import (
+    EditPostRequestSerializer,
+    GetPostResponseSerializer,
+    GetPostsByFiltersParamsSerializer,
+    GetPostsByFiltersResponseSerializer,
+)
+from posts.utils import (
+    get_post_or_404,
+    get_posts_by_filters_from_db,
+    transform_db_posts_for_response,
+)
 
 
 class CreatePostApiView(APIView):
@@ -33,7 +33,9 @@ class CreatePostApiView(APIView):
         },
     )
     def post(self, request):
-        serializer = EditPostRequestSerializer(data=request.data, context={'request': request})
+        serializer = EditPostRequestSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -57,7 +59,10 @@ class GetEditDeletePostApiView(APIView):
         posts_data = get_posts_by_filters_from_db(params, request.user)
         response_posts_data = transform_db_posts_for_response(posts_data)
         if not response_posts_data:
-            return post_404_response(post_id)
+            return Response(
+                {"detail": f"Post with post_id={post_id} not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         serializer = GetPostResponseSerializer(response_posts_data[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -160,11 +165,12 @@ class GetPostsByFiltersApiView(OptionalAuthApiMixin, APIView):
     def get(self, request: Request):
         # TODO: support cursor
         # TODO: support search for friends
-        params = utils.deserialize_or_400(
-            request.query_params,
-            GetPostsByFiltersParamsSerializer,
-            detail="Request params deserialization failed",
-        )
+        # Handle empty query params
+        query_params = request.query_params.dict() if request.query_params else {}
+        params = GetPostsByFiltersParamsSerializer(data=query_params)
+        if not params.is_valid():
+            return Response(params.errors, status=status.HTTP_400_BAD_REQUEST)
+        params = params.validated_data
 
         # Create posts for response
         posts = get_posts_by_filters_from_db(params, request.user)

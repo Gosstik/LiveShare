@@ -1,0 +1,19 @@
+[tool.ruff]
+# line-length = 88
+line-length=119
+target-version = "py310"
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pre-commit-cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "docs",
+    "__pycache__",
+    "**/migrations/*",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["SIM108"]

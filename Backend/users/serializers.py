@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
 import Backend.utils as utils
-
 from users.models import User
-from users.utils import UsersSearchUserType
-from users.utils import USERS_SEARCH_USER_TYPES
-from users.utils import UserFriendStatus
-from users.utils import USER_FRIEND_STATUSES
+from users.utils import (
+    USER_FRIEND_STATUSES,
+    USERS_SEARCH_USER_TYPES,
+    UsersSearchUserType,
+)
 
 
 class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
@@ -18,19 +18,19 @@ class UserResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsMixi
     class Meta:
         model = User
         fields = [
-            'id',
-            'email',
-            'first_name',
-            'last_name',
-            'displayed_name',
-            'profile_icon_url',
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "displayed_name",
+            "profile_icon_url",
         ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # Remove all None values from the output
         # for field in ['profile_icon_url', 'other_optional_field']:  # Add fields as needed
-        for field in self.fields.keys():  # Add fields as needed
+        for field in self.fields:  # Add fields as needed
             if representation.get(field) is None:
                 representation.pop(field, None)
         return representation
@@ -51,7 +51,7 @@ class UserSearchResponseSerializer(UserResponseSerializer):
     )
 
     class Meta(UserResponseSerializer.Meta):
-        fields = UserResponseSerializer.Meta.fields + ['friend_status']
+        fields = UserResponseSerializer.Meta.fields + ["friend_status"]
 
 
 class UsersSearchResponseSerializer(serializers.Serializer):

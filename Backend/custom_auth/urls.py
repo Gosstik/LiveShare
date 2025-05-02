@@ -1,9 +1,10 @@
-from django.urls import path, include
+from django.urls import include, path
 
-from custom_auth.views import AuthUserInfoApiView
-from custom_auth.views import AuthTokenRefreshApiView
-from custom_auth.views import AuthLogoutApiView
-
+from custom_auth.views import (
+    AuthLogoutApiView,
+    AuthTokenRefreshApiView,
+    AuthUserInfoApiView,
+)
 
 urlpatterns = [
     path("oauth/google/", include("custom_auth.google_oauth.urls")),

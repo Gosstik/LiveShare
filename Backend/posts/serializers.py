@@ -1,11 +1,9 @@
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from drf_spectacular.utils import extend_schema_serializer
-
 import Backend.utils as utils
-from users.serializers import UserResponseSerializer
-
 from posts.models import Post
+from users.serializers import UserResponseSerializer
 
 
 class PostSortFieldName(utils.EnumWithContains):
@@ -29,27 +27,34 @@ def edit_post_request_example():
     examples=utils.single_example(edit_post_request_example()),
 )
 class EditPostRequestSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
-    attached_image = serializers.ImageField(required=False)
+    attached_image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Post
         fields = ["title", "text_content", "attached_image"]
 
+    def validate_attached_image(self, value):
+        if value:
+            if not value.content_type.startswith("image/"):
+                raise serializers.ValidationError("File must be an image.")
+            return value
+        return None
+
     def create(self, validated_data):
-        request = self.context.get('request')
+        request = self.context.get("request")
         attached_image = None
-        if 'attached_image' in validated_data:
-            attached_image = validated_data.pop('attached_image')
+        if "attached_image" in validated_data:
+            attached_image = validated_data.pop("attached_image")
 
         if request and request.user:
-            validated_data['author'] = request.user
+            validated_data["author"] = request.user
 
         post = Post.objects.create(**validated_data)
 
         if attached_image:
             # Generate filename using post ID
-            ext = attached_image.name.split('.')[-1]
-            attached_image.name = f'post_{post.id}.{ext}'
+            ext = attached_image.name.split(".")[-1]
+            attached_image.name = f"post_{post.id}.{ext}"
             post.attached_image = attached_image
             post.save()
 
@@ -69,10 +74,11 @@ class GetPostsByFiltersParamsSerializer(utils.StrictFieldsMixin):
         choices=utils.SORT_TYPES,
         default=utils.SortType.DESC,
     )
-    post_title_search_str = serializers.CharField(
-        required=False
-    )
 
+    def validate_sort_type(self, value):
+        return value.lower()
+
+    post_title_search_str = serializers.CharField(required=False)
 
 
 # TODO
@@ -114,10 +120,10 @@ class GetPostResponseSerializer(serializers.ModelSerializer, utils.StrictFieldsM
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # Check if instance is a Post object (not a dict/ReturnDict)
-        if hasattr(instance, 'attached_image') and instance.attached_image:
-            representation['attached_image_url'] = instance.attached_image_url
+        if hasattr(instance, "attached_image") and instance.attached_image:
+            representation["attached_image_url"] = instance.attached_image_url
         # Remove all None values from the output
-        for field in self.fields.keys():
+        for field in self.fields:
             if representation.get(field) is None:
                 representation.pop(field, None)
         return representation

@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-from comments.models import Comment
-from comments.models import CommentLike
-
+from comments.models import Comment, CommentLike
 
 admin.site.register([Comment, CommentLike])

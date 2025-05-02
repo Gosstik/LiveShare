@@ -1,16 +1,12 @@
 import datetime as dt
 
 from django.conf import settings
-
 from rest_framework.request import Request
-
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 import Backend.utils as utils
-from users.serializers import UserResponseSerializer
-
 from custom_auth.serializers import AuthUserInfoResponseSerializer
+from users.serializers import UserResponseSerializer
 
 
 def _get_token_expiration_data(
@@ -20,7 +16,7 @@ def _get_token_expiration_data(
 ):
     raw_token = request.COOKIES.get(settings.SIMPLE_JWT[token_env_name])
     token = token_class(raw_token)
-    exp_datetime = token['exp']
+    exp_datetime = token["exp"]
 
     exp_timestamp = dt.datetime.fromtimestamp(exp_datetime)
     left_datetime = exp_timestamp - dt.datetime.now()
@@ -29,16 +25,16 @@ def _get_token_expiration_data(
     return {
         "seconds_left": seconds_left,
         "left_datetime": str(left_datetime),
-        "expiration_timestamp": exp_timestamp.isoformat()
+        "expiration_timestamp": exp_timestamp.isoformat(),
     }
 
 
 def get_auth_user_info(request: Request):
     access_token_expiration = _get_token_expiration_data(
-        request, 'AUTH_ACCESS_TOKEN', AccessToken
+        request, "AUTH_ACCESS_TOKEN", AccessToken
     )
     refresh_token_expiration = _get_token_expiration_data(
-        request, 'AUTH_REFRESH_TOKEN', RefreshToken
+        request, "AUTH_REFRESH_TOKEN", RefreshToken
     )
     user_data = UserResponseSerializer(request.user).data
     response_data = {

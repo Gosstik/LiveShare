@@ -1,5 +1,5 @@
 from random import SystemRandom
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urlencode
 
 import jwt
@@ -7,7 +7,6 @@ import requests
 from attrs import define
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.urls import reverse_lazy
 from oauthlib.common import UNICODE_ASCII_CHARACTER_SET
 
 
@@ -22,7 +21,7 @@ class GoogleAccessTokens:
     id_token: str
     access_token: str
 
-    def decode_id_token(self) -> Dict[str, str]:
+    def decode_id_token(self) -> dict[str, str]:
         id_token = self.id_token
         decoded_token = jwt.decode(jwt=id_token, options={"verify_signature": False})
         return decoded_token
@@ -36,7 +35,7 @@ class GoogleRawLoginFlowService:
     GOOGLE_ACCESS_TOKEN_OBTAIN_URL = settings.GOOGLE_ACCESS_TOKEN_OBTAIN_URL
     GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
-    SCOPES = ['openid', 'profile', 'email']
+    SCOPES = ["openid", "profile", "email"]
 
     def __init__(self):
         self._credentials = google_raw_login_get_credentials()
@@ -86,11 +85,13 @@ class GoogleRawLoginFlowService:
         }
 
         # TODO: handle exceeded timeout
-        print(f"!!!!! Before token request, self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL={self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL}")
+        print(
+            f"!!!!! Before token request, self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL={self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL}"
+        )
         response = requests.post(
             self.GOOGLE_ACCESS_TOKEN_OBTAIN_URL,
             data=data,
-            timeout=4, # 4 seconds
+            timeout=4,  # 4 seconds
         )
         print("!!!!! After token request")
 
@@ -107,7 +108,7 @@ class GoogleRawLoginFlowService:
         return google_tokens
 
     # TODO: remove it ? It is not used, only needed for offline access
-    def get_user_info(self, *, google_tokens: GoogleAccessTokens) -> Dict[str, Any]:
+    def get_user_info(self, *, google_tokens: GoogleAccessTokens) -> dict[str, Any]:
         access_token = google_tokens.access_token
         # Reference: https://developers.google.com/identity/protocols/oauth2/web-server#callinganapi
         response = requests.get(

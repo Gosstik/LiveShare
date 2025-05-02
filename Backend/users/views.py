@@ -1,26 +1,20 @@
 from django.db import transaction
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework import status
-
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 import Backend.utils as utils
 from Backend.exceptions import NotFound404
 from custom_auth.mixins import OptionalAuthApiMixin
-
-from users.models import User
-from users.models import Friends
-from users.models import FriendInvitation
-from users.serializers import UserResponseSerializer
-from users.serializers import UsersV1SearchParamsSerializer
-from users.serializers import UserSearchResponseSerializer
-from users.serializers import UsersSearchResponseSerializer
-from users.utils import UsersSearchUserType
-from users.utils import create_friends
-from users.utils import get_users_by_filters
+from users.models import FriendInvitation, Friends
+from users.serializers import (
+    UserSearchResponseSerializer,
+    UsersSearchResponseSerializer,
+    UsersV1SearchParamsSerializer,
+)
+from users.utils import create_friends, get_users_by_filters
 
 
 class UsersV1Search(OptionalAuthApiMixin, APIView):
@@ -41,16 +35,16 @@ class UsersV1Search(OptionalAuthApiMixin, APIView):
         )
 
         result_users = get_users_by_filters(request.user, params)
-        result_users = result_users.order_by('first_name', 'last_name')
-        result_users = [UserSearchResponseSerializer(user).data for user in result_users]
-        response_data = {
-            'users': result_users
-        }
+        result_users = result_users.order_by("first_name", "last_name")
+        result_users = [
+            UserSearchResponseSerializer(user).data for user in result_users
+        ]
+        response_data = {"users": result_users}
 
         return utils.validate_and_get_response(
             response_data,
             UsersSearchResponseSerializer,
-            verbose_code="Serialization of response failed"
+            verbose_code="Serialization of response failed",
         )
 
 
@@ -71,8 +65,7 @@ class UserV1FriendsInviteApiView(APIView):
                 cross_invitations.delete()
             else:
                 invitation, created = FriendInvitation.objects.get_or_create(
-                    from_user=request.user,
-                    to_user_id=other_user_id
+                    from_user=request.user, to_user_id=other_user_id
                 )
                 if not created:
                     print(f"WARNING: invitation {invitation} already exists")
@@ -108,8 +101,7 @@ class UserV1FriendsInviteAcceptApiView(APIView):
     def post(self, request: Request, other_user_id: int):
         with transaction.atomic():
             invitations = FriendInvitation.objects.filter(
-                from_user_id=other_user_id,
-                to_user=request.user
+                from_user_id=other_user_id, to_user=request.user
             )
             if not invitations:
                 raise NotFound404(detail="Invitation does not exist")
@@ -129,8 +121,7 @@ class UserV1FriendsInviteRejectApiView(APIView):
     def post(self, request: Request, other_user_id: int):
         with transaction.atomic():
             invitations = FriendInvitation.objects.filter(
-                from_user_id=other_user_id,
-                to_user=request.user
+                from_user_id=other_user_id, to_user=request.user
             )
             if not invitations:
                 raise NotFound404(detail="Invitation does not exist")

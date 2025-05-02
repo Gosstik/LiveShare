@@ -1,8 +1,6 @@
 from django.urls import path
 
-from custom_auth.password_auth.views import PasswordSignupApiView
-from custom_auth.password_auth.views import PasswordSigninApiView
-
+from custom_auth.password_auth.views import PasswordSigninApiView, PasswordSignupApiView
 
 urlpatterns = [
     path("signup", PasswordSignupApiView.as_view(), name="auth-password-signup"),

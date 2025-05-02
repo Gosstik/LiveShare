@@ -15,42 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
-from debug_toolbar.toolbar import debug_toolbar_urls
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-
+from django.urls import include, path
 
 #############################################
 ### Friends
-
-
 ### APIView
 # /users/v1/search          # search by email or username
 # /users/v1/user/friends/friend/add
 # /users/v1/user/friends
 # /users/v1/user/friends/friend/delete
 # TODO: accept invitation
-
 #############################################
 ### Auth / Registration
-
 # TODO: add existing
 # /auth/v1/user/create
 # /auth/v1/oauth/...
 # /auth/v1/basic/...   # by password
 # /auth/v1/logout
-
 #############################################
 ### About
-
 # ??? /about/v1/statistics
-
 # schema_view = get_schema_view(
 #     openapi.Info(
 #         title="LiveShare API",
@@ -63,7 +51,6 @@ from drf_yasg import openapi
 #     public=True,
 #     permission_classes=(permissions.AllowAny,),
 # )
-
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -89,4 +76,6 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-    urlpatterns += debug_toolbar_urls() + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += debug_toolbar_urls() + static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    )

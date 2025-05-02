@@ -1,16 +1,15 @@
 import os
-from pathlib import Path
-from dotenv import load_dotenv
 from datetime import timedelta
+from pathlib import Path
 
 import rest_framework
-
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MODE = os.environ.get("MODE", "dev")
-DOCKER_COMPOSE_ENV = eval(os.environ.get('DOCKER_COMPOSE_ENV', False))
+DOCKER_COMPOSE_ENV = eval(os.environ.get("DOCKER_COMPOSE_ENV", "False"))
 
 # Load other environment variables
 load_dotenv(BASE_DIR / f"{MODE}.env")
@@ -56,7 +55,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
-    "drf_yasg",  # TODO: remove
     "drf_spectacular",
     "corsheaders",  # TODO
     # Local applications
@@ -109,7 +107,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     # TODO: add dev and prod
     FRONTEND_BASE_URL,
-    "http://localhost:60543", # for development on VM with port forwarding
+    "http://localhost:60543",  # for development on VM with port forwarding
     # TODO: add VM IP
 ]
 
@@ -148,16 +146,16 @@ WSGI_APPLICATION = "Backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_HOST = 'db' if DOCKER_COMPOSE_ENV else os.environ.get('DB_HOST', 'localhost')
+DB_HOST = "db" if DOCKER_COMPOSE_ENV else os.environ.get("DB_HOST", "localhost")
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': DB_HOST,
-        'PORT': os.environ.get('DB_PORT'),
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "HOST": DB_HOST,
+        "PORT": os.environ.get("DB_PORT"),
+        "NAME": os.environ.get("POSTGRES_DB"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
     },
 }
 
@@ -188,9 +186,7 @@ GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH2_CLIENT_SECRET")
 GOOGLE_OAUTH2_CALLBACK_PATH = os.environ.get("GOOGLE_OAUTH2_CALLBACK_PATH")
 
 AUTH_REDIRECT_FRONTEND_PATH = os.environ.get("AUTH_REDIRECT_FRONTEND_PATH")
-AUTH_REDIRECT_FRONTEND_URL = (
-    f"{FRONTEND_BASE_URL}/{AUTH_REDIRECT_FRONTEND_PATH}"
-)
+AUTH_REDIRECT_FRONTEND_URL = f"{FRONTEND_BASE_URL}/{AUTH_REDIRECT_FRONTEND_PATH}"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -209,11 +205,11 @@ USE_TZ = True
 
 # Is used by django-debug-toolbar
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Media files (User uploaded files)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -269,17 +265,17 @@ REST_FRAMEWORK = {
     "DATETIME_INPUT_FORMATS": [rest_framework.ISO_8601],
     "DATETIME_FORMATS": [rest_framework.ISO_8601],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    'EXCEPTION_HANDLER': 'Backend.exceptions.custom_exception_handler',
+    "EXCEPTION_HANDLER": "Backend.exceptions.custom_exception_handler",
     # CamelCaseXXX allows to use CamelCase for parameters on frontend
     # and snake_case on backend
-    'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
     ),
-    'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseFormParser',
-        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    "DEFAULT_PARSER_CLASSES": (
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
     ),
 }
 

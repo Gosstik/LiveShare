@@ -1,26 +1,14 @@
 import datetime as dt
-from enum import Enum
-from enum import EnumMeta
+from enum import Enum, EnumMeta
 
 from django.core.exceptions import ObjectDoesNotExist
-
-# TODO: remove drf_yasg
-from drf_yasg.inspectors import FieldInspector
-from drf_yasg.inspectors import SwaggerAutoSchema
-from drf_yasg.inspectors import swagger_settings
-from drf_yasg import openapi
-
-from rest_framework import serializers
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-
 from drf_spectacular.utils import OpenApiExample
-from drf_spectacular.utils import OpenApiResponse
+from rest_framework import serializers, status
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 
 import Backend.utils as utils
-from Backend.exceptions import BadRequest400
-from Backend.exceptions import NotFound404
+from Backend.exceptions import BadRequest400, NotFound404
 
 ################################################################################
 
@@ -40,6 +28,7 @@ def parse_date(date_str):
 def parse_default_datetime(datetime_str):
     return dt.datetime.strptime(datetime_str, DEFAULT_DATETIME_FORMAT)
 
+
 # from datetime import datetime
 # d = "2015-04-30T23:59:59+00:00"
 # if ":" == d[-3:-2]:
@@ -50,10 +39,11 @@ def parse_default_datetime(datetime_str):
 
 ### Enum utils
 
+
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):
         try:
-            cls(item) # pylint: disable=no-value-for-parameter
+            cls(item)  # pylint: disable=no-value-for-parameter
         except ValueError:
             return False
         return True
@@ -80,6 +70,7 @@ SORT_TYPES = [(val.value, val.name) for val in SortType]
 ################################################################################
 
 ### Bad Request
+
 
 class Api4xxSerializer(serializers.Serializer):
     code = serializers.CharField()
@@ -112,12 +103,13 @@ def true_or_400(condition: bool, code="error_code", detail="error_detail"):
 
 ### Other
 
+
 def get_object_or_404(get_query, error_detail):
     try:
         return get_query()
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist as e:
         # TODO: replace it with rest_framework ApiException
-        raise NotFound404(detail=error_detail)
+        raise NotFound404(detail=error_detail) from e
 
 
 def validate_data(
@@ -133,7 +125,6 @@ def validate_data(
         error = ValidationError(code=verbose_code, detail=serializer.errors)
         print(f"ERROR: {error}")
     return serializer.validated_data
-    # return serializer.data
 
 
 def validate_and_get_response(
@@ -152,58 +143,6 @@ def validate_and_get_response(
         partial=partial,
     )
     return Response(validated_data, status=status_code)
-
-
-# TODO: unused remove ???
-class NoSchemaTitleInspector(FieldInspector):
-    def process_result(self, result, method_name, obj, **kwargs):
-        # remove the `title` attribute of all Schema objects
-        if isinstance(result, openapi.Schema.OR_REF):
-            # traverse any references and alter the Schema object in place
-            schema = openapi.resolve_ref(result, self.components)
-            schema.pop("title", None)
-
-            # no ``return schema`` here, because it would mean we always generate
-            # an inline `object` instead of a definition reference
-
-        # return back the same object that we got - i.e. a reference if we got a reference
-        return result
-
-
-# TODO: unused remove ???
-class NoTitleAutoSchema(SwaggerAutoSchema):
-    field_inspectors = [
-        NoSchemaTitleInspector
-    ] + swagger_settings.DEFAULT_FIELD_INSPECTORS
-
-
-# TODO: unused remove ???
-def set_default_help_text_from_model(serializer):
-    for field_name, field in serializer.fields.items():
-        # Get model field
-        model_field = None
-        try:
-            model_field = serializer.Meta.model._meta.get_field(field_name)
-        except:
-            print(
-                f"Exception: field {field_name} is not found in model {serializer.Meta.model.__name__}"
-            )
-            continue
-
-        # Get help_text from model
-        if not hasattr(model_field, "help_text") or not model_field.help_text:
-            continue
-        model_help_text = model_field.help_text
-
-        # Extract field from serializer in case it is redefined there
-        if field_name in vars(serializer)["fields"]:
-            field = vars(serializer)["fields"][field_name]
-
-        # Check that field does not already have help_text
-        if field.help_text is not None:
-            continue
-
-        setattr(field, "help_text", model_help_text)
 
 
 def single_example(value, name="Basic Example", **kwargs):
@@ -281,9 +220,7 @@ def deserialize_or_400(
 ):
     serializer = serializer_class(data=data, partial=partial)
     if not serializer.is_valid():
-        return get_serializer_errors_response(
-            serializer, detail=detail
-        )
+        return get_serializer_errors_response(serializer, detail=detail)
     return serializer.validated_data
 
 

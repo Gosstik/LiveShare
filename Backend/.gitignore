@@ -9,6 +9,8 @@ local.docker.dev.env
 # Build artefacts
 __pycache__
 .venv
+.ruff_cache
+.pytest_cache
 
 # Other
 liveshare.db.sqlite3

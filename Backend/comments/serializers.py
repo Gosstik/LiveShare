@@ -1,17 +1,15 @@
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from drf_spectacular.utils import extend_schema_serializer
-
 import Backend.utils as utils
-from users.serializers import UserResponseSerializer
-
 from comments.models import Comment
-from comments.utils import COMMENT_SORT_FIELD_NAMES
-from comments.utils import CommentsSortFieldName
+from comments.utils import COMMENT_SORT_FIELD_NAMES, CommentsSortFieldName
+from users.serializers import UserResponseSerializer
 
 ################################################################################
 
 ### Helpers
+
 
 def transform_db_comments_for_response(filtered_comments):
     # TODO: (profiling) prefetch author
@@ -20,6 +18,7 @@ def transform_db_comments_for_response(filtered_comments):
         comments_data.append(CommentForPostSerializer(comment).data)
 
     return comments_data
+
 
 ################################################################################
 
@@ -60,7 +59,7 @@ class CreateCommentRequestSerializer(EditCommentRequestSerializer):
         fields = ["post_id", "author_id", *EditCommentRequestSerializer.Meta.fields]
 
     def create(self, validated_data):
-        validated_data['author'] = self.context.get('request_user')
+        validated_data["author"] = self.context.get("request_user")
         return Comment.objects.create(**validated_data)
 
 
@@ -87,9 +86,7 @@ class CommentsByFiltersParamsSerializer(utils.StrictFieldsMixin):
 @extend_schema_serializer(
     examples=utils.single_example(comment_by_post_example()),
 )
-class CommentForPostSerializer(
-    serializers.ModelSerializer, utils.StrictFieldsMixin
-):
+class CommentForPostSerializer(serializers.ModelSerializer, utils.StrictFieldsMixin):
     id = serializers.IntegerField()
     author = UserResponseSerializer()
     likes_count = serializers.IntegerField()

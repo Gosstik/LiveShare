@@ -1,18 +1,13 @@
-from django.db.models import OuterRef
-from django.db.models import Count
-from django.db.models import Exists
-from django.db.models import Subquery
+from django.db.models import Count, Exists, OuterRef, Subquery
 from django.db.models import Value as V
 from django.db.models.functions import Coalesce
 
 import Backend.utils as utils
 from Backend.exceptions import NotFound404
-from users.models import User
 from comments.models import Comment
-
-from posts.models import Post
-from posts.models import PostLike
+from posts.models import Post, PostLike
 from posts.serializers import GetPostResponseSerializer
+from users.models import User
 
 
 def get_post_or_404(post_id: int) -> Post:
@@ -34,7 +29,9 @@ def get_posts_by_filters_from_db(params: dict, request_user: User):
         result_set = Post.objects.all()
 
     if "post_title_search_str" in params:
-        result_set = Post.objects.filter(title__icontains=params["post_title_search_str"])
+        result_set = Post.objects.filter(
+            title__icontains=params["post_title_search_str"]
+        )
 
     # Create subqueries for count fields
     comments_count_subquery = (

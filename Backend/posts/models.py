@@ -1,13 +1,12 @@
-import datetime as dt
 from typing import TYPE_CHECKING
 
 from django.conf import settings
-from django.db.models.query import QuerySet
-from django.db.models.functions import Now
 from django.db import models
+from django.db.models.functions import Now
+from django.db.models.query import QuerySet
+from django.utils import timezone
 
 from users.models import User
-
 
 if TYPE_CHECKING:
     from comments.models import Comment
@@ -19,11 +18,11 @@ class Post(models.Model):
     title = models.TextField()
     text_content = models.TextField()
     attached_image = models.ImageField(
-        upload_to='posts_attached_images',
+        upload_to="posts_attached_images",
         null=True,
         blank=True,
-        verbose_name='Post Image',
-        help_text="Attached image"
+        verbose_name="Post Image",
+        help_text="Attached image",
     )
 
     @property
@@ -34,7 +33,26 @@ class Post(models.Model):
             except Exception as e:
                 print(f"Error getting attached_image_url: {str(e)}")
         return None
-    created_at = models.DateTimeField(db_default=Now()) # default=dt.datetime.now
+
+    @property
+    def likes_count(self) -> int:
+        return self.postlike_set.count()
+
+    @likes_count.setter
+    def likes_count(self, value):
+        # Required for Django's annotation system
+        self._likes_count = value
+
+    @property
+    def comments_count(self) -> int:
+        return self.comment_set.count()
+
+    @comments_count.setter
+    def comments_count(self, value):
+        # Required for Django's annotation system
+        self._comments_count = value
+
+    created_at = models.DateTimeField(db_default=Now())
     edited_at = models.DateTimeField(db_default=Now())
 
     class Meta:
@@ -50,10 +68,10 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if self.id:
-            self.edited_at = dt.datetime.now()
+            self.edited_at = timezone.now()
         return super().save(*args, **kwargs)
 
-    def get_related_comments(self) -> 'QuerySet[Comment]':
+    def get_related_comments(self) -> "QuerySet[Comment]":
         return self.comment_set.all()
 
 
@@ -86,11 +104,3 @@ class PostView(models.Model):
 
     def __str__(self):
         return f"post_id={self.post.id}, user={self.user}"
-
-
-class Posts(models.Model):
-    id = models.BigAutoField(primary_key=True)
-
-class Comments(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    post_id = models.ForeignKey(Posts, on_delete=models.CASCADE)
