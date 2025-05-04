@@ -176,7 +176,7 @@ export default function Post(props) {
         </div>
       </div>
 
-      <div className={style.postContent}>
+      <div className={cx('postContent', { dimmed: areCommentsShown })}>
         {post.attachedImageUrl && (
           <div className={style.postImage}>
             <img src={post.attachedImageUrl} alt="Post attachment" />
@@ -194,13 +194,14 @@ export default function Post(props) {
           </div>
 
           {areCommentsShown && (
-            <Comments post={post} onCommentsClose={swapIsCommentShown} />
+            <div className={cx('commentsOverlay', { visible: areCommentsShown })}>
+              <Comments post={post} onCommentsClose={swapIsCommentShown} />
+              <CommentsForm postId={postId} />
+            </div>
           )}
         </div>
 
         <div className={style.postFooter}>
-          {areCommentsShown && <CommentsForm postId={postId} />}
-
           {!areCommentsShown && (
             <PostFooterProps
               postId={postId}

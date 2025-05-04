@@ -175,6 +175,7 @@ $defaultTitleFontSize: 20px;
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  border: none;
 
   .text {
     @include postText();
@@ -182,7 +183,75 @@ $defaultTitleFontSize: 20px;
 
   .textBeforeComments {
     @include postText();
-    flex: 1 0 0;
+    flex: 1;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    min-height: 0; // Prevent scroll
+  }
+
+  .commentsOverlay {
+    position: absolute;
+    bottom: 0px; // To cover post border
+    left: 0px; // To cover post border
+    right: 0px; // To cover post border
+    background: white;
+    border-radius: 20px 20px $postBorderRadius $postBorderRadius;
+    z-index: 10;
+    transform: translateY(101%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    visibility: hidden;
+
+    &.visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+  }
+}
+
+.postContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  border: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+    will-change: background;
+    border-radius: 0 0 $postBorderRadius $postBorderRadius;
+  }
+
+  &.dimmed {
+    &::after {
+      background: rgba(0, 0, 0, 0.3);
+      pointer-events: auto;
+      transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .commentsOverlay {
+      border-color: black;
+      pointer-events: auto;
+      overflow: hidden;
+    }
   }
 }
 

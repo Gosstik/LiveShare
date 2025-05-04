@@ -13,36 +13,30 @@ $inputPadding: 16px;
 .commentsSection {
   display: flex;
   position: relative;
-
   height: 100%;
-  margin-top: 5px;
-
   flex-direction: column;
-  overflow-y: auto;
-
-  flex: 3 0 0;
+  background: white;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  border-top: none;
 }
 
 .commentsHeader {
   display: flex;
-  position: relative;
-
+  flex: none;
   width: 100%;
   padding: 15px 0px;
-  margin-top: 1px;
-
-  outline: $constBorderWidth solid black;
-  border-radius: Posts.$postBorderRadius Posts.$postBorderRadius 0 0;
-
   flex-direction: column;
   justify-content: center;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+  z-index: 2;
+  border-radius: 20px 20px 0 0;
 
   .title {
     display: flex;
     position: relative;
-
     align-self: center;
-
     font-weight: bold;
     font-size: 16px;
   }
@@ -50,35 +44,46 @@ $inputPadding: 16px;
   .close {
     display: flex;
     position: absolute;
-
     margin-right: 15px;
-
     align-self: flex-end;
 
     img {
       width: 30px;
       height: 30px;
       cursor: pointer;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
+}
+
+.commentsSortToggles {
+  @include SortToggles.sortToggles($padding: 10px, $toggleNameFontSize: 14px);
+  flex: none;
+  position: sticky;
+  top: 52px; // Height of header
+  background: white;
+  z-index: 2;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .commentsMain {
   display: flex;
   position: relative;
-
   flex-direction: column;
-
+  flex: 1;
   overflow-y: auto;
-}
-
-.commentsSortToggles {
-  @include SortToggles.sortToggles($padding: 10px, $toggleNameFontSize: 14px);
+  padding: 0 20px;
+  margin-bottom: 60px; // Space for comment form
+  height: calc(100% - 110px); // Subtract header and sort toggles height
 }
 
 .comment {
   display: flex;
-  margin: 10px;
+  margin: 10px 10px 0 10px; // Remove bottom margin
   gap: 15px;
 
   .avatarContainer {
@@ -172,14 +177,18 @@ $inputPadding: 16px;
 
 .commentForm {
   display: flex;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  padding: 8px;
+  padding: 12px 20px;
   gap: 8px;
   border-top: 1px solid #e0e0e0;
   background-color: #fff;
-  border-radius: 0 0 Posts.$postBorderRadius Posts.$postBorderRadius;
   align-items: flex-end;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 3;
 
   .avatarContainer {
     flex: 0 0 auto;
