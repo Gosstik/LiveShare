@@ -224,6 +224,7 @@ export function commentLike(payload) {
 export function commentCreate(payload) {
   const { postId, textContent, apiClient } = payload;
   return async function thunk(dispatch, getState) {
+    // TODO: handle errors as in promises
     const response = await apiClient.commentsV1CommentCreate({
       postId,
       textContent,

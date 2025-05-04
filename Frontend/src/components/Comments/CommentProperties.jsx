@@ -11,6 +11,7 @@ import {
 } from "../Redux/Reducers/Comments";
 
 import { useApi } from "../ApiProvider/ApiProvider"
+import { useAuth } from "../AuthProvider/AuthProvider"
 
 import style from "./Comments.module.scss";
 
@@ -48,6 +49,7 @@ export default function CommentProperties(props) {
 
   const dispatch = useDispatch();
   const apiClient = useApi();
+  const { user, isAuthenticated, isAuthLoading } = useAuth();
 
   const commentsCount = useSelector(selectCommentsCount(postId));
   const commentLikes = useSelector(
@@ -80,18 +82,23 @@ export default function CommentProperties(props) {
     );
   };
 
+
+  let canModifyComment = false;
+  if (isAuthenticated) {
+    canModifyComment = user.id === comment.author.id;
+  }
   return (
     <div className={style.commentProperties}>
-      <CommentProperty
+      {canModifyComment && <CommentProperty
         image={isEditingComment ? checkImg : editImg}
         alt="edit comment text"
         onClick={onCommentEdit}
-      />
-      <CommentProperty
+      />}
+      {canModifyComment && <CommentProperty
         image={trashImg}
         alt="remove comment"
         onClick={onCommentRemove}
-      />
+      />}
       <CommentCountProperty
         image={commentIsLiked ? redLikeImg : greyLikeImg}
         alt="comment"
