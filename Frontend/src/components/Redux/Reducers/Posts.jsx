@@ -3,7 +3,6 @@ import { thunk as thunkMiddleware } from "redux-thunk";
 import { composeWithDevTools } from "@redux-devtools/extension";
 
 import { getSortedArray, likesLessSort, fieldLessSort } from "../../utils";
-import { apiGetPosts, apiUpdatePostLike } from "../../../api/client";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
 

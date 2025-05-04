@@ -7,6 +7,8 @@ import CommentProperties from "./CommentProperties";
 import { commentUpdateText } from "../Redux/Reducers/Comments";
 import { apiUpdateComment } from "../../api/client";
 
+import { useApi } from "../ApiProvider/ApiProvider"
+
 import style from "./Comments.module.scss";
 
 function inputReducer(state, action) {
@@ -30,6 +32,7 @@ export default function Comment(props) {
 
   const dispatch = useDispatch();
   const textbox = useRef(null);
+  const apiClient = useApi();
 
   // Text
 
@@ -78,6 +81,7 @@ export default function Comment(props) {
           postId,
           commentId: comment.commentId,
           text: newText,
+          apiClient,
         })
       );
       (async () => apiUpdateComment({
@@ -103,7 +107,7 @@ export default function Comment(props) {
 
   return (
     <div className={style.comment}>
-      <div className={style.author}> {comment.author} </div>
+      <div className={style.author}> {comment.author.displayedName} </div>
       {isEditingComment && (
         <>
           <textarea

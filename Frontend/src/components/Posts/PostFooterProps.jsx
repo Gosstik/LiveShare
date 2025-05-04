@@ -30,7 +30,7 @@ function PostProperty(props) {
 }
 
 function PostCountProperty(props) {
-  const { image, alt, onClick, count } = props;
+  const { image, alt, onClick, count, checkAuth } = props;
 
   const { user, isAuthenticated } = useAuth();
 
@@ -39,6 +39,15 @@ function PostCountProperty(props) {
 
   const openModal = () => setIsModalOpened(true)
   const closeModal = () => setIsModalOpened(false)
+
+  if (!checkAuth) {
+    return (
+      <div className={style.countProp}>
+        <img src={image} alt={alt} onClick={onClick} draggable="false" />
+        <div className={style.count}>{count}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={style.countProp}>
@@ -76,6 +85,7 @@ export default function PostFooterProps(props) {
 
   const createdAt = useSelector(selectPostCreatedAt(postId))
 
+  // TODO: remove createdAt
   const createdAtDisplay = moment(createdAt).fromNow();
   // TODO: if diff > month - print YYYY:MM:DD
   // console.log(`!!! createdAtDisplay: ${createdAtDisplay}`);
@@ -94,12 +104,14 @@ export default function PostFooterProps(props) {
           alt="comment"
           onClick={onCommentClick}
           count={commentsCount}
+          checkAuth={false}
         />
         <PostCountProperty
           image={isLiked ? redLikeImg : greyLikeImg}
           alt="likes"
           onClick={onLikeClick}
           count={likes}
+          checkAuth={true}
         />
       </div>
     </div>

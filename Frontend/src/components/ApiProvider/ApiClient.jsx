@@ -66,7 +66,7 @@ function getContentTypeHeader(headers) {
   return normalizedHeaders["content-type"] || null;
 }
 
-const getUrlWithParams = (url, params) => {
+export const getUrlWithParams = (url, params) => {
   if (!params || Object.keys(params).length === 0) {
     return url;
   }

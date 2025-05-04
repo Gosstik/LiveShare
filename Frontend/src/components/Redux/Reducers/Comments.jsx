@@ -4,6 +4,7 @@ import { composeWithDevTools } from "@redux-devtools/extension";
 
 import { fieldLessSort, getSortedArray, likesLessSort } from "../../utils";
 import { apiGetPostComments } from "../../../api/client";
+import { getUrlWithParams } from "../../ApiProvider/ApiClient";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
 
@@ -71,7 +72,7 @@ const commentsSlice = createSlice(
           areLoading: false,
           loaded: false,
           isLoadFailed: true,
-        }
+        };
       },
       commentsSort(state, action) {
         const { postId, sortFieldName, isAscending } = action.payload;
@@ -91,7 +92,7 @@ const commentsSlice = createSlice(
           isAscending,
         };
       },
-      commentUpdateText(state, action) {
+      commentUpdateTextSync(state, action) {
         const { postId, commentId, text } = action.payload;
         const group = state.commentGroups[postId];
 
@@ -100,7 +101,7 @@ const commentsSlice = createSlice(
         );
         commentEl.text = text;
       },
-      commentRemove(state, action) {
+      commentRemoveSync(state, action) {
         const { postId, commentId } = action.payload;
         const group = state.commentGroups[postId];
 
@@ -108,7 +109,7 @@ const commentsSlice = createSlice(
           (comment) => comment.commentId !== commentId
         );
       },
-      commentLike(state, action) {
+      commentLikeSync(state, action) {
         const { postId, commentId, isLiked } = action.payload;
         const group = state.commentGroups[postId];
 
@@ -121,7 +122,7 @@ const commentsSlice = createSlice(
         const { postId, comment } = action.payload;
         const group = state.commentGroups[postId];
 
-        console.log(comment) // !!!
+        console.log(comment); // !!!
         group.commentEls = [...group.commentEls, comment];
 
         // TODO: send POST request to server
@@ -138,19 +139,27 @@ const commentsSlice = createSlice(
 
 // Middlewares
 
-export function commentsLoad(postId) {
+export function commentsLoad(apiClient, postId) {
   return async function thunk(dispatch, getState) {
     const loaded = getState().comments.commentGroups[postId]?.loaded ?? false;
     if (!loaded) {
-      apiGetPostComments(postId).then((response_body) => {
-        const commentEls = Array.from(response_body.comments, (comment) => ({
-          "postId": comment.post_id,
-          "commentId": comment.comment_id,
-          "author": comment.author_email.split('@')[0],
-          "text": comment.text,
-          "likes": comment.likes_count,
-          "isLiked": comment.is_liked_by_user ?? false,
-          "createdAt": comment.created_at,
+      apiClient.commentsV1ForPost(postId, {}).then(async (response) => {
+        const body = await response.json();
+        const commentEls = Array.from(body.comments, (comment) => ({
+          postId: postId,
+          commentId: comment.id,
+          author: {
+            id: comment.author.id,
+            email: comment.author.email,
+            firstName: comment.author.firstName,
+            lastName: comment.author.lastName,
+            displayedName: comment.author.displayedName,
+            profileIconUrl: comment.author.profileIconUrl,
+          },
+          text: comment.textContent,
+          likes: comment.likesCount,
+          isLiked: comment.isLikedByUser ?? false,
+          createdAt: comment.createdAt,
         }));
         dispatch(
           commentsLoaded({
@@ -159,12 +168,58 @@ export function commentsLoad(postId) {
           })
         );
       }).catch(() => {
-        dispatch(commentsLoadFailed({
-          postId
-        }))
+        dispatch(
+          commentsLoadFailed({
+            postId,
+          })
+        );
       });
     }
   };
+}
+
+export function commentUpdateText(payload) {
+  const { postId, commentId, text, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    apiClient.commentsV1CommentPatch(commentId, {
+      textContent: text,
+    });
+    dispatch(
+      commentUpdateTextSync({
+        postId, commentId, text,
+      })
+    );
+  }
+}
+
+export function commentRemove(payload) {
+  const { postId, commentId, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    apiClient.commentsV1CommentDelete(commentId);
+    dispatch(
+      commentRemoveSync({
+        postId, commentId,
+      })
+    );
+  }
+}
+
+export function commentLike(payload) {
+  const { postId, commentId, isLiked, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    const isLiked = selectCommentIsLiked(postId, commentId)(getState());
+    const newIsLiked = !isLiked;
+    if (newIsLiked) {
+      apiClient.commentsV1CommentLike(commentId);
+    } else {
+      apiClient.commentsV1CommentUnlike(commentId);
+    }
+    dispatch(
+      commentLikeSync({
+        postId, commentId, newIsLiked
+      })
+    );
+  }
 }
 
 export const commentsSortWrapper = (postId) => (payload) => {
@@ -177,6 +232,17 @@ export const commentsSortWrapper = (postId) => (payload) => {
     );
   };
 };
+
+// commentsV1CommentCreate(body) {
+//   return this.post(`/comments/v1/comment/create`, {
+//     body,
+//   });
+// }
+
+// commentsV1ForPost(postId, params) {
+//   const url = getUrlWithParams(`/comments/v1/for-post/${postId}`, params);
+//   return this.get(url);
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -218,9 +284,9 @@ export const {
   commentsLoaded,
   commentsLoadFailed,
   commentsSort,
-  commentUpdateText,
-  commentRemove,
-  commentLike,
+  commentUpdateTextSync,
+  commentRemoveSync,
+  commentLikeSync,
   commentAdd,
   commentAdded,
 } = commentsSlice.actions;

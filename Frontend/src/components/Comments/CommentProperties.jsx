@@ -10,6 +10,8 @@ import {
   commentLike,
 } from "../Redux/Reducers/Comments";
 
+import { useApi } from "../ApiProvider/ApiProvider"
+
 import style from "./Comments.module.scss";
 
 import {
@@ -45,6 +47,7 @@ export default function CommentProperties(props) {
   const { postId, comment, onCommentEdit, isEditingComment } = props;
 
   const dispatch = useDispatch();
+  const apiClient = useApi();
 
   const commentsCount = useSelector(selectCommentsCount(postId));
   const commentLikes = useSelector(
@@ -60,6 +63,7 @@ export default function CommentProperties(props) {
       commentRemove({
         postId,
         commentId: comment.commentId,
+        apiClient,
       })
     );
   };
@@ -72,6 +76,7 @@ export default function CommentProperties(props) {
         postId,
         commentId: comment.commentId,
         isLiked: !commentIsLiked,
+        apiClient,
       })
     );
   };

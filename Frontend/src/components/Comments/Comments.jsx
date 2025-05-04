@@ -17,6 +17,8 @@ import {
   selectCommentsSortToggles,
 } from "../Redux/Reducers/Comments";
 
+import { useApi } from "../ApiProvider/ApiProvider"
+
 import style from "./Comments.module.scss";
 
 function RenderComments(props) {
@@ -30,7 +32,7 @@ function RenderComments(props) {
       <div className={style.apiErrorMessage}>
         Something went wrong while loading comments.
         <br />
-        Try to reopen comments.
+        Try to reopen.
       </div>
     );
   }
@@ -61,6 +63,7 @@ export default function Comments(props) {
   const { post, onCommentsClose } = props;
 
   const dispatch = useDispatch();
+  const apiClient = useApi();
   const postId = post.postId;
 
   const commentEls = useSelector(selectCommentEls(postId));
@@ -74,7 +77,7 @@ export default function Comments(props) {
   }
 
   useEffect(() => {
-    dispatch(commentsLoad(postId));
+    dispatch(commentsLoad(apiClient, postId));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
