@@ -177,13 +177,13 @@ export default function Post(props) {
       </div>
 
       <div className={cx('postContent', { dimmed: areCommentsShown })}>
-        {post.attachedImageUrl && (
-          <div className={style.postImage}>
-            <img src={post.attachedImageUrl} alt="Post attachment" />
-          </div>
-        )}
-        <div className={style.postTitle}>{post.title}</div>
         <div className={style.postMain}>
+          {post.attachedImageUrl && (
+            <div className={style.postImage}>
+              <img src={post.attachedImageUrl} alt="Post attachment" />
+            </div>
+          )}
+          <div className={style.postTitle}>{post.title}</div>
           <div
             className={cx({
               text: !areCommentsShown,

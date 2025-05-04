@@ -148,11 +148,21 @@ $defaultTitleFontSize: 20px;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+}
+
+.postMain {
+  display: flex;
+  position: relative;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  border: none;
 
   .postImage {
     width: 100%;
     height: 300px;
     background-color: #f0f0f0;
+    flex-shrink: 0;
     
     img {
       width: 100%;
@@ -166,16 +176,8 @@ $defaultTitleFontSize: 20px;
     font-size: $defaultTitleFontSize;
     font-weight: 700;
     text-align: left;
+    flex-shrink: 0;
   }
-}
-
-.postMain {
-  display: flex;
-  position: relative;
-  flex: 1;
-  flex-direction: column;
-  overflow-y: auto;
-  border: none;
 
   .text {
     @include postText();
