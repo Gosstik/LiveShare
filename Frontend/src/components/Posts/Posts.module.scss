@@ -10,6 +10,7 @@ $postBorderRadius: 10px;
 $postTextSize: 14px;
 
 $defaultTitleFontSize: 20px;
+$animationDuration: 0.5s;
 
 /*----------------------------------------------------------------------------*/
 
@@ -191,30 +192,47 @@ $defaultTitleFontSize: 20px;
     min-height: 0; // Prevent scroll
   }
 
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
   .commentsOverlay {
     position: absolute;
-    bottom: 0px; // To cover post border
-    left: 0px; // To cover post border
-    right: 0px; // To cover post border
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
     background: white;
     border-radius: 20px 20px $postBorderRadius $postBorderRadius;
     z-index: 10;
-    transform: translateY(101%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     height: 75%;
     display: flex;
     flex-direction: column;
+    transform: translateY(100%);
     opacity: 0;
     pointer-events: none;
-    will-change: transform, opacity;
-    visibility: hidden;
+    animation: slideDown $animationDuration ease both;
 
     &.visible {
-      transform: translateY(0);
-      opacity: 1;
       pointer-events: auto;
-      visibility: visible;
+      animation: slideUp $animationDuration ease both;
     }
   }
 }
@@ -236,7 +254,7 @@ $defaultTitleFontSize: 20px;
     bottom: 0;
     background: rgba(0, 0, 0, 0);
     pointer-events: none;
-    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background $animationDuration cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 5;
     will-change: background;
     border-radius: 0 0 $postBorderRadius $postBorderRadius;
@@ -246,7 +264,7 @@ $defaultTitleFontSize: 20px;
     &::after {
       background: rgba(0, 0, 0, 0.3);
       pointer-events: auto;
-      transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background $animationDuration cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .commentsOverlay {
