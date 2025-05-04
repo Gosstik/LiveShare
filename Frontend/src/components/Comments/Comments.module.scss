@@ -3,7 +3,7 @@
 @use "../Properties/Properties.module.scss" as Props;
 @use "../Posts/Posts.module.scss" as Posts;
 
-$commentPropertyImageSize: 22px;
+$commentPropertyImageSize: 20px;
 
 // CommentForm
 $formSidePadding: 5px;
@@ -51,7 +51,7 @@ $inputPadding: 16px;
     display: flex;
     position: absolute;
 
-    margin-right: 10px;
+    margin-right: 15px;
 
     align-self: flex-end;
 
@@ -78,76 +78,62 @@ $inputPadding: 16px;
 
 .comment {
   display: flex;
+  margin: 10px;
+  gap: 15px;
 
-  margin-top: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
+  .avatarContainer {
+    flex: 0 0 auto;
+  }
 
-  flex-direction: column;
-  text-align: justify;
-
-  .author {
+  .contentContainer {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    min-width: 0; // Prevent flex item from overflowing
 
-    margin-bottom: 5px;
-
-    border: 0px;
-
-    text-align: center;
-    font-weight: bold;
-  }
-
-  .warning {
-    margin-top: 5px;
-
-    color: red;
-    font-weight: bold;
-  }
-
-  textarea {
-    width: 100%;
-
-    font: 1em/1.25em Arial, Helvetica, sans-serif;
-    word-wrap: break-word;
-    resize: none;
-  }
-
-  .commentText {
-    white-space: pre-line;
-  }
-
-  .removeCommentImg {
-    display: flex;
-    position: absolute;
-
-    right: 0px;
-    width: 20px;
-    height: 20px;
-
-    cursor: pointer;
-  }
-
-  .commentBottom {
-    display: flex;
-    position: relative;
-
-    width: 100%;
-    bottom: 0px;
-
-    .commentCreatedAt {
+    .authorMeta {
       display: flex;
-      position: relative;
+      flex-direction: column;
+      margin-bottom: 8px;
+      align-items: flex-start;
 
-      margin-left: 5px;
-      margin-bottom: 2px;
-      width: 100%;
+      .authorName {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 1.2;
+      }
 
-      align-self: end;
-      align-items: center;
-      justify-content: flex-start;
+      .commentCreatedAt {
+        font-size: 12px;
+        color: #666;
+      }
+    }
 
-      font-size: 15px;
+    .warning {
+      margin-top: 5px;
+      color: red;
       font-weight: bold;
+      font-size: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      font: 0.9em/1.25em Arial, Helvetica, sans-serif;
+      word-wrap: break-word;
+      resize: none;
+    }
+
+    .commentText {
+      white-space: pre-line;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .commentBottom {
+      display: flex;
+      margin-top: 8px;
+      justify-content: flex-end;
     }
   }
 }
@@ -156,7 +142,7 @@ $inputPadding: 16px;
   display: flex;
   position: relative;
 
-  margin-right: 10px;
+  margin-right: 15px;
   width: 100%;
 
   flex-direction: row;
@@ -168,7 +154,7 @@ $inputPadding: 16px;
 .commentProperty {
   @include Props.property(0px);
 
-  padding: 7px;
+  padding: 4px;
 
   img {
     @include Props.propertyImage($commentPropertyImageSize);
@@ -177,6 +163,7 @@ $inputPadding: 16px;
 
 .commentCountProperty {
   @include Props.countProperty(4px);
+  font-size: 16px;
 
   img {
     @include Props.propertyImage($commentPropertyImageSize);
@@ -221,18 +208,6 @@ $inputPadding: 16px;
   }
 }
 
-hr {
-  display: flex;
-  clear: both;
-
-  width: 96%;
-  height: 1px;
-  margin: 0px;
-  border-width: 0px;
-
-  background-color: grey;
-  align-self: center;
-}
 
 .apiErrorMessage {
   display: flex;

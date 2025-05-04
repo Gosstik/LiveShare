@@ -1,6 +1,7 @@
 import { useState, useReducer, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import Avatar from "@mui/joy/Avatar";
 
 import CommentProperties from "./CommentProperties";
 
@@ -8,6 +9,7 @@ import { commentUpdateText } from "../Redux/Reducers/Comments";
 import { apiUpdateComment } from "../../api/client";
 
 import { useApi } from "../ApiProvider/ApiProvider"
+import defaultAvatar from "../../images/default-avatar.png";
 
 import style from "./Comments.module.scss";
 
@@ -107,37 +109,49 @@ export default function Comment(props) {
 
   return (
     <div className={style.comment}>
-      <div className={style.author}> {comment.author.displayedName} </div>
-      {isEditingComment && (
-        <>
-          <textarea
-            type="text"
-            autoFocus
-            ref={textbox}
-            value={inputState.text}
-            onChange={onInputChange}
-            onKeyDown={onKeyDown}
-            onFocus={onFocus}
-          />
-          {inputState.isInvalid && (
-            <div className={style.warning}>
-              Comment must contain at least one non-whitespace character
-            </div>
-          )}
-        </>
-      )}
-      {!isEditingComment && (
-        <div className={style.commentText}> {inputState.text} </div>
-      )}
-
-      <div className={style.commentBottom}>
-        <div className={style.commentCreatedAt}>{createdAtStr}</div>
-        <CommentProperties
-          postId={postId}
-          comment={comment}
-          onCommentEdit={onClickEdit}
-          isEditingComment={isEditingComment}
+      <div className={style.avatarContainer}>
+        <Avatar 
+          src={comment.author.profileIconUrl || defaultAvatar} 
+          alt={comment.author.displayedName}
+          sx={{ width: 30, height: 30 }}
         />
+      </div>
+      <div className={style.contentContainer}>
+        <div className={style.authorMeta}>
+          <div className={style.authorName}>{comment.author.displayedName}</div>
+          <div className={style.commentCreatedAt}>{createdAtStr}</div>
+        </div>
+        
+        {isEditingComment && (
+          <>
+            <textarea
+              type="text"
+              autoFocus
+              ref={textbox}
+              value={inputState.text}
+              onChange={onInputChange}
+              onKeyDown={onKeyDown}
+              onFocus={onFocus}
+            />
+            {inputState.isInvalid && (
+              <div className={style.warning}>
+                Comment must contain at least one non-whitespace character
+              </div>
+            )}
+          </>
+        )}
+        {!isEditingComment && (
+          <div className={style.commentText}>{inputState.text}</div>
+        )}
+
+        <div className={style.commentBottom}>
+          <CommentProperties
+            postId={postId}
+            comment={comment}
+            onCommentEdit={onClickEdit}
+            isEditingComment={isEditingComment}
+          />
+        </div>
       </div>
     </div>
   );

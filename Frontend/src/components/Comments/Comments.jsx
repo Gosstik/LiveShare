@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Divider from '@mui/joy/Divider';
 
 import LoadingComment from "./LoadingComment";
 import Comment from "./Comment";
@@ -46,12 +47,10 @@ function RenderComments(props) {
 
         return (
           <React.Fragment key={comment.commentId}>
-            <div className={style.comment}>
-              <Comment postId={postId} comment={comment} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              {commentEls.length !== index + 1 && <hr />}
-            </div>
+            <Comment postId={postId} comment={comment} />
+            {commentEls.length !== index + 1 && (
+              <Divider sx={{ my: 1 }} />
+            )}
           </React.Fragment>
         );
       })}
