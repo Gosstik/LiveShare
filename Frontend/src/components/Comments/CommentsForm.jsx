@@ -1,11 +1,8 @@
-import { React, useReducer } from "react";
+import { React, useReducer, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import classNames from "classnames/bind";
-
-import { generateNewId } from "../utils";
-
+import Avatar from "@mui/joy/Avatar";
 import { postUpdateCommentsCount } from "../Redux/Reducers/Posts";
-
+import { sendCommentImg } from "../Consts/Consts";
 import { commentCreate } from "../Redux/Reducers/Comments";
 import {
   selectCommentEls,
@@ -13,14 +10,11 @@ import {
   selectCommentsIsLoadFailed,
 } from "../Redux/Reducers/Comments";
 
-import { useApi } from "../ApiProvider/ApiProvider"
+import { useApi } from "../ApiProvider/ApiProvider";
+import { useAuth } from "../AuthProvider/AuthProvider";
 
+import defaultAvatar from "../../images/default-avatar.png";
 import style from "./Comments.module.scss";
-import buttonStyle from "../Properties/Properties.module.scss";
-
-import { sendCommentImg } from "../Consts/Consts";
-
-const cxb = classNames.bind(buttonStyle);
 
 function formInputReducer(state, action) {
   const { type } = action;
@@ -50,16 +44,28 @@ function isInputInvalid({ value }) {
 
 export default function CommentsForm(props) {
   const { postId } = props;
+  const textareaRef = useRef(null);
+  const { user } = useAuth();
 
   const dispatch = useDispatch();
   const apiClient = useApi();
-
-  const commentEls = useSelector(selectCommentEls(postId));
 
   const [inputState, inputDispatch] = useReducer(formInputReducer, {
     text: "",
     isInvalid: true,
   });
+
+  const hiddenDivRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Reset height to get accurate scrollHeight
+      textareaRef.current.style.height = '0px';
+      // Set new height based on content
+      const height = Math.min(textareaRef.current.scrollHeight, 150);
+      textareaRef.current.style.height = `${height}px`;
+    }
+  }, [inputState.text]);
 
   const onInputTextChange = (event) => {
     const isInvalid = isInputInvalid({ value: event.target.value });
@@ -87,29 +93,43 @@ export default function CommentsForm(props) {
   };
 
   const onKeyDown = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       onCommentSend();
     }
   };
 
   const isLoadFailed = useSelector(selectCommentsIsLoadFailed(postId));
-  const buttonName = isLoadFailed ? "inactive" : "active";
 
   return (
-    <div className={style.footerCommentForm}>
-      <input className={cxb({"button-inactive": isLoadFailed})}
-        type="text"
-        value={inputState.text}
-        onChange={onInputTextChange}
-        onKeyDown={onKeyDown}
-        placeholder="Your comment..."
-        disabled={isLoadFailed}
-      />
-      <img className={cxb(`button-${buttonName}`)}
-        src={sendCommentImg}
-        alt="send comment"
-        onClick={onCommentSend}
-      />
+    <div className={style.commentForm}>
+      <div className={style.avatarContainer}>
+        <Avatar
+          src={user?.profileIconUrl || defaultAvatar}
+          alt={user?.displayedName}
+          sx={{ width: 30, height: 30 }}
+        />
+      </div>
+      
+      <div className={style.inputContainer}>
+        <textarea
+          ref={textareaRef}
+          value={inputState.text}
+          onChange={onInputTextChange}
+          onKeyDown={onKeyDown}
+          placeholder="Write a comment..."
+          disabled={isLoadFailed}
+        />
+      </div>
+
+      <div className={style.sendButton}>
+        <img
+          src={sendCommentImg}
+          alt="send comment"
+          onClick={onCommentSend}
+          className={isLoadFailed || inputState.isInvalid ? style.disabled : style.enabled}
+        />
+      </div>
     </div>
   );
 }

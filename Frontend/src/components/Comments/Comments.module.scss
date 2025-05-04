@@ -170,41 +170,75 @@ $inputPadding: 16px;
   }
 }
 
-.footerCommentForm {
+.commentForm {
   display: flex;
   position: relative;
-
-  padding: $formSidePadding;
-
   width: 100%;
-  flex-direction: row;
-  align-items: center;
+  padding: 8px;
+  gap: 8px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+  border-radius: 0 0 Posts.$postBorderRadius Posts.$postBorderRadius;
+  align-items: flex-end;
 
-  input {
+  .avatarContainer {
+    flex: 0 0 auto;
     display: flex;
-    position: relative;
-
-    width: 100%;
-    padding: 10px $inputPadding;
-
-    border: none;
-    outline: 1px solid black;
-    border-radius: calc(2 * $inputPadding);
-
-    font-size: 16px;
+    align-items: flex-end;
   }
 
-  input:focus {
-    outline-width: 2px;
+  .inputContainer {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-self: center;
+
+    textarea {
+      width: 100%;
+      min-height: 20px;
+      max-height: 150px;
+      padding: 2px 12px;
+      line-height: 16px;
+      border: none;
+      border-radius: 18px;
+      background-color: #f0f2f5;
+      font: 14px/1.4 Arial, Helvetica, sans-serif;
+      box-sizing: border-box;
+      overflow-y: hidden; // Hide scrollbar during measurement
+      resize: none;
+      outline: none;
+      overflow-y: auto;
+
+      &:focus {
+        background-color: #e4e6e9;
+      }
+
+      &::placeholder {
+        color: #65676b;
+      }
+    }
   }
 
-  img {
+  .sendButton {
+    flex: 0 0 auto;
     display: flex;
-    position: relative;
+    align-items: flex-end;
 
-    width: $formImageSize;
-    height: $formImageSize;
-    padding-left: $formSidePadding;
+    img {
+      width: $formImageSize;
+      height: $formImageSize;
+      padding-left: $formSidePadding;
+      cursor: pointer;
+
+      &.enabled {
+        opacity: 100%;
+      }
+
+      &.disabled {
+        opacity: 50%;
+        cursor: not-allowed;
+      }
+    }
   }
 }
 
