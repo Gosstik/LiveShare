@@ -277,7 +277,7 @@ export const selectCommentLikesCountW = (postId, commentId) => (state) => {
   const comment = state.comments.commentGroups[postId].commentEls.find(
     (comment) => comment.commentId === commentId
   );
-  return comment.likes + comment.isLiked;
+  return comment.likes;
 };
 
 export const selectCommentIsLiked = (postId, commentId) => (state) => {
