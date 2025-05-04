@@ -8,7 +8,7 @@ import CommentProperties from "./CommentProperties";
 import { commentUpdateText } from "../Redux/Reducers/Comments";
 import { apiUpdateComment } from "../../api/client";
 
-import { useApi } from "../ApiProvider/ApiProvider"
+import { useApi } from "../ApiProvider/ApiProvider";
 import defaultAvatar from "../../images/default-avatar.png";
 
 import style from "./Comments.module.scss";
@@ -86,10 +86,11 @@ export default function Comment(props) {
           apiClient,
         })
       );
-      (async () => apiUpdateComment({
-        "comment_id": comment.commentId,
-        "text": newText,
-      }))();
+      (async () =>
+        apiUpdateComment({
+          comment_id: comment.commentId,
+          text: newText,
+        }))();
     }
 
     setIsEditingComment(!isEditingComment);
@@ -103,6 +104,7 @@ export default function Comment(props) {
 
   // CreatedAt
 
+  // TODO: make it live
   let createdAtStr = moment(comment.createdAt).fromNow();
 
   // Result
@@ -110,8 +112,8 @@ export default function Comment(props) {
   return (
     <div className={style.comment}>
       <div className={style.avatarContainer}>
-        <Avatar 
-          src={comment.author.profileIconUrl || defaultAvatar} 
+        <Avatar
+          src={comment.author.profileIconUrl || defaultAvatar}
           alt={comment.author.displayedName}
           sx={{ width: 30, height: 30 }}
         />
@@ -121,7 +123,7 @@ export default function Comment(props) {
           <div className={style.authorName}>{comment.author.displayedName}</div>
           <div className={style.commentCreatedAt}>{createdAtStr}</div>
         </div>
-        
+
         {isEditingComment && (
           <>
             <textarea

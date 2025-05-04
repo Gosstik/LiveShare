@@ -110,12 +110,12 @@ const commentsSlice = createSlice(
         );
       },
       commentLikeSync(state, action) {
-        const { postId, commentId, isLiked } = action.payload;
+        const { postId, commentId, newIsLiked } = action.payload;
         const group = state.commentGroups[postId];
 
         const comment = group.commentEls.find((c) => c.commentId === commentId);
-        if (comment.isLiked !== isLiked) {
-          comment.isLiked = isLiked;
+        if (comment.isLiked !== newIsLiked) {
+          comment.isLiked = newIsLiked;
         }
       },
       commentAdd(state, action) {
@@ -205,7 +205,7 @@ export function commentRemove(payload) {
 }
 
 export function commentLike(payload) {
-  const { postId, commentId, isLiked, apiClient } = payload;
+  const { postId, commentId, apiClient } = payload;
   return async function thunk(dispatch, getState) {
     const isLiked = selectCommentIsLiked(postId, commentId)(getState());
     const newIsLiked = !isLiked;

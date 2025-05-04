@@ -75,7 +75,6 @@ export default function CommentProperties(props) {
       commentLike({
         postId,
         commentId: comment.commentId,
-        isLiked: !commentIsLiked,
         apiClient,
       })
     );
