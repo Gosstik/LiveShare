@@ -30,6 +30,7 @@ export const likesLessSort = (lhs, rhs) =>
 export const fieldLessSort = (fieldName) => (lhs, rhs) =>
   lhs[fieldName] < rhs[fieldName];
 
+// TODO: remove (is made by backend)
 export const generateNewId = (arrData, idFieldName) => {
   const maxId = arrData.reduce((prevId, cur) => {
     const curId = cur[idFieldName];

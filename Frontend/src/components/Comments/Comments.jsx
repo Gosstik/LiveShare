@@ -38,6 +38,7 @@ function RenderComments(props) {
     );
   }
 
+  // TODO: redesign comments with loading
   return (
     <>
       {commentEls.map((comment, index) => {

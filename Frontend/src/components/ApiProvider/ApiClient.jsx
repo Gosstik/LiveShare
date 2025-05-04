@@ -226,6 +226,9 @@ class ApiClient {
   commentsV1CommentCreate(body) {
     return this.post(`/comments/v1/comment/create`, {
       body,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 

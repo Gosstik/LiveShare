@@ -118,14 +118,13 @@ const commentsSlice = createSlice(
           comment.isLiked = newIsLiked;
         }
       },
-      commentAdd(state, action) {
-        const { postId, comment } = action.payload;
-        const group = state.commentGroups[postId];
+      commentCreateSync(state, action) {
+        // TODO: add commentId after it appears on backend
+        // const { postId } = action.payload;
+        // const group = state.commentGroups[postId];
 
-        console.log(comment); // !!!
-        group.commentEls = [...group.commentEls, comment];
-
-        // TODO: send POST request to server
+        // console.log(comment); // !!!
+        // group.commentEls = [...group.commentEls, comment];
       },
       commentAdded() {
         // TODO: accept id from server
@@ -181,7 +180,7 @@ export function commentsLoad(apiClient, postId) {
 export function commentUpdateText(payload) {
   const { postId, commentId, text, apiClient } = payload;
   return async function thunk(dispatch, getState) {
-    apiClient.commentsV1CommentPatch(commentId, {
+    await apiClient.commentsV1CommentPatch(commentId, {
       textContent: text,
     });
     dispatch(
@@ -195,7 +194,7 @@ export function commentUpdateText(payload) {
 export function commentRemove(payload) {
   const { postId, commentId, apiClient } = payload;
   return async function thunk(dispatch, getState) {
-    apiClient.commentsV1CommentDelete(commentId);
+    await apiClient.commentsV1CommentDelete(commentId);
     dispatch(
       commentRemoveSync({
         postId, commentId,
@@ -210,13 +209,29 @@ export function commentLike(payload) {
     const isLiked = selectCommentIsLiked(postId, commentId)(getState());
     const newIsLiked = !isLiked;
     if (newIsLiked) {
-      apiClient.commentsV1CommentLike(commentId);
+      await apiClient.commentsV1CommentLike(commentId);
     } else {
-      apiClient.commentsV1CommentUnlike(commentId);
+      await apiClient.commentsV1CommentUnlike(commentId);
     }
     dispatch(
       commentLikeSync({
         postId, commentId, newIsLiked
+      })
+    );
+  }
+}
+
+export function commentCreate(payload) {
+  const { postId, textContent, apiClient } = payload;
+  return async function thunk(dispatch, getState) {
+    const response = await apiClient.commentsV1CommentCreate({
+      postId,
+      textContent,
+    });
+    // TODO: send commentId from backend for drawing
+    dispatch(
+      commentCreateSync({
+        postId,
       })
     );
   }
@@ -232,12 +247,6 @@ export const commentsSortWrapper = (postId) => (payload) => {
     );
   };
 };
-
-// commentsV1CommentCreate(body) {
-//   return this.post(`/comments/v1/comment/create`, {
-//     body,
-//   });
-// }
 
 // commentsV1ForPost(postId, params) {
 //   const url = getUrlWithParams(`/comments/v1/for-post/${postId}`, params);
@@ -287,7 +296,7 @@ export const {
   commentUpdateTextSync,
   commentRemoveSync,
   commentLikeSync,
-  commentAdd,
+  commentCreateSync,
   commentAdded,
 } = commentsSlice.actions;
 

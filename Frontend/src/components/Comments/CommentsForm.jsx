@@ -6,12 +6,14 @@ import { generateNewId } from "../utils";
 
 import { postUpdateCommentsCount } from "../Redux/Reducers/Posts";
 
-import { commentAdd } from "../Redux/Reducers/Comments";
+import { commentCreate } from "../Redux/Reducers/Comments";
 import {
   selectCommentEls,
   selectCommentsCount,
   selectCommentsIsLoadFailed,
 } from "../Redux/Reducers/Comments";
+
+import { useApi } from "../ApiProvider/ApiProvider"
 
 import style from "./Comments.module.scss";
 import buttonStyle from "../Properties/Properties.module.scss";
@@ -50,6 +52,7 @@ export default function CommentsForm(props) {
   const { postId } = props;
 
   const dispatch = useDispatch();
+  const apiClient = useApi();
 
   const commentEls = useSelector(selectCommentEls(postId));
 
@@ -73,16 +76,10 @@ export default function CommentsForm(props) {
       postUpdateCommentsCount({ postId, newCommentsCount: prevCount + 1 })
     );
     dispatch(
-      commentAdd({
+      commentCreate({
         postId,
-        comment: {
-          commentId: generateNewId(commentEls, "commentId"),
-          author: "Me", // TODO: replace with auth user
-          text: inputState.text,
-          likes: 0,
-          isLiked: false,
-          createdAt: Date.now(),
-        },
+        textContent: inputState.text,
+        apiClient,
       })
     );
 

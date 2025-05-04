@@ -16,8 +16,12 @@ import CommentsForm from "../Comments/CommentsForm";
 import { useApi } from "../ApiProvider/ApiProvider";
 
 import { postFormUpdate, postRemove } from "../Redux/Reducers/Posts";
-import { selectPost, selectPostText, selectPostCreatedAt } from "../Redux/Reducers/Posts";
-import PostFooterProps from "./PostFooterProps"
+import {
+  selectPost,
+  selectPostText,
+  selectPostCreatedAt,
+} from "../Redux/Reducers/Posts";
+import PostFooterProps from "./PostFooterProps";
 
 import style from "./Posts.module.scss";
 import defaultAvatar from "../../images/default-avatar.png";
@@ -97,8 +101,8 @@ export default function Post(props) {
     <>
       <div className={style.postHeader}>
         <div className={style.authorInfo}>
-          <Avatar 
-            src={post.author.profileIconUrl || defaultAvatar} 
+          <Avatar
+            src={post.author.profileIconUrl || defaultAvatar}
             alt={post.author.displayedName}
             size="sm"
           />
@@ -111,12 +115,17 @@ export default function Post(props) {
           <IconButton
             aria-label="more"
             id="post-menu-button"
-            aria-controls={open ? 'post-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
+            aria-controls={open ? "post-menu" : undefined}
+            aria-expanded={open ? "true" : undefined}
             aria-haspopup="true"
             onClick={handleMenuClick}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" style={{fill: 'currentColor'}}>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              style={{ fill: "currentColor" }}
+            >
               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
             </svg>
           </IconButton>
@@ -126,12 +135,17 @@ export default function Post(props) {
             open={open}
             onClose={handleMenuClose}
             MenuListProps={{
-              'aria-labelledby': 'post-menu-button',
+              "aria-labelledby": "post-menu-button",
             }}
           >
             <MenuItem onClick={onNewTab}>
               <ListItemIcon>
-                <img src={newTabImg} alt="open in new tab" width="20" height="20" />
+                <img
+                  src={newTabImg}
+                  alt="open in new tab"
+                  width="20"
+                  height="20"
+                />
               </ListItemIcon>
               <Typography variant="body2">Open full</Typography>
             </MenuItem>
@@ -141,11 +155,22 @@ export default function Post(props) {
               </ListItemIcon>
               <Typography variant="body2">Edit</Typography>
             </MenuItem>
-            <MenuItem onClick={onPostRemove} sx={{ color: 'red' }}>
+            <MenuItem onClick={onPostRemove} sx={{ color: "red" }}>
               <ListItemIcon>
-                <img src={trashImg} alt="remove" width="20" height="20" style={{filter: 'invert(27%) sepia(91%) saturate(2352%) hue-rotate(346deg) brightness(74%) contrast(97%)'}} />
+                <img
+                  src={trashImg}
+                  alt="remove"
+                  width="20"
+                  height="20"
+                  style={{
+                    filter:
+                      "invert(27%) sepia(91%) saturate(2352%) hue-rotate(346deg) brightness(74%) contrast(97%)",
+                  }}
+                />
               </ListItemIcon>
-              <Typography variant="body2" color="error">Remove</Typography>
+              <Typography variant="body2" color="error">
+                Remove
+              </Typography>
             </MenuItem>
           </Menu>
         </div>
