@@ -15,8 +15,8 @@ import defaultAvatar from "../../images/default-avatar.png";
 import src from "@emotion/styled";
 import {
   createPostUrl,
+  exploreUrl,
   homeUrl,
-  postsUrl,
   signinUrl,
   signupUrl,
 } from "../../api/urls";
@@ -45,9 +45,9 @@ export default function Header() {
       <div className={style.buttons}>
         <button
           className={style.simpleButton}
-          onClick={() => navigate(postsUrl)}
+          onClick={() => navigate(exploreUrl)}
         >
-          Posts
+          Explore
         </button>
         <button
           className={style.simpleButton}

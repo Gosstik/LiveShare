@@ -1,6 +1,8 @@
 export function adjustTextareaHeight(textarea) {
+  const scrollPos = window.scrollY;
   textarea.style.height = 'auto';
   textarea.style.height = textarea.scrollHeight + 'px';
+  window.scrollTo(0, scrollPos);
 }
 
 export const LoadingState = {

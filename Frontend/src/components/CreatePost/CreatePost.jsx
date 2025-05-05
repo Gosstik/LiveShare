@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Link, CircularProgress } from '@mui/material';
 
 import styles from './CreatePost.module.scss';
 
-import { useApi } from "../ApiProvider/ApiProvider"
+import { useApi } from "../ApiProvider/ApiProvider";
+import { adjustTextareaHeight } from '../utils';
 import { useAuth } from "../AuthProvider/AuthProvider"
 import { homeUrl } from '../../api/urls';
 import ModalRequireAuth from '../ModalRequireAuth/ModalRequireAuth';
@@ -14,7 +15,14 @@ export default function CreatePost() {
   const apiClient = useApi();
   const { isGuest, isAuthLoading } = useAuth();
   const [title, setTitle] = useState('');
+  const textareaRef = useRef(null);
   const [textContent, setTextContent] = useState('');
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      adjustTextareaHeight(textareaRef.current);
+    }
+  }, [textContent]);
   const [attachedImage, setAttachedImage] = useState(null);
   const [error, setError] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -92,7 +100,11 @@ export default function CreatePost() {
           <textarea
             id="textContent"
             value={textContent}
-            onChange={(e) => setTextContent(e.target.value)}
+            ref={textareaRef}
+            onChange={(e) => {
+              setTextContent(e.target.value);
+              adjustTextareaHeight(e.target);
+            }}
             required
           />
         </div>
