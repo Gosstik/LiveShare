@@ -123,44 +123,52 @@ export default function PostHeader(props) {
     );
   }
 
+  const fontSize = '14px';
+
   // List view - only show filters
   return (
     <div className={style.postHeader}>
       <div className={style.filters}>
-        <div className={style.sortOrder} onClick={toggleSortOrder}>
-          <img
-            src={sortOrder === "asc" ? arrowUpImg : arrowDownImg}
-            alt={sortOrder === "asc" ? "Sort ascending" : "Sort descending"}
+        <div className={style.leftFilters}>
+          <div className={style.sortOrder} onClick={toggleSortOrder}>
+            <img
+              src={sortOrder === "asc" ? arrowUpImg : arrowDownImg}
+              alt={sortOrder === "asc" ? "Sort ascending" : "Sort descending"}
+            />
+          </div>
+
+          <TextField
+            placeholder="Search by title"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <img src={searchImg} alt="Search" />
+                </InputAdornment>
+              ),
+              style: { fontSize }
+            }}
+            size="small"
           />
         </div>
 
-        <TextField
-          placeholder="Search by title"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <img src={searchImg} alt="Search" />
-              </InputAdornment>
-            ),
-          }}
-          size="small"
-        />
-
-        <FormControl sx={{ minWidth: 120 }} size="small">
-          <InputLabel>Sort by</InputLabel>
-          <Select
-            value={sortField}
-            label="Sort by"
-            onChange={handleSortFieldChange}
-          >
-            <MenuItem value="">None</MenuItem>
-            <MenuItem value="created_at">Date</MenuItem>
-            <MenuItem value="likes_count">Likes</MenuItem>
-            <MenuItem value="comments_count">Comments</MenuItem>
-          </Select>
-        </FormControl>
+        <div className={style.rightFilters}>
+          <FormControl sx={{ minWidth: 120 }} size="small">
+            <InputLabel style={{ fontSize }}>Sort by</InputLabel>
+            <Select
+              value={sortField}
+              label="Sort by"
+              onChange={handleSortFieldChange}
+              style={{ fontSize }}
+            >
+              <MenuItem value="" style={{ fontSize }}>None</MenuItem>
+              <MenuItem value="created_at" style={{ fontSize }}>Date</MenuItem>
+              <MenuItem value="likes_count" style={{ fontSize }}>Likes</MenuItem>
+              <MenuItem value="comments_count" style={{ fontSize }}>Comments</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
       </div>
     </div>
   );
