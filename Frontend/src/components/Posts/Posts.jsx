@@ -42,6 +42,13 @@ export default function Posts({ userId }) {
   const areLoading = useSelector(selectPostsAreLoading);
   const areLoaded = useSelector(selectPostsLoaded);
   const isLoadFailed = useSelector(selectPostsLoadFailed);
+
+  useEffect(() => {
+    // Quick fix. Think of how to update post immediately after it was created
+    const params = userId ? { apiClient, author_id: userId } : { apiClient };
+    dispatch(postsLoad(params));
+  }, []);
+
   useEffect(() => {
     if (!areLoading && !isLoadFailed) {
       const params = userId ? { apiClient, author_id: userId } : { apiClient };

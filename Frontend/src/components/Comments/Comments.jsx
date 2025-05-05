@@ -31,14 +31,14 @@ function RenderComments(props) {
   if (isLoadFailed) {
     return (
       <div className={style.apiErrorMessage}>
-        Something went wrong while loading comments.
+        Something went wrong while loading comments :(
         <br />
         Try to reopen.
       </div>
     );
   }
 
-  // TODO: redesign comments with loading
+  // TODO: redesign comments while loading
   return (
     <>
       {commentEls.map((comment, index) => {
