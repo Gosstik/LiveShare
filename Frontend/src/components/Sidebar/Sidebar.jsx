@@ -26,13 +26,13 @@ export default function Sidebar({ children }) {
   const sidebar = useRef(null);
 
   const openSidebar = () => {
-    console.log("OPEN SIDEBAR");
+    // console.log("OPEN SIDEBAR");
     sidebar.current.classList.add("opened");
     setIsSidebarOpened(true);
   };
   const closeSidebar = () => {
     if (isSidebarOpened) {
-      console.log("CLOSE SIDEBAR");
+      // console.log("CLOSE SIDEBAR");
       sidebar.current.classList.remove("opened");
       setIsSidebarOpened(false);
     }

@@ -103,6 +103,8 @@ export default function Comment(props) {
 
   // Result
 
+  // TODO: disable input to guest users
+
   return (
     <div className={style.comment}>
       <div className={style.avatarContainer}>

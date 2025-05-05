@@ -116,6 +116,7 @@ const commentsSlice = createSlice(
         const comment = group.commentEls.find((c) => c.commentId === commentId);
         if (comment.isLiked !== newIsLiked) {
           comment.isLiked = newIsLiked;
+          comment.likes += newIsLiked ? 1 : -1;
         }
       },
       commentCreateSync(state, action) {

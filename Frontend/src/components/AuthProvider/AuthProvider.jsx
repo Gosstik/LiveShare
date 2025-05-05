@@ -72,6 +72,15 @@ export class ApiAuthInfo {
       // credentials: "same-origin",
     });
   }
+
+  async logoutUser() {
+    return fetch(`${ENV.BACKEND_BASE_URL}/auth/logout`, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      // credentials: "same-origin",
+    });
+  }
 }
 
 // TODO: remove export
@@ -136,7 +145,9 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    const apiAuthInfo = new ApiAuthInfo();
+    await apiAuthInfo.logoutUser();
     removeTokensData();
     window.location.href = `${ENV.FRONTEND_BASE_URL}${exploreUrl}`
   };
