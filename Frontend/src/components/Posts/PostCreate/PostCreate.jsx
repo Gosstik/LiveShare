@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './PostCreate.module.scss';
+import { useApi } from '../../ApiProvider/ApiProvider';
+import { adjustTextareaHeight } from '../../utils';
 
 const PostCreate = () => {
   const [title, setTitle] = useState('');
+  const textareaRef = useRef(null);
   const [textContent, setTextContent] = useState('');
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      adjustTextareaHeight(textareaRef.current);
+    }
+  }, []);
   const [attachedImage, setAttachedImage] = useState(null);
   const [error, setError] = useState(null);
+  const apiClient = useApi();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,13 +29,7 @@ const PostCreate = () => {
     }
 
     try {
-      await axios.post('http://localhost:8000/posts/v1/post/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'X-CSRFToken': Cookies.get('csrftoken'),
-        },
-        withCredentials: true,
-      });
+      await apiClient.postsV1PostCreate(formData);
       // Clear form after successful submission
       setTitle('');
       setTextContent('');
@@ -67,7 +69,11 @@ const PostCreate = () => {
           <textarea
             id="textContent"
             value={textContent}
-            onChange={(e) => setTextContent(e.target.value)}
+            ref={textareaRef}
+            onChange={(e) => {
+              setTextContent(e.target.value);
+              adjustTextareaHeight(e.target);
+            }}
             required
           />
         </div>

@@ -1,3 +1,8 @@
+export function adjustTextareaHeight(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+
 export const LoadingState = {
   NOT_STARTED: "not_started",
   LOADING: "loading",

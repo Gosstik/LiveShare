@@ -10,7 +10,6 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 
-import PostForm from "./PostForm";
 import Comments from "../Comments/Comments";
 import CommentsForm from "../Comments/CommentsForm";
 import { useApi } from "../ApiProvider/ApiProvider";
@@ -26,6 +25,7 @@ import PostFooterProps from "./PostFooterProps";
 import style from "./Posts.module.scss";
 import defaultAvatar from "../../images/default-avatar.png";
 import { newTabImg, trashImg, editImg } from "../Consts/Consts";
+import { editPostUrl } from "../../api/urls";
 
 export const cx = classNames.bind(style);
 
@@ -63,27 +63,12 @@ export default function Post(props) {
     setAnchorEl(null);
   };
 
-  const [isModalOpened, setIsModalOpened] = useState(false);
   const [areCommentsShown, setAreCommentsShown] = useState(false);
 
   const onPostEdit = () => {
-    setIsModalOpened(true);
+    navigate(editPostUrl.replace(':postId', postId));
     handleMenuClose();
   };
-
-  const onFormSubmit = ({ newTitle, newText }) => {
-    dispatch(
-      postFormUpdate({
-        postId,
-        newTitle,
-        newText,
-        apiClient,
-      })
-    );
-    setIsModalOpened(false);
-  };
-
-  const onFormCancel = () => setIsModalOpened(false);
 
   const onPostRemove = () => {
     dispatch(postRemove({ postId, apiClient }));
@@ -213,14 +198,6 @@ export default function Post(props) {
         </div>
       </div>
 
-      {isModalOpened && (
-        <PostForm
-          formTitle={"Editing post"}
-          postId={post.postId}
-          onFormSubmit={onFormSubmit}
-          onFormCancel={onFormCancel}
-        />
-      )}
     </>
   );
 }
