@@ -60,7 +60,7 @@ function RenderComments(props) {
 }
 
 export default function Comments(props) {
-  const { post, onCommentsClose } = props;
+  const { post, onCommentsClose, shouldReloadComments, setShouldReloadComments } = props;
 
   const dispatch = useDispatch();
   const apiClient = useApi();
@@ -78,7 +78,8 @@ export default function Comments(props) {
 
   useEffect(() => {
     dispatch(commentsLoad(apiClient, postId));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    setShouldReloadComments(false);
+  }, [shouldReloadComments]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={style.commentsSection}>

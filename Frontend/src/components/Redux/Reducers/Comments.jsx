@@ -141,7 +141,7 @@ const commentsSlice = createSlice(
 export function commentsLoad(apiClient, postId) {
   return async function thunk(dispatch, getState) {
     const loaded = getState().comments.commentGroups[postId]?.loaded ?? false;
-    if (!loaded) {
+    // if (!loaded) {
       apiClient.commentsV1ForPost(postId, {}).then(async (response) => {
         const body = await response.json();
         const commentEls = Array.from(body.comments, (comment) => ({
@@ -173,7 +173,7 @@ export function commentsLoad(apiClient, postId) {
           })
         );
       });
-    }
+    // }
   };
 }
 
@@ -230,6 +230,7 @@ export function commentCreate(payload) {
       textContent,
     });
     // TODO: send commentId from backend for drawing
+
     dispatch(
       commentCreateSync({
         postId,

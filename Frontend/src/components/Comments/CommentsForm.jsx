@@ -43,7 +43,7 @@ function isInputInvalid({ value }) {
 }
 
 export default function CommentsForm(props) {
-  const { postId } = props;
+  const { postId, setShouldReloadComments } = props;
   const textareaRef = useRef(null);
   const { user } = useAuth();
 
@@ -88,8 +88,8 @@ export default function CommentsForm(props) {
         apiClient,
       })
     );
-
     inputDispatch({ type: "erase" });
+    setShouldReloadComments(true);
   };
 
   const onKeyDown = (event) => {

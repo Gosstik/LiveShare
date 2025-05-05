@@ -37,6 +37,7 @@ export default function Post(props) {
   const navigate = useNavigate();
   const apiClient = useApi();
   const { user, isAuthenticated } = useAuth();
+  const [shouldReloadComments, setShouldReloadComments] = useState(false);
 
   const post = useSelector(selectPost(postId));
   const curText = useSelector(selectPostText(postId));
@@ -189,8 +190,8 @@ export default function Post(props) {
 
           {areCommentsShown && (
             <div className={cx('commentsOverlay', { visible: areCommentsShown })}>
-              <Comments post={post} onCommentsClose={swapIsCommentShown} />
-              <CommentsForm postId={postId} />
+              <Comments post={post} onCommentsClose={swapIsCommentShown} shouldReloadComments={shouldReloadComments} setShouldReloadComments={setShouldReloadComments}/>
+              <CommentsForm postId={postId} setShouldReloadComments={setShouldReloadComments}/>
             </div>
           )}
         </div>
