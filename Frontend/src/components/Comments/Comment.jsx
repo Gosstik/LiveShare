@@ -6,7 +6,6 @@ import Avatar from "@mui/joy/Avatar";
 import CommentProperties from "./CommentProperties";
 
 import { commentUpdateText } from "../Redux/Reducers/Comments";
-import { apiUpdateComment } from "../../api/client";
 
 import { useApi } from "../ApiProvider/ApiProvider";
 import defaultAvatar from "../../images/default-avatar.png";
@@ -86,11 +85,6 @@ export default function Comment(props) {
           apiClient,
         })
       );
-      (async () =>
-        apiUpdateComment({
-          comment_id: comment.commentId,
-          text: newText,
-        }))();
     }
 
     setIsEditingComment(!isEditingComment);

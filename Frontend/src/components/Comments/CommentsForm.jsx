@@ -45,7 +45,7 @@ function isInputInvalid({ value }) {
 export default function CommentsForm(props) {
   const { postId, setShouldReloadComments } = props;
   const textareaRef = useRef(null);
-  const { user } = useAuth();
+  const { user, isAuthLoading } = useAuth();
 
   const dispatch = useDispatch();
   const apiClient = useApi();
@@ -54,8 +54,6 @@ export default function CommentsForm(props) {
     text: "",
     isInvalid: true,
   });
-
-  const hiddenDivRef = useRef(null);
 
   useEffect(() => {
     if (textareaRef.current) {

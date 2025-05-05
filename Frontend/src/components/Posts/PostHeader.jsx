@@ -38,7 +38,6 @@ export default function PostHeader(props) {
   );
 
   const navigate = useNavigate();
-  const onNewTab = () => navigate(`/posts/${postId}`);
 
   const [isModalOpened, setIsModalOpened] = useState(false);
   const openModal = () => setIsModalOpened(true);

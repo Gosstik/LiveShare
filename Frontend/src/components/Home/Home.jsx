@@ -6,7 +6,7 @@ import ModalRequireAuth from '../ModalRequireAuth/ModalRequireAuth';
 import styles from './Home.module.scss';
 
 export default function Home() {
-  const { isGuest, isAuthLoading, user } = useAuth();
+  const { isGuest, isAuthLoading, isAuthenticated, user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {

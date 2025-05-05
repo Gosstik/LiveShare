@@ -16,6 +16,7 @@ import {
   isRefreshedTokenExpired,
   removeTokensData,
 } from "./Tokens";
+import { exploreUrl } from "../../api/urls";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -136,8 +137,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logoutUser = () => {
-    setLoginState(LoginStates.GUEST);
     removeTokensData();
+    window.location.href = `${ENV.FRONTEND_BASE_URL}${exploreUrl}`
   };
 
   useEffect(() => {

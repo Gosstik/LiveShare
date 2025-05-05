@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectPost, postsLoad, selectPostsLoaded } from '../Redux/Reducers/Posts';
 import { useApi } from '../ApiProvider/ApiProvider';
-import { singlePostUrl } from '../../api/urls';
+import { homeUrl, singlePostUrl } from '../../api/urls';
 import styles from './EditPost.module.scss';
 import { adjustTextareaHeight } from '../utils';
 
@@ -60,7 +60,9 @@ export default function EditPost() {
 
     try {
       await apiClient.postsV1PostPatch(postId, body);
-      navigate(singlePostUrl.replace(':postId', postId));
+      // TODO: replace with navigate to changed post page
+      navigate(homeUrl);
+      // navigate(singlePostUrl.replace(':postId', postId));
     } catch (err) {
       setError('An error occurred while updating the post');
     }

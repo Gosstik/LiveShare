@@ -6,7 +6,6 @@ import { ENV } from "../../config";
 // https://console.cloud.google.com/auth
 // https://console.cloud.google.com/apis/credentials
 export const googleOAuthOnClick = () => {
-  console.log("!!! start googleOAuthOnClick");
   try {
     // TODO: replace localhost with backend constant
     window.location.assign(`${ENV.BACKEND_BASE_URL}/auth/oauth/google/redirect`);

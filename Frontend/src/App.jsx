@@ -84,7 +84,6 @@ function App() {
               <Route
                 path={authCallbackUrl}
                 element={<AuthCallback />}
-                onEnter={() => console.log(`!!! Entered ${authCallbackUrl}`)}
               />
 
               {/* TODO: About, Not Found */}

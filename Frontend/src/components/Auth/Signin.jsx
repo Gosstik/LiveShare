@@ -5,9 +5,12 @@ import { afterAuthPath } from "../../api/urls";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../ApiProvider/ApiProvider";
-import { useAuth, updateTokensInLocalStorage } from "../AuthProvider/AuthProvider";
+import {
+  useAuth,
+  updateTokensInLocalStorage,
+} from "../AuthProvider/AuthProvider";
 
-import Divider from '@mui/joy/Divider';
+import Divider from "@mui/joy/Divider";
 
 import { googleOAuthOnClick } from "./Auth";
 
@@ -27,22 +30,22 @@ export default function Signin() {
 
   const { isAuthenticated, updateLoginState } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
       const response = await apiClient.authPasswordSignIn(formData);
@@ -52,15 +55,18 @@ export default function Signin() {
         navigate(afterAuthPath);
       } else {
         const data = await response.json();
-        if (data.code && ['email_does_not_exist', 'invalid_password'].includes(data.code)) {
+        if (
+          data.code &&
+          ["email_does_not_exist", "invalid_password"].includes(data.code)
+        ) {
           setError(data.detail);
         } else {
-          setError('Sign in failed. Please try again.');
+          setError("Sign in failed. Please try again.");
         }
       }
     } catch (error) {
-      setError('Error during sign in. Please try again.');
-      console.error('Error during sign in:', error);
+      setError("Error during sign in. Please try again.");
+      console.error("Error during sign in:", error);
     }
   };
 
@@ -86,10 +92,10 @@ export default function Signin() {
           onClick={googleOAuthOnClick}
         />
       </div>
-      <Divider>Visual indicator</Divider>
+      <Divider>Or</Divider>
       <form onSubmit={handleSubmit} className={style.signupForm}>
         {error && <div className={style.errorMessage}>{error}</div>}
-        
+
         <div className={style.formField}>
           <label htmlFor="email">Email:</label>
           <input

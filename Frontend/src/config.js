@@ -11,5 +11,6 @@
 export const ENV = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   BACKEND_BASE_URL: process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:8000',
+  FRONTEND_BASE_URL: process.env.REACT_APP_FRONTEND_BASE_URL || 'http://localhost:3000',
   ACCESS_TOKEN_BUFFER_SEC: Number(process.env.REACT_APP_ACCESS_TOKEN_BUFFER_SEC) || 30,
 };

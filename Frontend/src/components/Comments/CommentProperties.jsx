@@ -83,6 +83,10 @@ export default function CommentProperties(props) {
   };
 
 
+  if (isAuthLoading) {
+    return null;
+  }
+
   let canModifyComment = false;
   if (isAuthenticated) {
     canModifyComment = user.id === comment.author.id;
