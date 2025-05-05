@@ -367,3 +367,39 @@ $animationDuration: 0.5s;
   color: red;
   font-weight: bold;
 }
+
+.noPostsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  
+  .noPostsMessage {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #666;
+  }
+
+  .createPostButton {
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    background-color: orange;
+    border: none;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: darken(orange, 10%);
+    }
+  }
+}

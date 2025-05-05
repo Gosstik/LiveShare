@@ -1,6 +1,7 @@
 import { React, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { createPostUrl } from "../../api/urls";
 
 import Post from "./Post";
 import PostHeader from "./PostHeader";
@@ -28,6 +29,7 @@ const filterById = (postId) => (post) => Number(post.postId) === Number(postId);
 export default function Posts() {
   const dispatch = useDispatch();
   const apiClient = useApi();
+  const navigate = useNavigate();
 
   // Handle single post
 
@@ -107,16 +109,32 @@ export default function Posts() {
       )}
 
       <div className={style.postsMain}>
-        {filteredPosts.map((post, index) => {
-          if (post === null) {
-            return <LoadingPost key={-index} />;
-          }
-          return (
-            <div className={style.post} key={post.postId}>
-              <Post postId={post.postId} isSinglePost={isSinglePost} />
+        {areLoaded && filteredPosts.length === 0 && !isSinglePost ? (
+          <div className={style.noPostsContainer}>
+            <div className={style.noPostsMessage}>
+              No posts found with the current filters.
+              <br />
+              Would you like to create a new post?
             </div>
-          );
-        })}
+            <button 
+              className={style.createPostButton}
+              onClick={() => navigate(createPostUrl)}
+            >
+              Create post
+            </button>
+          </div>
+        ) : (
+          filteredPosts.map((post, index) => {
+            if (post === null) {
+              return <LoadingPost key={-index} />;
+            }
+            return (
+              <div className={style.post} key={post.postId}>
+                <Post postId={post.postId} isSinglePost={isSinglePost} />
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );
