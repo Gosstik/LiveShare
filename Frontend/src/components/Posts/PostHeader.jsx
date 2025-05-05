@@ -28,7 +28,7 @@ import {
 let searchTimeout = null;
 
 export default function PostHeader(props) {
-  const { postId, isSinglePost, onPostRemove } = props;
+  const { postId, isSinglePost, onPostRemove, userId } = props;
   const dispatch = useDispatch();
   const apiClient = useApi();
 
@@ -49,10 +49,14 @@ export default function PostHeader(props) {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
 
-  const makeRequestParams = (props) => {
+  const makeRequestParams = () => {
     const requestParams = {
       apiClient,
     };
+
+    if (userId) {
+      requestParams.author_id = userId;
+    }
 
     if (sortOrder) {
       requestParams.sort_type = sortOrder;

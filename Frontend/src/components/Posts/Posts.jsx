@@ -26,7 +26,7 @@ import style from "./Posts.module.scss";
 
 const filterById = (postId) => (post) => Number(post.postId) === Number(postId);
 
-export default function Posts() {
+export default function Posts({ userId }) {
   const dispatch = useDispatch();
   const apiClient = useApi();
   const navigate = useNavigate();
@@ -44,7 +44,8 @@ export default function Posts() {
   const isLoadFailed = useSelector(selectPostsLoadFailed);
   useEffect(() => {
     if (!areLoading && !isLoadFailed) {
-      dispatch(postsLoad({apiClient}));
+      const params = userId ? { apiClient, author_id: userId } : { apiClient };
+      dispatch(postsLoad(params));
       dispatch(
         postsLoading({
           loadingPosts: Array(isSinglePost ? 1 : 5).fill(null),
@@ -104,7 +105,7 @@ export default function Posts() {
     <div className={style.posts}>
       {!isSinglePost && (
         <div className={style.postsHeader}>
-          <PostHeader isSinglePost={false} onPostRemove={null} />
+          <PostHeader isSinglePost={false} onPostRemove={null} userId={userId} />
         </div>
       )}
 
