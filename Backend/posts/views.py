@@ -28,7 +28,7 @@ class CreatePostApiView(APIView):
     @extend_schema(
         request=EditPostRequestSerializer,
         responses={
-            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_200_OK: GetPostResponseSerializer,
             status.HTTP_400_BAD_REQUEST: utils.SerializerErrorsSerializer,
         },
     )
@@ -36,10 +36,17 @@ class CreatePostApiView(APIView):
         serializer = EditPostRequestSerializer(
             data=request.data, context={"request": request}
         )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return utils.get_serializer_errors_response(serializer)
+        if not serializer.is_valid():
+            return utils.get_serializer_errors_response(serializer)
+        createdPost = serializer.save()
+
+        params = utils.validate_data(
+            {"post_id": createdPost.id}, GetPostsByFiltersParamsSerializer
+        )
+        posts_data = get_posts_by_filters_from_db(params, request.user)
+        response_posts_data = transform_db_posts_for_response(posts_data)
+        serializer = GetPostResponseSerializer(response_posts_data[0])
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GetEditDeletePostApiView(APIView):

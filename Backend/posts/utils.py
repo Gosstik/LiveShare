@@ -77,27 +77,4 @@ def transform_db_posts_for_response(posts):
     posts_data = []
     for post in posts:
         posts_data.append(GetPostResponseSerializer(post).data)
-        # author_display_name = utils.get_user_display_name(
-        #     post.author.email,
-        #     post.author.first_name,
-        #     post.author.last_name,
-        # )
-        # TODO: replace with serializer
-        # posts_data.append(
-        #     {
-        #         "post_id": post.id,
-        #         "author": post.author,
-        #         # "author_id": post.author.id,
-        #         # "author_email": post.author.email,
-        #         # "author_display_name": author_display_name,
-        #         "title": post.title,
-        #         "text_content": post.text_content,
-        #         "created_at": post.created_at,
-        #         "edited_at": post.edited_at,
-        #         "likes_count": post.likes_count,
-        #         "is_liked_by_user": post.is_liked_by_user,
-        #         "comments_count": post.comments_count,
-        #         # TODO: add user emails that liked
-        #     }
-        # )
     return posts_data
