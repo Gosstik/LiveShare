@@ -14,10 +14,6 @@ const initialState = {
   areLoading: false,
   loaded: false,
   loadFailed: false, // TODO: add error handling in UI
-  sortToggles: {
-    sortFieldName: "createdAt",
-    isAscending: true,
-  },
 };
 
 const postsSlice = createSlice(
@@ -35,16 +31,7 @@ const postsSlice = createSlice(
       },
       postsLoaded(state, action) {
         const { postEls } = action.payload;
-
-        const fieldName = state.sortToggles.sortFieldName;
-        const lessCmp =
-          fieldName === "likes" ? likesLessSort : fieldLessSort(fieldName);
-        state.posts = getSortedArray(
-          postEls,
-          lessCmp,
-          state.sortToggles.isAscending
-        );
-
+        state.posts = postEls;
         state.areLoading = false;
         state.loaded = true;
       },
@@ -52,19 +39,6 @@ const postsSlice = createSlice(
         state.areLoading = false;
         state.loaded = false;
         state.loadFailed = true;
-      },
-      postsSort(state, action) {
-        const { sortFieldName, isAscending } = action.payload;
-
-        const fieldName = state.sortToggles.sortFieldName;
-        const lessCmp =
-          fieldName === "likes" ? likesLessSort : fieldLessSort(fieldName);
-        state.posts = getSortedArray(state.posts, lessCmp, isAscending);
-
-        state.sortToggles = {
-          sortFieldName,
-          isAscending,
-        };
       },
       postFormUpdateSync(state, action) {
         const { postId, newText, newTitle } = action.payload;
@@ -117,41 +91,38 @@ export function postsLoad(props) {
   const { apiClient } = props;
   delete props.apiClient;
   return async function thunk(dispatch, getState) {
-    const loaded = getState().posts.loaded;
-    if (!loaded) {
-      apiClient
-        .postsV1ByFilters(props)
-        .then(async (response) => {
-          const body = await response.json();
-          const postEls = Array.from(body.posts, (post) => ({
-            postId: post.id,
-            author: {
-              id: post.author.id,
-              email: post.author.email,
-              firstName: post.author.firstName,
-              lastName: post.author.lastName,
-              displayedName: post.author.displayedName,
-              profileIconUrl: post.author.profileIconUrl,
-            },
-            title: post.title,
-            text: post.textContent,
-            createdAt: post.createdAt,
-            editedAt: post.editedAt,
-            likes: post.likesCount,
-            isLiked: post.isLikedByUser ?? false,
-            commentsCount: post.commentsCount,
-            attachedImageUrl: post.attachedImageUrl,
-          }));
-          dispatch(
-            postsLoaded({
-              postEls,
-            })
-          );
-        })
-        .catch(() => {
-          dispatch(postsLoadFailed());
-        });
-    }
+    apiClient
+      .postsV1ByFilters(props)
+      .then(async (response) => {
+        const body = await response.json();
+        const postEls = Array.from(body.posts, (post) => ({
+          postId: post.id,
+          author: {
+            id: post.author.id,
+            email: post.author.email,
+            firstName: post.author.firstName,
+            lastName: post.author.lastName,
+            displayedName: post.author.displayedName,
+            profileIconUrl: post.author.profileIconUrl,
+          },
+          title: post.title,
+          text: post.textContent,
+          createdAt: post.createdAt,
+          editedAt: post.editedAt,
+          likes: post.likesCount,
+          isLiked: post.isLikedByUser ?? false,
+          commentsCount: post.commentsCount,
+          attachedImageUrl: post.attachedImageUrl,
+        }));
+        dispatch(
+          postsLoaded({
+            postEls,
+          })
+        );
+      })
+      .catch(() => {
+        dispatch(postsLoadFailed());
+      });
   };
 }
 
@@ -235,15 +206,12 @@ export const selectPostsAreLoading = (state) => state.posts.areLoading;
 export const selectPostsLoaded = (state) => state.posts.loaded;
 export const selectPostsLoadFailed = (state) => state.posts.loadFailed;
 
-export const selectPostsSortToggles = (state) => state.posts.sortToggles;
-
 ////////////////////////////////////////////////////////////////////////////////
 
 export const {
   postsLoading,
   postsLoaded,
   postsLoadFailed,
-  postsSort,
   postFormUpdateSync,
   postRemoveSync,
   postLikeSync,

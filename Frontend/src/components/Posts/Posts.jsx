@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Post from "./Post";
+import PostHeader from "./PostHeader";
 import LoadingPost from "./LoadingPost";
-import SortToggles from "../SortToggles/SortToggles";
 import NotFound from "../NotFound/NotFound";
 import { PostNotFound } from "../NotFound/NotFound";
 import { useApi } from "../ApiProvider/ApiProvider";
@@ -12,7 +12,6 @@ import { useApi } from "../ApiProvider/ApiProvider";
 import {
   postsLoading,
   postsLoad,
-  postsSort,
   selectPost,
 } from "../Redux/Reducers/Posts";
 import {
@@ -20,7 +19,6 @@ import {
   selectPostsAreLoading,
   selectPostsLoaded,
   selectPostsLoadFailed,
-  selectPostsSortToggles,
 } from "../Redux/Reducers/Posts";
 
 import style from "./Posts.module.scss";
@@ -42,14 +40,16 @@ export default function Posts() {
   const areLoading = useSelector(selectPostsAreLoading);
   const areLoaded = useSelector(selectPostsLoaded);
   const isLoadFailed = useSelector(selectPostsLoadFailed);
-  if (!areLoaded && !areLoading && !isLoadFailed) {
-    dispatch(postsLoad({apiClient}));
-    dispatch(
-      postsLoading({
-        loadingPosts: Array(isSinglePost ? 1 : 5).fill(null),
-      })
-    );
-  }
+  useEffect(() => {
+    if (!areLoading && !isLoadFailed) {
+      dispatch(postsLoad({apiClient}));
+      dispatch(
+        postsLoading({
+          loadingPosts: Array(isSinglePost ? 1 : 5).fill(null),
+        })
+      );
+    }
+  }, [dispatch, apiClient, isSinglePost, areLoading, isLoadFailed]);
 
   const postEls = useSelector(selectPostEls);
   const post = useSelector(selectPost(postId));
@@ -102,17 +102,7 @@ export default function Posts() {
     <div className={style.posts}>
       {!isSinglePost && (
         <div className={style.postsHeader}>
-          <div className={style.postsSortToggles}>
-            <SortToggles
-              sortReducer={(payload) => dispatch(postsSort(payload))}
-              sortTogglesSelector={selectPostsSortToggles}
-              togglesData={[
-                { name: "date", fieldName: "createdAt" },
-                { name: "likes", fieldName: "likes" },
-              ]}
-              togglesStyle={style}
-            />
-          </div>
+          <PostHeader isSinglePost={false} onPostRemove={null} />
         </div>
       )}
 
