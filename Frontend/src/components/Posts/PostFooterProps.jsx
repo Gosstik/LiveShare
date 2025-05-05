@@ -83,18 +83,15 @@ export default function PostFooterProps(props) {
     );
   };
 
-  const createdAt = useSelector(selectPostCreatedAt(postId))
-
-  // TODO: remove createdAt
-  const createdAtDisplay = moment(createdAt).fromNow();
-  // TODO: if diff > month - print YYYY:MM:DD
-  // console.log(`!!! createdAtDisplay: ${createdAtDisplay}`);
-
   const commentsCount = useSelector(selectPostCommentsCount(postId));
+
+  // TODO: add number of views instead of createdAt
+  // const createdAt = useSelector(selectPostCreatedAt(postId))
+  // const createdAtDisplay = moment(createdAt).fromNow();
 
   return (
     <div className={style.footerPostData}>
-      <div className={style.createdAt}>{createdAtDisplay}</div>
+      {/* <div className={style.createdAt}>{createdAtDisplay}</div> */}
       <div className={style.props}>
         {isSinglePost && (
           <PostProperty image={editImg} alt="edit text" onClick={onPostEdit} />
