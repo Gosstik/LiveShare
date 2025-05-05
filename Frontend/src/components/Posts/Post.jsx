@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Comments from "../Comments/Comments";
 import CommentsForm from "../Comments/CommentsForm";
 import { useApi } from "../ApiProvider/ApiProvider";
+import { useAuth } from "../AuthProvider/AuthProvider";
 
 import { postFormUpdate, postRemove } from "../Redux/Reducers/Posts";
 import {
@@ -35,6 +36,7 @@ export default function Post(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const apiClient = useApi();
+  const { user, isAuthenticated } = useAuth();
 
   const post = useSelector(selectPost(postId));
   const curText = useSelector(selectPostText(postId));
@@ -81,6 +83,13 @@ export default function Post(props) {
   };
 
   const swapIsCommentShown = () => setAreCommentsShown(!areCommentsShown);
+
+  let canModifyPost = false;
+  if (isAuthenticated) {
+    canModifyPost = user.id === post.author.id;
+  }
+
+  const fontSize = '14px';
 
   return (
     <>
@@ -132,15 +141,15 @@ export default function Post(props) {
                   height="20"
                 />
               </ListItemIcon>
-              <Typography variant="body2">Open full</Typography>
+              <Typography variant="body2" style={{ fontSize }}>Open full</Typography>
             </MenuItem>
-            <MenuItem onClick={onPostEdit}>
+            {canModifyPost && <MenuItem onClick={onPostEdit}>
               <ListItemIcon>
                 <img src={editImg} alt="edit" width="20" height="20" />
               </ListItemIcon>
-              <Typography variant="body2">Edit</Typography>
-            </MenuItem>
-            <MenuItem onClick={onPostRemove} sx={{ color: "red" }}>
+              <Typography variant="body2" style={{ fontSize }}>Edit</Typography>
+            </MenuItem>}
+            {canModifyPost && <MenuItem onClick={onPostRemove} sx={{ color: "red" }}>
               <ListItemIcon>
                 <img
                   src={trashImg}
@@ -153,10 +162,10 @@ export default function Post(props) {
                   }}
                 />
               </ListItemIcon>
-              <Typography variant="body2" color="error">
+              <Typography variant="body2" color="error" style={{ fontSize }}>
                 Remove
               </Typography>
-            </MenuItem>
+            </MenuItem>}
           </Menu>
         </div>
       </div>
