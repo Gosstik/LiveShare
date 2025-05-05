@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Link, CircularProgress } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
 import styles from './CreatePost.module.scss';
+
+import { postCreated, mapApiPostToFrontendPost } from "../Redux/Reducers/Posts";
 
 import { useApi } from "../ApiProvider/ApiProvider";
 import { adjustTextareaHeight } from '../utils';
@@ -12,6 +15,7 @@ import ModalRequireAuth from '../ModalRequireAuth/ModalRequireAuth';
 
 export default function CreatePost() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const apiClient = useApi();
   const { isGuest, isAuthLoading } = useAuth();
   const [title, setTitle] = useState('');
@@ -45,7 +49,9 @@ export default function CreatePost() {
     }
 
     try {
-      await apiClient.postsV1PostCreate(formData);
+      const response = await apiClient.postsV1PostCreate(formData);
+      const apiPost = await response.json();
+      dispatch(postCreated(mapApiPostToFrontendPost(apiPost)));
       navigate(homeUrl);
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred while creating the post');

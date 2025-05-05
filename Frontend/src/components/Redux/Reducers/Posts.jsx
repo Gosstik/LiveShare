@@ -67,13 +67,8 @@ const postsSlice = createSlice(
         const post = getInnerPostById(state, postId);
         post.commentsCount = newCommentsCount;
       },
-      postAdd(state, action) {
-        // TODO: add apiClient
-        // TODO: add UI
-        // const { postId } = action.payload;
-        // const post = {}
-        // state.posts = [...state.posts, post];
-        // TODO: send POST request to server
+      postCreated(state, action) {
+        state.posts = [action.payload, ...state.posts];
       },
       commentAdded() {
         // TODO: accept id from server
@@ -82,6 +77,26 @@ const postsSlice = createSlice(
   },
   composedEnhancer
 );
+
+export const mapApiPostToFrontendPost = (post) => ({
+  postId: post.id,
+  author: {
+    id: post.author.id,
+    email: post.author.email,
+    firstName: post.author.firstName,
+    lastName: post.author.lastName,
+    displayedName: post.author.displayedName,
+    profileIconUrl: post.author.profileIconUrl,
+  },
+  title: post.title,
+  text: post.textContent,
+  createdAt: post.createdAt,
+  editedAt: post.editedAt,
+  likes: post.likesCount,
+  isLiked: post.isLikedByUser ?? false,
+  commentsCount: post.commentsCount,
+  attachedImageUrl: post.attachedImageUrl,
+});
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -95,25 +110,7 @@ export function postsLoad(props) {
       .postsV1ByFilters(props)
       .then(async (response) => {
         const body = await response.json();
-        const postEls = Array.from(body.posts, (post) => ({
-          postId: post.id,
-          author: {
-            id: post.author.id,
-            email: post.author.email,
-            firstName: post.author.firstName,
-            lastName: post.author.lastName,
-            displayedName: post.author.displayedName,
-            profileIconUrl: post.author.profileIconUrl,
-          },
-          title: post.title,
-          text: post.textContent,
-          createdAt: post.createdAt,
-          editedAt: post.editedAt,
-          likes: post.likesCount,
-          isLiked: post.isLikedByUser ?? false,
-          commentsCount: post.commentsCount,
-          attachedImageUrl: post.attachedImageUrl,
-        }));
+        const postEls = Array.from(body.posts, (post) => mapApiPostToFrontendPost(post));
         dispatch(
           postsLoaded({
             postEls,
@@ -216,6 +213,7 @@ export const {
   postRemoveSync,
   postLikeSync,
   postUpdateCommentsCount,
+  postCreated,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;
