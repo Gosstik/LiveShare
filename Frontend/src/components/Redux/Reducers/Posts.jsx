@@ -113,12 +113,14 @@ const postsSlice = createSlice(
 
 // Middlewares
 
-export function postsLoad(apiClient) {
+export function postsLoad(props) {
+  const { apiClient } = props;
+  delete props.apiClient;
   return async function thunk(dispatch, getState) {
     const loaded = getState().posts.loaded;
     if (!loaded) {
       apiClient
-        .postsV1ByFilters()
+        .postsV1ByFilters(props)
         .then(async (response) => {
           const body = await response.json();
           const postEls = Array.from(body.posts, (post) => ({

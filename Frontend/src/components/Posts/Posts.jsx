@@ -43,7 +43,7 @@ export default function Posts() {
   const areLoaded = useSelector(selectPostsLoaded);
   const isLoadFailed = useSelector(selectPostsLoadFailed);
   if (!areLoaded && !areLoading && !isLoadFailed) {
-    dispatch(postsLoad(apiClient));
+    dispatch(postsLoad({apiClient}));
     dispatch(
       postsLoading({
         loadingPosts: Array(isSinglePost ? 1 : 5).fill(null),
